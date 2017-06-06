@@ -1,0 +1,9 @@
+.dataTable tr td {
+    text-align: center;
+}
+.dataTable tr td:first-child > * {
+    float: left;
+}
+.dataTable tr td:last-child > * {
+    float: none;
+}

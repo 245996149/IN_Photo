@@ -36,16 +36,16 @@
         <property name="maxInMemorySize" value="40960"/>
     </bean>
 
-    <mvc:interceptors>
-        <!-- 登录检查拦截器 -->
-        <mvc:interceptor>
-            <mvc:mapping path="/**"/>
-            <mvc:exclude-mapping path="/login/**"/>
-            <mvc:exclude-mapping path="/mobile/**"/>
-            <mvc:exclude-mapping path="/receive/**"/>
-            <mvc:exclude-mapping path="/test/**"/>
-            <bean class="cn.inphoto.user.interceptor.CheckLoginInterceptor"/>
-        </mvc:interceptor>
-    </mvc:interceptors>
+    <!--<mvc:interceptors>-->
+        <!--&lt;!&ndash; 登录检查拦截器 &ndash;&gt;-->
+        <!--<mvc:interceptor>-->
+            <!--<mvc:mapping path="/**"/>-->
+            <!--<mvc:exclude-mapping path="/login/**"/>-->
+            <!--<mvc:exclude-mapping path="/mobile/**"/>-->
+            <!--<mvc:exclude-mapping path="/receive/**"/>-->
+            <!--<mvc:exclude-mapping path="/test/**"/>-->
+            <!--<bean class="cn.inphoto.user.interceptor.CheckLoginInterceptor"/>-->
+        <!--</mvc:interceptor>-->
+    <!--</mvc:interceptors>-->
 
 </beans>

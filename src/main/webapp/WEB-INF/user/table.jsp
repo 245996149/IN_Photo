@@ -11,6 +11,8 @@
     <!-- Bootstrap -->
     <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
 
+    <link href="${pageContext.request.contextPath}/css/user/table.css" rel="stylesheet">
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -89,39 +91,6 @@
         </div>
     </div>
 
-    <%--<div id="myCarousel" class="carousel">--%>
-    <%--<!-- 轮播（Carousel）指标 -->--%>
-    <%--<ol class="carousel-indicators">--%>
-    <%--<li data-target="#myCarousel" data-slide-to="0" class="active"></li>--%>
-    <%--<li data-target="#myCarousel" data-slide-to="1"></li>--%>
-    <%--<li data-target="#myCarousel" data-slide-to="2"></li>--%>
-    <%--</ol>--%>
-    <%--<!-- 轮播（Carousel）项目 -->--%>
-    <%--<div class="carousel-inner">--%>
-    <%--<div class="item active">--%>
-    <%--<img src="${pageContext.request.contextPath}/images/1.jpg" alt="First slide">--%>
-    <%--<div class="carousel-caption">1</div>--%>
-    <%--</div>--%>
-    <%--<div class="item">--%>
-    <%--<img src="${pageContext.request.contextPath}/images/2.jpg" alt="Second slide">--%>
-    <%--<div class="carousel-caption">2</div>--%>
-    <%--</div>--%>
-    <%--<div class="item">--%>
-    <%--<img src="${pageContext.request.contextPath}/images/3.jpg" alt="Third slide">--%>
-    <%--<div class="carousel-caption">3</div>--%>
-    <%--</div>--%>
-    <%--</div>--%>
-    <%--<!-- 轮播（Carousel）导航 -->--%>
-    <%--<a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">--%>
-    <%--<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>--%>
-    <%--<span class="sr-only">Previous</span>--%>
-    <%--</a>--%>
-    <%--<a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">--%>
-    <%--<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>--%>
-    <%--<span class="sr-only">Next</span>--%>
-    <%--</a>--%>
-    <%--</div>--%>
-
 </div>
 
 <div class="row">
@@ -175,13 +144,20 @@
             </div>
             <!-- Table -->
             <div class="table-responsive">
-                <table class="table table-bordered table-hover" style="font-size: x-large;">
+                <table class="table table-bordered table-hover dataTable" style="font-size: x-large;">
                     <thead>
                     <tr>
                         <td><input type="checkbox"><span>媒体编号</span>
-                            <div class="btn-group-sm" role="group" aria-label="...">
-                                <button type="button" class="btn btn-danger">删除选中</button>
-                                <button type="button" class="btn btn-info">下载选中</button>
+                            <div class="dropdown">
+                                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    操作
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                    <li><a href="#">下载</a></li>
+                                    <li><a href="#">移到回收站</a></li>
+                                </ul>
                             </div>
                         </td>
                         <td>缩略图</td>
@@ -192,8 +168,25 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td><input type="checkbox">12345678934</td>
-                        <td width="5%"><a href="#" class="thumbnail">
+                        <td><input type="checkbox"><span>12345678934</span></td>
+                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
+                            <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
+                        </a></td>
+                        <td>2017-12-30 24:00:00</td>
+                        <td>123455</td>
+                        <td>
+                            <div class="btn-group-sm" role="group" aria-label="...">
+                                <button type="button" class="btn btn-danger">删除</button>
+                                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
+                                        data-target="#myModal">查看
+                                </button>
+                                <button type="button" class="btn btn-info">下载</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"><span>12345678934</span></td>
+                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
                             <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
                         </a></td>
                         <td>2017-12-30 24:00:00</td>
@@ -207,8 +200,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox">12345678934</td>
-                        <td width="5%"><a href="#" class="thumbnail">
+                        <td><input type="checkbox"><span>12345678934</span></td>
+                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
                             <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
                         </a></td>
                         <td>2017-12-30 24:00:00</td>
@@ -222,8 +215,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox">12345678934</td>
-                        <td width="5%"><a href="#" class="thumbnail">
+                        <td><input type="checkbox"><span>12345678934</span></td>
+                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
                             <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
                         </a></td>
                         <td>2017-12-30 24:00:00</td>
@@ -237,8 +230,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox">12345678934</td>
-                        <td width="5%"><a href="#" class="thumbnail">
+                        <td><input type="checkbox"><span>12345678934</span></td>
+                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
                             <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
                         </a></td>
                         <td>2017-12-30 24:00:00</td>
@@ -252,8 +245,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox">12345678934</td>
-                        <td width="5%"><a href="#" class="thumbnail">
+                        <td><input type="checkbox"><span>12345678934</span></td>
+                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
                             <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
                         </a></td>
                         <td>2017-12-30 24:00:00</td>
@@ -267,8 +260,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox">12345678934</td>
-                        <td width="5%"><a href="#" class="thumbnail">
+                        <td><input type="checkbox"><span>12345678934</span></td>
+                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
                             <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
                         </a></td>
                         <td>2017-12-30 24:00:00</td>
@@ -282,8 +275,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox">12345678934</td>
-                        <td width="5%"><a href="#" class="thumbnail">
+                        <td><input type="checkbox"><span>12345678934</span></td>
+                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
                             <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
                         </a></td>
                         <td>2017-12-30 24:00:00</td>
@@ -297,8 +290,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox">12345678934</td>
-                        <td width="5%"><a href="#" class="thumbnail">
+                        <td><input type="checkbox"><span>12345678934</span></td>
+                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
                             <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
                         </a></td>
                         <td>2017-12-30 24:00:00</td>
@@ -312,8 +305,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox">12345678934</td>
-                        <td width="5%"><a href="#" class="thumbnail">
+                        <td><input type="checkbox"><span>12345678934</span></td>
+                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
                             <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
                         </a></td>
                         <td>2017-12-30 24:00:00</td>
@@ -327,8 +320,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox">12345678934</td>
-                        <td width="5%"><a href="#" class="thumbnail">
+                        <td><input type="checkbox"><span>12345678934</span></td>
+                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
                             <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
                         </a></td>
                         <td>2017-12-30 24:00:00</td>
@@ -342,8 +335,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox">12345678934</td>
-                        <td width="5%"><a href="#" class="thumbnail">
+                        <td><input type="checkbox"><span>12345678934</span></td>
+                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
                             <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
                         </a></td>
                         <td>2017-12-30 24:00:00</td>
@@ -357,8 +350,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox">12345678934</td>
-                        <td width="5%"><a href="#" class="thumbnail">
+                        <td><input type="checkbox"><span>12345678934</span></td>
+                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
                             <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
                         </a></td>
                         <td>2017-12-30 24:00:00</td>
@@ -372,8 +365,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox">12345678934</td>
-                        <td width="5%"><a href="#" class="thumbnail">
+                        <td><input type="checkbox"><span>12345678934</span></td>
+                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
                             <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
                         </a></td>
                         <td>2017-12-30 24:00:00</td>
@@ -387,23 +380,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox">12345678934</td>
-                        <td width="5%"><a href="#" class="thumbnail">
-                            <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
-                        </a></td>
-                        <td>2017-12-30 24:00:00</td>
-                        <td>123455</td>
-                        <td>
-                            <div class="btn-group-sm" role="group" aria-label="...">
-                                <button type="button" class="btn btn-danger">删除</button>
-                                <button type="button" class="btn btn-primary">查看</button>
-                                <button type="button" class="btn btn-info">下载</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox">12345678934</td>
-                        <td width="5%"><a href="#" class="thumbnail">
+                        <td><input type="checkbox"><span>12345678934</span></td>
+                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
                             <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
                         </a></td>
                         <td>2017-12-30 24:00:00</td>
@@ -445,6 +423,58 @@
         </div>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <div id="myCarousel" class="carousel">
+                    <!-- 轮播（Carousel）指标 -->
+                    <ol class="carousel-indicators">
+                        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                        <li data-target="#myCarousel" data-slide-to="1"></li>
+                        <li data-target="#myCarousel" data-slide-to="2"></li>
+                    </ol>
+                    <!-- 轮播（Carousel）项目 -->
+                    <div class="carousel-inner">
+                        <div class="item active">
+                            <img src="${pageContext.request.contextPath}/images/1.jpg" alt="First slide">
+                            <div class="carousel-caption">1</div>
+                        </div>
+                        <div class="item">
+                            <img src="${pageContext.request.contextPath}/images/2.jpg" alt="Second slide">
+                            <div class="carousel-caption">2</div>
+                        </div>
+                        <div class="item">
+                            <img src="${pageContext.request.contextPath}/images/3.jpg" alt="Third slide">
+                            <div class="carousel-caption">3</div>
+                        </div>
+                    </div>
+                    <!-- 轮播（Carousel）导航 -->
+                    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script src="${pageContext.request.contextPath}/js/Chart.js"></script>
 <script type="text/javascript">
@@ -518,6 +548,10 @@
                 backgroundColor: ["rgb(255, 99, 132)", "rgb(75, 192, 192)", "rgb(255, 205, 86)",]
             }]
         }
+    });
+
+    $('.carousel').carousel({
+        wrap: false
     });
 </script>
 
