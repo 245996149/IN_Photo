@@ -28,5 +28,15 @@ public class UserController {
         return "user/table";
     }
 
+    @RequestMapping("/toCategory.do")
+    public String toCategory() {
+        return "user/category";
+    }
+
+    @RequestMapping("/toPageSettings.do")
+    public String toPageSettings() {
+        return "user/page_settings";
+    }
+
 
 }

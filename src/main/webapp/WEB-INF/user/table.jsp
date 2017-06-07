@@ -394,6 +394,8 @@
                             </div>
                         </td>
                     </tr>
+                    </tbody>
+                    <tfoot>
                     <tr>
                         <td colspan="5" style="text-align: center;">
                             <nav aria-label="Page navigation">
@@ -417,7 +419,7 @@
                             </nav>
                         </td>
                     </tr>
-                    </tbody>
+                    </tfoot>
                 </table>
             </div>
         </div>
@@ -442,7 +444,7 @@
                         <li data-target="#myCarousel" data-slide-to="2"></li>
                     </ol>
                     <!-- 轮播（Carousel）项目 -->
-                    <div class="carousel-inner">
+                    <div class="carousel-inner" id="carousel-object">
                         <div class="item active">
                             <img src="${pageContext.request.contextPath}/images/1.jpg" alt="First slide">
                             <div class="carousel-caption">1</div>
@@ -468,8 +470,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-danger">删除</button>
+                <button type="button" class="btn btn-primary" onclick="download();">下载</button>
             </div>
         </div>
     </div>
@@ -551,8 +553,14 @@
     });
 
     $('.carousel').carousel({
-        wrap: false
+        interval: false
     });
+
+    /*测试选择*/
+    function download() {
+        var carousel_obj = $("#carousel-object .active div");
+        alert(carousel_obj.text());
+    }
 </script>
 
 </body>
