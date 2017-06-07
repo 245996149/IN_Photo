@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
  */
 @Controller
 @RequestMapping("/user")
-public class IndexController {
+public class UserController {
 
     @RequestMapping("/index.do")
     public String index(Model model, HttpSession session) {
