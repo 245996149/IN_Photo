@@ -20,6 +20,7 @@ public class UsersEntity {
     private String company;
     private String userState;
     private String note;
+    private String phone;
 
     @Id
     @Column(name = "user_id")
@@ -146,5 +147,15 @@ public class UsersEntity {
                 ", userState='" + userState + '\'' +
                 ", note='" + note + '\'' +
                 '}';
+    }
+
+    @Basic
+    @Column(name = "phone")
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }
