@@ -207,21 +207,187 @@
                                                 该数值用于页面中媒体数据的定位，使用百分比形式，由图可知：媒体数据上边距离页面顶部占页面总长度的20.7%，媒体数据左边距离页面左边占页面总宽度的13.6%。注意媒体数据的比例。</p>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div role="tabpanel" class="tab-pane" id="mobile_code_settings">mobile_code_settings</div>
+                <div role="tabpanel" class="tab-pane" id="mobile_code_settings">
+                    <div class="row" style="margin-left: -15px;margin-right: -15px;">
+                        <div class="col-md-6">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="code_page_title_span">页面标题</span>
+                                        <input type="text" class="form-control" id="code_page_title"
+                                               aria-describedby="code_page_title_span">
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                        <label for="code_bg">页面背景图片</label>
+                                        <input type="file" id="code_bg">
+                                        <p class="help-block">
+                                            仅支持大小为200kb以内的jpg、png格式的图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <label for="code_input_top">输入框上边距离版面顶部的百分比</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="code_input_top"
+                                                       aria-describedby="basic-addon3">
+                                                <span class="input-group-addon">%</span>
+                                            </div>
+                                            <br>
+                                            <label for="code_pic_bottom">输入框下边距离版面底部的百分比</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="code_pic_bottom"
+                                                       aria-describedby="basic-addon3">
+                                                <span class="input-group-addon">%</span>
+                                            </div>
+                                            <br>
+                                            <label for="code_pic_left">输入框左边距离版面左边的百分比</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="code_pic_left"
+                                                       aria-describedby="basic-addon3">
+                                                <span class="input-group-addon">%</span>
+                                            </div>
+                                            <br>
+                                            <label for="code_pic_right">输入框右边距离版面右边的百分比</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="code_pic_right"
+                                                       aria-describedby="basic-addon3">
+                                                <span class="input-group-addon">%</span>
+                                            </div>
+                                            <br>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <label for="code_input_bg_color">输入框背景色</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon" id="code_input_bg_color_span">#</span>
+                                                <input type="text" class="form-control"
+                                                       aria-describedby="basic-addon1" id="code_input_bg_color">
+                                            </div>
+                                            <br>
+                                            <label for="code_input_border_color">输入框边框色</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon"
+                                                      id="code_input_border_color_span">#</span>
+                                                <input type="text" class="form-control"
+                                                       aria-describedby="basic-addon1" id="code_input_border_color">
+                                            </div>
+                                            <br>
+                                            <label for="code_input_text_color">输入框文本色</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon"
+                                                      id="code_input_text_color_span">#</span>
+                                                <input type="text" class="form-control"
+                                                       aria-describedby="basic-addon1" id="code_input_text_color">
+                                            </div>
+                                            <br>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                        <label for="button_pic">按钮图片</label>
+                                        <input type="file" id="button_pic">
+                                        <p class="help-block">
+                                            仅支持大小为200kb以内的jpg、png格式的图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
+                                    </div>
+                                    <br>
+                                    <label for="code_button_top">按钮上边距离版面顶部的百分比</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="code_button_top"
+                                               aria-describedby="basic-addon3">
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+                                    <br>
+                                    <label for="code_button_bottom">按钮下边距离版面底部的百分比</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="code_button_bottom"
+                                               aria-describedby="basic-addon3">
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+                                    <br>
+                                    <label for="code_button_left">按钮左边距离版面左边的百分比</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="code_button_left"
+                                               aria-describedby="basic-addon3">
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+                                    <br>
+                                    <label for="code_button_right">按钮右边距离版面右边的百分比</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="code_button_right"
+                                               aria-describedby="basic-addon3">
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-md-12" style="text-align: center;">
+                                            <div class="btn-group" role="group" aria-label="...">
+                                                <button type="button" class="btn btn-success">确认</button>
+                                                <button type="button" class="btn btn-primary">预览</button>
+                                                <button type="button" class="btn btn-danger">恢复默认</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">设置说明</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <img src="${pageContext.request.contextPath}/images/code_explain.png"
+                                                 alt="..." class="img-rounded" style="max-width: 100%;">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h3><span class="label label-default"
+                                                      style="background-color: #00ffff">背景版图</span></h3><br>
+                                            <p>
+                                                该颜色框位置为背景图片，图片自适应浏览器宽度，并按图片比例设置高度，因各个品牌手机屏幕比例不一关系，推荐使用长图，文件大小小于200kb</p>
+                                            <h3> <span class="label label-default"
+                                                       style="background-color: #eeeeee">页面标题</span></h3><br>
+                                            <p>
+                                                该颜色框中为页面标题，因各个品牌手机屏幕比例不一关系，页面标题字数应该尽量精简，否则会造成页面标题无法完全显示</p>
+                                            <h3>
+                                                 <span class="label label-default"
+                                                       style="background-color: #0000ff">输入框区域</span>
+                                                <span class="label label-default"
+                                                      style="background-color: #e60012">输入框定位</span>
+                                                <span class="label label-default"
+                                                      style="background-color: red">输入框边框颜色</span>
+                                                <span class="label label-default"
+                                                      style="background-color: #e93c77">输入框文本颜色</span>
+                                                <span class="label label-default"
+                                                      style="background-color: white;color: #0f0f0f;">输入框背景颜色</span>
+                                            </h3><br>
+                                            <p>
+                                                此部分为输入框及其定位配置，输入框定位采用上下左右四边相对于页面四边百分比定位，如图所示：输入框上边相对于页面顶部占页面总长度的31.7%；输入框颜色由文本、边框、背景颜色构成，由图：背景颜色为#ffffff，边框颜色为#ff0000，文本颜色为#d73e71；</p>
+                                            <h3>
+                                                 <span class="label label-default"
+                                                       style="background-color: #ff00ff">确认按钮区域</span>
+                                                <span class="label label-default"
+                                                      style="background-color: #ff00ff">输入框定位</span>
+                                            </h3><br>
+                                            <p>
+                                                此部分为确认按钮定位配置，确认按钮为png或者jpg图片，如果为异形按钮，需要无底的png图才能保证图片透明部分正确显示；确认按钮定位采用上下左右四边相对于页面四边百分比定位，如图所示：确认按钮上边相对于页面顶部占页面总长度的45%；因手机品牌、平台等原因，输入框及其确认按钮建议靠近页面顶部，输入框与确认按钮间的相对位置不应相距较远。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div role="tabpanel" class="tab-pane" id="mobile_wechat_settings">mobile_wechat_settings</div>
             </div>
-
         </div>
     </div>
-
 </div>
-
-
 </body>
 </html>
