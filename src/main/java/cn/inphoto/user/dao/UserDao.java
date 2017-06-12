@@ -7,6 +7,10 @@ import cn.inphoto.user.dbentity.UsersEntity;
  */
 public interface UserDao {
 
-    public UsersEntity searchByUser_name(String user_name);
+    UsersEntity searchByUser_name(String user_name);
+
+    UsersEntity searchByUser_id(int user_id);
+
+    boolean addUser(UsersEntity usersEntity);
 
 }

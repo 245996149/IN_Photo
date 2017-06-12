@@ -11,6 +11,9 @@ public class CategoryEntity {
     private int categoryId;
     private String categoryCode;
     private String categoryName;
+    private byte madeGif;
+    private byte gifTransparency;
+    private String categoryNote;
 
     @Id
     @Column(name = "category_id")
@@ -62,5 +65,35 @@ public class CategoryEntity {
         result = 31 * result + (categoryCode != null ? categoryCode.hashCode() : 0);
         result = 31 * result + (categoryName != null ? categoryName.hashCode() : 0);
         return result;
+    }
+
+    @Basic
+    @Column(name = "made_gif")
+    public byte getMadeGif() {
+        return madeGif;
+    }
+
+    public void setMadeGif(byte madeGif) {
+        this.madeGif = madeGif;
+    }
+
+    @Basic
+    @Column(name = "gif_transparency")
+    public byte getGifTransparency() {
+        return gifTransparency;
+    }
+
+    public void setGifTransparency(byte gifTransparency) {
+        this.gifTransparency = gifTransparency;
+    }
+
+    @Basic
+    @Column(name = "category_note")
+    public String getCategoryNote() {
+        return categoryNote;
+    }
+
+    public void setCategoryNote(String categoryNote) {
+        this.categoryNote = categoryNote;
     }
 }

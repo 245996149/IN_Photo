@@ -22,12 +22,16 @@ public class MediaDataEntity {
     private long mediaId;
     private String mediaName;
     private String filePath;
-    private int userId;
+    private long userId;
     private int categoryId;
     private Timestamp createTime;
     private String mediaState;
     private Timestamp deleteTime;
     private Timestamp overTime;
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
 
     @Id
     @Column(name = "media_id")
@@ -61,7 +65,7 @@ public class MediaDataEntity {
 
     @Basic
     @Column(name = "user_id")
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
@@ -140,12 +144,13 @@ public class MediaDataEntity {
         return true;
     }
 
+
     @Override
     public int hashCode() {
         int result = (int) (mediaId ^ (mediaId >>> 32));
         result = 31 * result + (mediaName != null ? mediaName.hashCode() : 0);
         result = 31 * result + (filePath != null ? filePath.hashCode() : 0);
-        result = 31 * result + userId;
+        result = 31 * result + (int) (userId ^ (userId >>> 32));
         result = 31 * result + categoryId;
         result = 31 * result + (createTime != null ? createTime.hashCode() : 0);
         result = 31 * result + (mediaState != null ? mediaState.hashCode() : 0);

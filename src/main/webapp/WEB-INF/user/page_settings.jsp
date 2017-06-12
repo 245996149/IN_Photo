@@ -384,10 +384,119 @@
                         </div>
                     </div>
                 </div>
-                <div role="tabpanel" class="tab-pane" id="mobile_wechat_settings">mobile_wechat_settings</div>
+                <div role="tabpanel" class="tab-pane" id="mobile_wechat_settings">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title">朋友圈分享设置</h3>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"
+                                                      id="share_moments_title_span">分享标题</span>
+                                                <input type="text" class="form-control" id="share_moments_title"
+                                                       aria-describedby="share_moments_title_span">
+                                            </div>
+                                            <br>
+                                            <div class="form-group">
+                                                <label for="share_moments_icon">分享图标</label>
+                                                <input type="file" id="share_moments_icon">
+                                                <p class="help-block">
+                                                    仅支持大小为200kb以内的jpg、png格式，分辨率300*300以内的正方形图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title">分享给好友设置</h3>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="input-group">
+                                                <span class="input-group-addon" id="share_chats_title_span">分享标题</span>
+                                                <input type="text" class="form-control" id="share_chats_title"
+                                                       aria-describedby="share_moments_title_span">
+                                            </div>
+                                            <br>
+                                            <div class="input-group">
+                                                <span class="input-group-addon" id="share_chats_text_span">分享内容</span>
+                                                <input type="text" class="form-control" id="share_chats_text"
+                                                       aria-describedby="share_moments_title_span">
+                                            </div>
+                                            <br>
+                                            <div class="form-group">
+                                                <label for="share_chats_icon">分享图标</label>
+                                                <input type="file" id="share_chats_icon">
+                                                <p class="help-block">
+                                                    仅支持大小为200kb以内的jpg、png格式，分辨率300*300以内的正方形图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12" style="text-align: center;">
+                                            <div class="btn-group" role="group" aria-label="...">
+                                                <button type="button" class="btn btn-success">确认</button>
+                                                <button type="button" class="btn btn-primary">预览</button>
+                                                <button type="button" class="btn btn-danger">恢复默认</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">设置说明</h3>
+                                </div>
+                                <div class="panel-body">
+
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title">分享到朋友圈演示</h3>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <img src="${pageContext.request.contextPath}/images/share_moments_explain.png"
+                                                         alt="..." class="img-rounded" style="max-width: 100%;">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <h3><span class="label label-success">分享到朋友圈</span></h3><br>
+                                                    <p>
+                                                        朋友圈分享由两部分构成：分享标题、分享图标。由于手机平台等原因，标题过长会造成标题过长部分折叠，所以标题应当精简，标题支持1-30长度字符串；分享图标需使用200kb以内的jpg、png格式的图片，建议使用正方形图片，长方形有可能会造成图片变形。</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title">分享给好友演示</h3>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <img src="${pageContext.request.contextPath}/images/share_chats_explain.png"
+                                                         alt="..." class="img-rounded" style="max-width: 100%;">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <h3><span class="label label-danger">分享给好友</span></h3><br>
+                                                    <p>
+                                                        好友分享由三部分构成：分享标题、分享内容、分享图标。由于手机平台等原因，标题过长会造成标题过长部分折叠，所以标题应当精简，标题支持1-30长度字符串；内容题过长会造成过长部分折叠，内容支持1-50长度字符串；分享图标需使用200kb以内的jpg、png格式的图片，建议使用正方形图片，长方形有可能会造成图片变形。</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 </html>
