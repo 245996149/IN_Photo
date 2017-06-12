@@ -12,11 +12,12 @@ public class MediaCodeEntity {
     private long mediaCodeId;
     private String mediaCode;
     private long mediaId;
-    private int userId;
+    private long userId;
     private int categoryId;
 
     @Id
     @Column(name = "media_code_id")
+
     public long getMediaCodeId() {
         return mediaCodeId;
     }
@@ -47,11 +48,11 @@ public class MediaCodeEntity {
 
     @Basic
     @Column(name = "user_id")
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
@@ -86,8 +87,19 @@ public class MediaCodeEntity {
         int result = (int) (mediaCodeId ^ (mediaCodeId >>> 32));
         result = 31 * result + (mediaCode != null ? mediaCode.hashCode() : 0);
         result = 31 * result + (int) (mediaId ^ (mediaId >>> 32));
-        result = 31 * result + userId;
+        result = 31 * result + (int) (userId ^ (userId >>> 32));
         result = 31 * result + categoryId;
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "MediaCodeEntity{" +
+                "mediaCodeId=" + mediaCodeId +
+                ", mediaCode='" + mediaCode + '\'' +
+                ", mediaId=" + mediaId +
+                ", userId=" + userId +
+                ", categoryId=" + categoryId +
+                '}';
     }
 }

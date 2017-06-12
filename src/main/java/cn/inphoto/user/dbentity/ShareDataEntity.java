@@ -20,11 +20,15 @@ public class ShareDataEntity {
     public static final String SHARE_TYPE_WECHAT_SHARE_MOMENTS= "2";
 
     private long shareDataId;
-    private int userId;
+    private long userId;
     private int categoryId;
     private long mediaId;
     private Timestamp shareTime;
     private String shareType;
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
 
     @Id
     @Column(name = "share_data_id")
@@ -38,7 +42,7 @@ public class ShareDataEntity {
 
     @Basic
     @Column(name = "user_id")
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
@@ -107,7 +111,7 @@ public class ShareDataEntity {
     @Override
     public int hashCode() {
         int result = (int) (shareDataId ^ (shareDataId >>> 32));
-        result = 31 * result + userId;
+        result = 31 * result + (int) (userId ^ (userId >>> 32));
         result = 31 * result + categoryId;
         result = 31 * result + (int) (mediaId ^ (mediaId >>> 32));
         result = 31 * result + (shareTime != null ? shareTime.hashCode() : 0);

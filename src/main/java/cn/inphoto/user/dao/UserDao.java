@@ -9,7 +9,7 @@ public interface UserDao {
 
     UsersEntity searchByUser_name(String user_name);
 
-    UsersEntity searchByUser_id(int user_id);
+    UsersEntity searchByUser_id(Long user_id);
 
     boolean addUser(UsersEntity usersEntity);
 

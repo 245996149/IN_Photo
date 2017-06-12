@@ -1,10 +1,10 @@
 package cn.inphoto.user.test.upload;
 
 
-
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by root on 17-3-9.
@@ -14,10 +14,25 @@ public class UploadTest {
     @Test
     public void uploadTest() throws Exception {
 
+        Random random = new Random();
+
+        StringBuffer sb = new StringBuffer();
+
+        for (int i = 0; i < 6; i++) {
+            int n = random.nextInt(10);
+            sb.append(n);
+        }
+        StringBuffer sb1 = new StringBuffer();
+        for (int i = 0; i < 4; i++) {
+            int n = random.nextInt(10);
+            sb1.append(n);
+        }
+
+        sb1.append(sb);
 
         // 设定服务地址
-        String serverUrl = "http://app.in-photo.cn" +
-                "/gif_test/receive/receiveMedia.do?name=" + 99999;
+        String serverUrl = "http://127.0.0.1" +
+                "/IN_Photo/receive/receiveMedia.do?names=" + sb1 + "&media_code=" + 723440 + "&category_code=gif1&user_id=" + 1 + "&second=" + 150 + "&number=" + 8;
 
         // 设定要上传的普通Form Field及其对应的value
 
@@ -35,10 +50,10 @@ public class UploadTest {
 
         ArrayList<UploadFileItem> ufi = new ArrayList<>();
 
-//        for (int i = 0; i < 8; i++) {
-//            ufi.add(new UploadFileItem("upload" + (i + 1), "/root/视频/" + (i + 1) + ".png"));
-//        }
-        ufi.add(new UploadFileItem("upload1", "C:\\Users\\kaxia\\Documents\\WeChat Files\\chen245996149\\Files\\weixinface1496739335.gif"));
+        for (int i = 0; i < 8; i++) {
+            ufi.add(new UploadFileItem("upload" + (i + 1), "g:\\" + (i + 1) + ".png"));
+        }
+        //      ufi.add(new UploadFileItem("upload1", "C:\\Users\\kaxia\\Desktop\\047317.jpg"));
 //        ufi.add(new UploadFileItem("upload2", "/root/2.png"));
 //        ufi.add(new UploadFileItem("upload3", "/root/3.png"));
 //        ufi.add(new UploadFileItem("upload4", "/root/4.png"));
@@ -52,10 +67,13 @@ public class UploadTest {
 
         HttpPostEmulator hpe = new HttpPostEmulator();
 
+        Long begin = System.currentTimeMillis();
+
         String response = hpe.sendHttpPostRequest(serverUrl, formFieldKeyValuePairs, ufi);
 
+        Long end = System.currentTimeMillis();
         System.out.println("Response from server is: " + response);
-
+        System.out.println("用时:" + (end - begin));
     }
 
 }

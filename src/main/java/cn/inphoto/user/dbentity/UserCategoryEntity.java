@@ -20,13 +20,17 @@ public class UserCategoryEntity {
     public static final String USER_CATEGORY_STATE_NOT_START = "2";
 
     private long userCategoryId;
-    private int userId;
+    private long userId;
     private Timestamp payTime;
     private Timestamp beginTime;
     private Timestamp endTime;
     private Integer mediaNumber;
     private Integer categoryId;
     private String userCategoryState;
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
 
     @Id
     @Column(name = "user_category_id")
@@ -40,7 +44,7 @@ public class UserCategoryEntity {
 
     @Basic
     @Column(name = "user_id")
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
@@ -132,7 +136,7 @@ public class UserCategoryEntity {
     @Override
     public int hashCode() {
         int result = (int) (userCategoryId ^ (userCategoryId >>> 32));
-        result = 31 * result + userId;
+        result = 31 * result + (int) (userId ^ (userId >>> 32));
         result = 31 * result + (payTime != null ? payTime.hashCode() : 0);
         result = 31 * result + (beginTime != null ? beginTime.hashCode() : 0);
         result = 31 * result + (endTime != null ? endTime.hashCode() : 0);

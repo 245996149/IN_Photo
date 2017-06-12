@@ -1,4 +1,4 @@
-package cn.inphoto.user.test.deTest;
+package cn.inphoto.user.test.dbTest;
 
 import org.junit.Test;
 

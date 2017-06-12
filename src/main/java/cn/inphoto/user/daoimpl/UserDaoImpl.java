@@ -31,7 +31,7 @@ public class UserDaoImpl extends SuperDao implements UserDao {
     }
 
     @Override
-    public UsersEntity searchByUser_id(int user_id) {
+    public UsersEntity searchByUser_id(Long user_id) {
         Session session = sessionFactory.openSession();
 
         Query query = session.createQuery("from UsersEntity where userId=?");

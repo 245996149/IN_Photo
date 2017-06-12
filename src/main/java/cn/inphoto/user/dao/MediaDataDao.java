@@ -14,7 +14,7 @@ public interface MediaDataDao {
 
     boolean addMediaData(MediaDataEntity mediaDataEntity);
 
-    int countByUser_idAndCategory_idAndMedia_state(Long user_id, int category_id,String media_state);
+    long countByUser_idAndCategory_idAndMedia_state(Long user_id, int category_id,String media_state);
 
     MediaDataEntity  findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(Long user_id, int category_id,String media_state);
 

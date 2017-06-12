@@ -9,13 +9,17 @@ import javax.persistence.*;
 @Table(name = "share_info", schema = "IN_Photo", catalog = "")
 public class ShareInfoEntity {
     private long shareInfoId;
-    private int userId;
+    private long userId;
     private int categoryId;
     private String shareMomentsTitle;
     private String shareMomentsIcon;
     private String shareChatsTitle;
     private String shareChatsText;
     private String shareChatsIcon;
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
 
     @Id
     @Column(name = "share_info_id")
@@ -29,7 +33,7 @@ public class ShareInfoEntity {
 
     @Basic
     @Column(name = "user_id")
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
@@ -124,7 +128,7 @@ public class ShareInfoEntity {
     @Override
     public int hashCode() {
         int result = (int) (shareInfoId ^ (shareInfoId >>> 32));
-        result = 31 * result + userId;
+        result = 31 * result + (int) (userId ^ (userId >>> 32));
         result = 31 * result + categoryId;
         result = 31 * result + (shareMomentsTitle != null ? shareMomentsTitle.hashCode() : 0);
         result = 31 * result + (shareMomentsIcon != null ? shareMomentsIcon.hashCode() : 0);

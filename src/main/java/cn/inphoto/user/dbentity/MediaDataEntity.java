@@ -1,6 +1,8 @@
 package cn.inphoto.user.dbentity;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GeneratorType;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -35,6 +37,7 @@ public class MediaDataEntity {
 
     @Id
     @Column(name = "media_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long getMediaId() {
         return mediaId;
     }
@@ -157,5 +160,20 @@ public class MediaDataEntity {
         result = 31 * result + (deleteTime != null ? deleteTime.hashCode() : 0);
         result = 31 * result + (overTime != null ? overTime.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "MediaDataEntity{" +
+                "mediaId=" + mediaId +
+                ", mediaName='" + mediaName + '\'' +
+                ", filePath='" + filePath + '\'' +
+                ", userId=" + userId +
+                ", categoryId=" + categoryId +
+                ", createTime=" + createTime +
+                ", mediaState='" + mediaState + '\'' +
+                ", deleteTime=" + deleteTime +
+                ", overTime=" + overTime +
+                '}';
     }
 }

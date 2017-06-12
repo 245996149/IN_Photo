@@ -1,4 +1,4 @@
-package cn.inphoto.user.test.deTest;
+package cn.inphoto.user.test.dbTest;
 
 import cn.inphoto.user.dao.UserDao;
 import cn.inphoto.user.dbentity.UsersEntity;

@@ -1,13 +1,7 @@
 package cn.inphoto.user.controller;
 
-import cn.inphoto.user.dao.CategoryDao;
-import cn.inphoto.user.dao.MediaDataDao;
-import cn.inphoto.user.dao.UserCategoryDao;
-import cn.inphoto.user.dao.UserDao;
-import cn.inphoto.user.dbentity.CategoryEntity;
-import cn.inphoto.user.dbentity.MediaDataEntity;
-import cn.inphoto.user.dbentity.UserCategoryEntity;
-import cn.inphoto.user.dbentity.UsersEntity;
+import cn.inphoto.user.dao.*;
+import cn.inphoto.user.dbentity.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import static cn.inphoto.user.util.DBUtil.judgeMediaCode;
 import static cn.inphoto.user.util.DirUtil.createDirectory;
 import static cn.inphoto.user.util.DirUtil.getConfigInfo;
 import static cn.inphoto.user.util.DirUtil.getErrorInfoFromException;
@@ -54,6 +49,9 @@ public class ReceiveController {
     @Resource
     MediaDataDao mediaDataDao;
 
+    @Resource
+    MediaCodeDao mediaCodeDao;
+
     /**
      * @param request
      * @param response
@@ -70,7 +68,7 @@ public class ReceiveController {
     @ResponseBody
     public Map<String, Object> receiveMedia(HttpServletRequest request, HttpServletResponse response,
                                             String names, String category_code, String media_code, Integer second,
-                                            Integer number, Integer user_id) throws IOException {
+                                            Integer number, Long user_id) throws IOException {
 
         // 设置请求、返回的字符编码
         request.setCharacterEncoding("utf-8");
@@ -132,7 +130,7 @@ public class ReceiveController {
         String path = getConfigInfo("data_path");
 
         //设置InPhoto媒体数据用户存储的目录
-        String userPath = path + File.separator + user.getUserId() + File.separator;
+        String userPath = path + File.separator + user.getUserId();
 
         createDirectory(userPath);
 
@@ -176,7 +174,7 @@ public class ReceiveController {
                         if (!"".equals(fileName.trim())) {
 
                             // 设置文件的存储路径
-                            String picPath = userPath + category.getCategoryCode() + File.separator;
+                            String picPath = userPath + File.separator + category.getCategoryCode();
 
                             createDirectory(picPath);
 
@@ -245,7 +243,7 @@ public class ReceiveController {
                 }
 
                 //设置gif文件的存储路径
-                String gifDirPath = userPath + category.getCategoryCode() + File.separator;
+                String gifDirPath = userPath + File.separator + category.getCategoryCode();
 
                 createDirectory(gifDirPath);
 
@@ -291,6 +289,25 @@ public class ReceiveController {
 
             }
 
+            System.out.println(mediaData.toString());
+
+            MediaCodeEntity mediaCode = new MediaCodeEntity();
+            mediaCode.setCategoryId(category.getCategoryId());
+            mediaCode.setMediaCode(media_code);
+            mediaCode.setUserId(user.getUserId());
+            mediaCode.setMediaId(mediaData.getMediaId());
+
+            System.out.println(mediaCode.toString());
+
+            if (!judgeMediaCode(mediaCode)) {
+
+                result.put("success", false);
+                result.put("code", 108);
+                result.put("message", "验证码写入数据库中发生错误");
+                return result;
+
+            }
+
 // 判断数据总量是否超过用户购买量，超过则将时间最早的数据移到回收站中
             if (mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
                     user.getUserId(), category.getCategoryId(), MediaDataEntity.MEDIA_STATE_NORMAL) > userCategory.getMediaNumber()) {
@@ -309,12 +326,12 @@ public class ReceiveController {
             return result;
 
         } catch (Exception e) {
-
+            e.printStackTrace();
             result.put("success", false);
             result.put("code", 99);
             result.put("message", "发生未知错误，错误信息为：" + getErrorInfoFromException(e));
             return result;
-            
+
         }
     }
 }

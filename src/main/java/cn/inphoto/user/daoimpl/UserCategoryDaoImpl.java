@@ -15,14 +15,14 @@ import org.springframework.stereotype.Repository;
 public class UserCategoryDaoImpl extends SuperDao implements UserCategoryDao {
 
     @Override
-    public UserCategoryEntity findByUser_idAndCategory_id(Long user_category_id, Integer user_id, String user_category_state) {
+    public UserCategoryEntity findByUser_idAndCategory_id(Long user_id, Integer category_id, String user_category_state) {
         Session session = sessionFactory.openSession();
 
         Query query = session.createQuery(" from UserCategoryEntity where userId = ? and categoryId = ?  and userCategoryState = ?");
 
         query.setParameter(0, user_id);
 
-        query.setParameter(1, user_category_id);
+        query.setParameter(1, category_id);
 
         query.setParameter(2, user_category_state);
 

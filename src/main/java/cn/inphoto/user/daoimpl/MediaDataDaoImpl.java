@@ -47,6 +47,7 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
 
         try {
             session.save(mediaDataEntity);
+            System.out.println(mediaDataEntity.getMediaId());
             transaction.commit();
             flag = true;
         } catch (Exception e) {
@@ -55,11 +56,12 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
         } finally {
             session.close();
         }
+
         return flag;
     }
 
     @Override
-    public int countByUser_idAndCategory_idAndMedia_state(Long user_id, int category_id, String media_state) {
+    public long countByUser_idAndCategory_idAndMedia_state(Long user_id, int category_id, String media_state) {
         Session session = sessionFactory.openSession();
 
         Query query = session.createQuery(
@@ -71,7 +73,7 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
 
         query.setParameter(2, media_state);
 
-        return (int) query.uniqueResult();
+        return (Long) query.uniqueResult();
     }
 
     @Override

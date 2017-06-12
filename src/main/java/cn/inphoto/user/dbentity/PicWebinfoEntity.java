@@ -15,7 +15,7 @@ public class PicWebinfoEntity {
     public static final String PIC_WEB_INFO_STATE_PREVIEW = "1";
 
     private long picWebinfoId;
-    private int userId;
+    private long userId;
     private int categoryId;
     private String pageTitle;
     private String background;
@@ -24,6 +24,10 @@ public class PicWebinfoEntity {
     private Double pictureRight;
     private Double pictureBottom;
     private String picWebinfoState;
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
 
     @Id
     @Column(name = "pic_webinfo_id")
@@ -37,7 +41,7 @@ public class PicWebinfoEntity {
 
     @Basic
     @Column(name = "user_id")
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
@@ -151,7 +155,7 @@ public class PicWebinfoEntity {
     @Override
     public int hashCode() {
         int result = (int) (picWebinfoId ^ (picWebinfoId >>> 32));
-        result = 31 * result + userId;
+        result = 31 * result + (int) (userId ^ (userId >>> 32));
         result = 31 * result + categoryId;
         result = 31 * result + (pageTitle != null ? pageTitle.hashCode() : 0);
         result = 31 * result + (background != null ? background.hashCode() : 0);
