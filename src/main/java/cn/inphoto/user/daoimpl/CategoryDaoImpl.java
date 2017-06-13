@@ -22,6 +22,10 @@ public class CategoryDaoImpl extends SuperDao implements CategoryDao {
 
         query.setParameter(0, category_code);
 
-        return (CategoryEntity) query.uniqueResult();
+        CategoryEntity categoryEntity = (CategoryEntity) query.uniqueResult();
+
+        session.close();
+
+        return categoryEntity;
     }
 }

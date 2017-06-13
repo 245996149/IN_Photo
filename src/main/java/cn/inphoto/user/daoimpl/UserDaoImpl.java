@@ -22,7 +22,7 @@ public class UserDaoImpl extends SuperDao implements UserDao {
     @Override
     public UsersEntity findByUser_name(String user_name) {
 
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
 
         Query query = session.createQuery("from UsersEntity where userName=?");
 
@@ -34,7 +34,7 @@ public class UserDaoImpl extends SuperDao implements UserDao {
     @Override
     public UsersEntity findByUser_id(Long user_id) {
 
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
 
         Query query = session.createQuery("from UsersEntity where userId=?");
 

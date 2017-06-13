@@ -21,7 +21,7 @@ public class UserCategoryDaoImpl extends SuperDao implements UserCategoryDao {
 
     @Override
     public UserCategoryEntity findByUser_idAndCategory_id(Long user_id, Integer category_id, String user_category_state) {
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
 
         Query query = session.createQuery(" from UserCategoryEntity where userId = ? and categoryId = ?  and userCategoryState = ?");
 

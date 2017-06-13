@@ -21,7 +21,7 @@ public class MediaCodeDaoImpl extends SuperDao implements MediaCodeDao {
     @Override
     public MediaCodeEntity findByUser_idAndCategory_idAndMedia_code(Long user_id, Integer category_id, String media_code) {
 
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
 
         Query query = session.createQuery("from MediaCodeEntity where userId = ? and categoryId = ? and mediaCode = ?");
 
@@ -29,6 +29,10 @@ public class MediaCodeDaoImpl extends SuperDao implements MediaCodeDao {
         query.setParameter(1, category_id);
         query.setParameter(2, media_code);
 
-        return (MediaCodeEntity) query.uniqueResult();
+        MediaCodeEntity mediaCodeEntity = (MediaCodeEntity) query.uniqueResult();
+
+        session.close();
+
+        return mediaCodeEntity;
     }
 }

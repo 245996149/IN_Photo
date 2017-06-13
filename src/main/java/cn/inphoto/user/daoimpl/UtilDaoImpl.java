@@ -22,7 +22,7 @@ public class UtilDaoImpl extends SuperDao implements UtilDao {
 
         boolean flag = false;
 
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
 
         Transaction transaction = session.beginTransaction();
 
@@ -52,7 +52,7 @@ public class UtilDaoImpl extends SuperDao implements UtilDao {
 
         boolean flag = false;
 
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
 
         Transaction transaction = session.beginTransaction();
 

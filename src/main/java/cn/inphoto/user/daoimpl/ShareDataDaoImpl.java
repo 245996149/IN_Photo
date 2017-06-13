@@ -22,7 +22,7 @@ public class ShareDataDaoImpl extends SuperDao implements ShareDataDao {
     @Override
     public int countByTime(String beginTime, String endTime, String share_type) {
 
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
 
         Query query = session.createQuery("select count(*) from ShareDataEntity where shareType = ? and shareTime between ? and ?");
 

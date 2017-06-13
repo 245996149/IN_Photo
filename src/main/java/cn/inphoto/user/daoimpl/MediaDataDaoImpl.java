@@ -25,7 +25,7 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     @Override
     public List<MediaDataEntity> findByPage(TablePage tablePage) {
 
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
 
         Query query = session.createQuery(" from MediaDataEntity where userId = ? and categoryId = ? order by mediaId desc");
 
@@ -34,14 +34,17 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
         query.setFirstResult(tablePage.getBegin());
         query.setMaxResults(tablePage.getPageSize());
 
-        return query.list();
+        List<MediaDataEntity> mediaDataEntities =  query.list();
 
+        session.close();
+
+        return mediaDataEntities;
     }
 
 
     @Override
     public long countByUser_idAndCategory_idAndMedia_state(Long user_id, int category_id, String media_state) {
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
 
         Query query = session.createQuery(
                 "select count(*) from MediaDataEntity where userId = ? and categoryId = ? and mediaState = ?");
@@ -55,7 +58,7 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
 
     @Override
     public MediaDataEntity findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(Long user_id, int category_id, String media_state) {
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
 
         Query query = session.createQuery(
                 "from MediaDataEntity where userId = ? and categoryId = ? and mediaState = ? order by createTime");
@@ -65,14 +68,18 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
         query.setParameter(2, media_state);
         query.setMaxResults(1);
 
-        return (MediaDataEntity) query.uniqueResult();
+        MediaDataEntity mediaDataEntity = (MediaDataEntity) query.uniqueResult();
+
+        session.close();
+
+        return mediaDataEntity;
     }
 
 
     @Override
     public MediaDataEntity findByMedia_id(Long media_id) {
 
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
 
         Query query = session.createQuery("from MediaDataEntity where mediaId = ?");
 
