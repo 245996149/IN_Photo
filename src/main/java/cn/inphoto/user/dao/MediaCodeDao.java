@@ -8,10 +8,15 @@ import cn.inphoto.user.dbentity.UsersEntity;
  */
 public interface MediaCodeDao {
 
-    boolean saveMediaCode(MediaCodeEntity mediaCodeEntity);
 
-    boolean updateMediaCode(MediaCodeEntity mediaCodeEntity);
-
-    MediaCodeEntity findByUser_idAndCategory_idAndMedia_code(Long user_id,Integer category_id,String media_code);
+    /**
+     * 根据user_id、category_id、media_code(媒体验证码)查询媒体验证码对象
+     *
+     * @param user_id     用户id
+     * @param category_id 套餐系统id
+     * @param media_code  媒体验证码
+     * @return 媒体验证码对象
+     */
+    MediaCodeEntity findByUser_idAndCategory_idAndMedia_code(Long user_id, Integer category_id, String media_code);
 
 }

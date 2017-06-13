@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 登陆控制器
  * Created by kaxia on 2017/6/5.
  */
 @Controller
@@ -28,7 +29,7 @@ public class LoginController {
 
     @RequestMapping("/checkUser.do")
     @ResponseBody
-    public Map checkUser(String user_name, String password, HttpSession  session) {
+    public Map checkUser(String user_name, String password, HttpSession session) {
         Map<String, Object> result = new HashMap<>();
 
         if (user_name == null || password == null || "".equals(user_name) || "".equals(password)) {
@@ -37,7 +38,7 @@ public class LoginController {
             return result;
         }
 
-        UsersEntity usersEntity = userDao.searchByUser_name(user_name);
+        UsersEntity usersEntity = userDao.findByUser_name(user_name);
 
         if (!password.equals(usersEntity.getPassword())) {
             result.put("success", false);

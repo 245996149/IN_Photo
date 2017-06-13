@@ -9,6 +9,7 @@ import java.io.IOException;
 
 /**
  * Created by kaxia on 2017/6/13.
+ * log4j数据库过滤器
  */
 public class ResFilter implements Filter {
 
@@ -26,7 +27,6 @@ public class ResFilter implements Filter {
         try {
             filterChain.doFilter(servletRequest, servletResponse);
         } finally {
-            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
             MDC.clear();
         }
     }

@@ -16,45 +16,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MediaCodeDaoImpl extends SuperDao implements MediaCodeDao {
 
-    @Override
-    public boolean saveMediaCode(MediaCodeEntity mediaCodeEntity) {
 
-        boolean flag = false;
-
-        Session session = sessionFactory.openSession();
-
-        Transaction transaction = session.beginTransaction();
-
-        try {
-
-            session.save(mediaCodeEntity);
-            transaction.commit();
-            flag = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            transaction.rollback();
-        }
-        return flag;
-    }
-
-    @Override
-    public boolean updateMediaCode(MediaCodeEntity mediaCodeEntity) {
-        boolean flag = false;
-
-        Session session = sessionFactory.openSession();
-
-        Transaction transaction = session.beginTransaction();
-
-        try {
-            session.update(mediaCodeEntity);
-            transaction.commit();
-            flag = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            transaction.rollback();
-        }
-        return flag;
-    }
 
     @Override
     public MediaCodeEntity findByUser_idAndCategory_idAndMedia_code(Long user_id, Integer category_id, String media_code) {

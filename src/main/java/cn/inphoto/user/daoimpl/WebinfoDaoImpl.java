@@ -30,6 +30,7 @@ public class WebinfoDaoImpl extends SuperDao implements WebinfoDao {
 
     @Override
     public PicWebinfoEntity findPicByUser_idAndCategory_id(Long user_id, Integer category_id, String pic_web_info_state) {
+
         Session session = sessionFactory.openSession();
 
         Query query = session.createQuery("from PicWebinfoEntity where userId = ? and categoryId = ? and picWebinfoState = ?");

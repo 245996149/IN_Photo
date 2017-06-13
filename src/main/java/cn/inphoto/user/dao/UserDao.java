@@ -7,10 +7,21 @@ import cn.inphoto.user.dbentity.UsersEntity;
  */
 public interface UserDao {
 
-    UsersEntity searchByUser_name(String user_name);
+    /**
+     * 根据user_name查询用户对象
+     *
+     * @param user_name 用户名
+     * @return 用户对象
+     */
+    UsersEntity findByUser_name(String user_name);
 
-    UsersEntity searchByUser_id(Long user_id);
+    /**
+     * 根据user_id查询用户对象
+     *
+     * @param user_id 用户id号
+     * @return 用户对象
+     */
+    UsersEntity findByUser_id(Long user_id);
 
-    boolean addUser(UsersEntity usersEntity);
 
 }

@@ -12,11 +12,11 @@ public class GifUtil {
     /**
      * 将bufferedImage转化成GIF，背景透明
      *
-     * @param pic
-     * @param newPic
-     * @param second
-     * @param c
-     * @return
+     * @param pic 输入的bufferedImage数组
+     * @param newPic 输出的文件路径
+     * @param second gif间隔
+     * @param c 透明背景的颜色
+     * @return 是否合成成功
      */
     public static boolean bufferedImageToGif(BufferedImage[] pic, String newPic, int second, Color c) {
         try {
@@ -50,21 +50,21 @@ public class GifUtil {
     /**
      * 将bufferedImage转化成GIF
      *
-     * @param pic
-     * @param newPic
-     * @param second
-     * @return
+     * @param pic 输入的bufferedImage数组
+     * @param newPic 输出的文件路径
+     * @param second gif间隔
+     * @return 是否合成成功
      */
     public static boolean bufferedImageToGif(BufferedImage[] pic, String newPic, int second) {
         return bufferedImageToGif(pic, newPic, second, null);
     }
 
     /**
-     * 将两个bufferefImagewei合成为一个
+     * 将两个bufferefImage数组合成为一个
      *
      * @param bufferedImages1
      * @param bufferedImages2
-     * @return
+     * @return 合成后的bufferefImage数组
      */
     public static BufferedImage[] merageBufferedImageArray(BufferedImage[] bufferedImages1, BufferedImage[] bufferedImages2) {
         int b1 = bufferedImages1.length;

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 移动端控制器
  * Created by kaxia on 2017/6/13.
  */
 @Controller
@@ -54,7 +55,7 @@ public class MobileController {
         if (user_id == null || category_id == null) return MOBILE_404;
 
         // 查询user_id对应的用户
-        UsersEntity user = userDao.searchByUser_id(user_id);
+        UsersEntity user = userDao.findByUser_id(user_id);
 
         // 判断查询到的用户是否存在
         if (user == null) return MOBILE_404;
@@ -70,6 +71,7 @@ public class MobileController {
         CodeWebinfoEntity codeWebinfo = webinfoDao.findCodeByUser_idAndCategory_id(
                 user.getUserId(), userCategory.getCategoryId(), CodeWebinfoEntity.CODE_WEB_INFO_STATE_NORMAL);
 
+        // 输出日志
         MDC.put("user_id", user_id);
         MDC.put("category_id", category_id);
         logger.info("用户打开了user_id=" + user_id + "，category_id=" + category_id + "的提取页面");
@@ -104,6 +106,7 @@ public class MobileController {
 
         }
 
+        // 输出日志
         MDC.put("user_id", user_id);
         MDC.put("category_id", category_id);
         logger.info("用户验证了user_id=" + user_id + "，category_id=" + category_id + ",code=" + code + "的验证码，验证返回信息为：" + result.toString());
@@ -119,7 +122,7 @@ public class MobileController {
         if (user_id == null || category_id == null || media_id == null) return MOBILE_404;
 
         // 查询user_id对应的用户
-        UsersEntity user = userDao.searchByUser_id(user_id);
+        UsersEntity user = userDao.findByUser_id(user_id);
 
         // 判断查询到的用户是否存在
         if (user == null) return MOBILE_404;
@@ -141,6 +144,7 @@ public class MobileController {
         PicWebinfoEntity picWebinfo = webinfoDao.findPicByUser_idAndCategory_id(
                 user.getUserId(), userCategory.getCategoryId(), PicWebinfoEntity.PIC_WEB_INFO_STATE_NORMAL);
 
+        // 输出日志
         MDC.put("user_id", user_id);
         MDC.put("category_id", category_id);
         logger.info("用户打开了了user_id=" + user_id + "，category_id=" + category_id + ",media_id=" + media_id + "的展示页面");

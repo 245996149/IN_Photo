@@ -1,11 +1,9 @@
 package cn.inphoto.user.controller;
 
-import cn.inphoto.user.dao.CategoryDao;
-import cn.inphoto.user.dao.MediaDataDao;
-import cn.inphoto.user.dao.UserCategoryDao;
-import cn.inphoto.user.dao.UserDao;
+import cn.inphoto.user.dao.*;
 import cn.inphoto.user.dbentity.*;
 import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,6 +31,7 @@ import static cn.inphoto.user.util.picUtil.GifUtil.bufferedImageToGif;
 import static cn.inphoto.user.util.picUtil.GifUtil.merageBufferedImageArray;
 
 /**
+ * 文件上传控制器
  * Created by kaxia on 2017/6/6.
  */
 @Controller
@@ -40,6 +39,9 @@ import static cn.inphoto.user.util.picUtil.GifUtil.merageBufferedImageArray;
 public class ReceiveController {
 
     private Logger logger = Logger.getLogger(ReceiveController.class);
+
+    @Resource
+    UtilDao utilDao;
 
     @Resource
     UserDao userDao;
@@ -91,7 +93,7 @@ public class ReceiveController {
         }
 
         // 根据user_id查询user
-        UsersEntity user = userDao.searchByUser_id(user_id);
+        UsersEntity user = userDao.findByUser_id(user_id);
 
         if (user == null) {
 
@@ -118,6 +120,10 @@ public class ReceiveController {
 
         }
 
+        // 设置日志信息
+        MDC.put("user_id", user.getUserId());
+        MDC.put("category_id", category.getCategoryId());
+
         // 根据category_code、user_id查询用户有效期内的系统
         UserCategoryEntity userCategory =
                 userCategoryDao.findByUser_idAndCategory_id(
@@ -138,9 +144,8 @@ public class ReceiveController {
         // 获取配置文件中的存储数据的根目录
         String path = getConfigInfo("data_path");
 
-        //设置InPhoto媒体数据用户存储的目录
+        //设置InPhoto媒体数据用户存储的目录，判断路径是否存在，不存在则创建
         String userPath = path + File.separator + user.getUserId();
-
         createDirectory(userPath);
 
         try {
@@ -162,11 +167,11 @@ public class ReceiveController {
 
             }
 
-            //转换成多部分request
+            // 转换成多部分request
             MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-            //取得request中的所有文件名
+            // 取得request中的所有文件名
             Iterator<String> iter = multiRequest.getFileNames();
-
+            // 创建文件路径
             String filePath = null;
 
             // 判断该套餐是否需要合成GIF
@@ -174,19 +179,18 @@ public class ReceiveController {
 
                 // 不需要合成gif
                 while (iter.hasNext()) {
-                    //取得上传文件
+                    // 取得上传文件
                     MultipartFile file = multiRequest.getFile(iter.next());
                     if (file != null) {
-                        //取得当前上传文件的文件名称
+                        // 取得当前上传文件的文件名称
                         String fileName = file.getOriginalFilename();
 
                         System.out.println(fileName);
-                        //如果名称不为“”,说明该文件存在，否则说明该文件不存在
+                        // 如果名称不为“”,说明该文件存在，否则说明该文件不存在
                         if (!"".equals(fileName.trim())) {
 
-                            // 设置文件的存储路径
+                            // 设置文件的存储路径，判断路径是否存在，不存在则创建
                             String picPath = userPath + File.separator + category.getCategoryCode();
-
                             createDirectory(picPath);
 
                             // 获取图片尾缀
@@ -255,15 +259,15 @@ public class ReceiveController {
 
                 }
 
-                //设置gif文件的存储路径
+                //设置gif文件的存储路径，判断路径是否存在，不存在则创建
                 String gifDirPath = userPath + File.separator + category.getCategoryCode();
-
                 createDirectory(gifDirPath);
 
                 filePath = gifDirPath + File.separator + names + ".gif";
 
-                //判断合成gif是否需要透明背景
                 boolean createGif;
+
+                //判断合成gif是否需要透明背景
                 if (category.getGifTransparency() == 0) {
                     // 将接收到BufferedImage数组转换成普通GIF，并输出一个成功与否的Boolean
                     createGif = bufferedImageToGif(images, filePath, second);
@@ -295,7 +299,7 @@ public class ReceiveController {
             mediaData.setMediaState(MediaDataEntity.MEDIA_STATE_NORMAL);
 
             // 将媒体信息写入数据库
-            if (!mediaDataDao.addMediaData(mediaData)) {
+            if (!utilDao.save(mediaData)) {
 
                 result.put("success", false);
                 result.put("code", 107);
@@ -308,6 +312,7 @@ public class ReceiveController {
 
             System.out.println(mediaData.toString());
 
+            // 创建验证码对象用于更新、新增验证码表
             MediaCodeEntity mediaCode = new MediaCodeEntity();
             mediaCode.setCategoryId(category.getCategoryId());
             mediaCode.setMediaCode(media_code);
@@ -316,6 +321,7 @@ public class ReceiveController {
 
             System.out.println(mediaCode.toString());
 
+            // 更新、新增验证码表，并返回是否成功
             if (!judgeMediaCode(mediaCode)) {
 
                 result.put("success", false);
@@ -331,12 +337,15 @@ public class ReceiveController {
             if (mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
                     user.getUserId(), category.getCategoryId(), MediaDataEntity.MEDIA_STATE_NORMAL) > userCategory.getMediaNumber()) {
 
+                // 数据总量超过用户购买量，获取该用户改套餐系统正常状态下创建时间最早的一条媒体数据
                 MediaDataEntity mediaDataEntity = mediaDataDao.findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(
                         user.getUserId(), category.getCategoryId(), MediaDataEntity.MEDIA_STATE_NORMAL);
 
+                // 将该数据移到回收站
                 mediaDataEntity.setMediaState(MediaDataEntity.MEDIA_STATE_RECYCLE);
 
-                mediaDataDao.updateMediaData(mediaDataEntity);
+                // 更新该数据库中该数据信息
+                utilDao.update(mediaDataEntity);
             }
 
             result.put("success", true);
@@ -347,7 +356,7 @@ public class ReceiveController {
             return result;
 
         } catch (Exception e) {
-            e.printStackTrace();
+
             result.put("success", false);
             result.put("code", 99);
             result.put("message", "发生未知错误，错误信息为：" + getErrorInfoFromException(e));
