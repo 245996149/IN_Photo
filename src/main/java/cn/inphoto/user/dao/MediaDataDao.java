@@ -14,10 +14,19 @@ public interface MediaDataDao {
 
     boolean addMediaData(MediaDataEntity mediaDataEntity);
 
-    long countByUser_idAndCategory_idAndMedia_state(Long user_id, int category_id,String media_state);
+    long countByUser_idAndCategory_idAndMedia_state(Long user_id, int category_id, String media_state);
 
-    MediaDataEntity  findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(Long user_id, int category_id,String media_state);
+    /**
+     * 根据user_id、category_id、media_state查询时间最前的一个media
+     *
+     * @param user_id     用户id
+     * @param category_id 套餐系统id
+     * @param media_state 媒体状态
+     * @return
+     */
+    MediaDataEntity findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(Long user_id, int category_id, String media_state);
 
     boolean updateMediaData(MediaDataEntity mediaDataEntity);
 
+    MediaDataEntity findByMedia_id(Long media_id);
 }

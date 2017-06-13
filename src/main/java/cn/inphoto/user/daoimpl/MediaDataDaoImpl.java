@@ -115,4 +115,16 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
         return flag;
     }
 
+    @Override
+    public MediaDataEntity findByMedia_id(Long media_id) {
+
+        Session session = sessionFactory.openSession();
+
+        Query query = session.createQuery("from MediaDataEntity where mediaId = ?");
+
+        query.setParameter(0, media_id);
+
+        return (MediaDataEntity) query.uniqueResult();
+    }
+
 }

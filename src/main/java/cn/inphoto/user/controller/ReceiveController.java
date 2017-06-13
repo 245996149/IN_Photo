@@ -1,7 +1,11 @@
 package cn.inphoto.user.controller;
 
-import cn.inphoto.user.dao.*;
+import cn.inphoto.user.dao.CategoryDao;
+import cn.inphoto.user.dao.MediaDataDao;
+import cn.inphoto.user.dao.UserCategoryDao;
+import cn.inphoto.user.dao.UserDao;
 import cn.inphoto.user.dbentity.*;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,9 +28,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import static cn.inphoto.user.util.DBUtil.judgeMediaCode;
-import static cn.inphoto.user.util.DirUtil.createDirectory;
-import static cn.inphoto.user.util.DirUtil.getConfigInfo;
-import static cn.inphoto.user.util.DirUtil.getErrorInfoFromException;
+import static cn.inphoto.user.util.DirUtil.*;
 import static cn.inphoto.user.util.picUtil.GifUtil.bufferedImageToGif;
 import static cn.inphoto.user.util.picUtil.GifUtil.merageBufferedImageArray;
 
@@ -36,6 +38,8 @@ import static cn.inphoto.user.util.picUtil.GifUtil.merageBufferedImageArray;
 @Controller
 @RequestMapping("/receive")
 public class ReceiveController {
+
+    private Logger logger = Logger.getLogger(ReceiveController.class);
 
     @Resource
     UserDao userDao;
@@ -48,9 +52,6 @@ public class ReceiveController {
 
     @Resource
     MediaDataDao mediaDataDao;
-
-    @Resource
-    MediaCodeDao mediaCodeDao;
 
     /**
      * @param request
@@ -83,6 +84,8 @@ public class ReceiveController {
             result.put("success", false);
             result.put("code", 100);
             result.put("message", "userId、names、type三者为必填参数，不能为空");
+            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code="
+                    + category_code + "，返回的信息为：" + result.toString());
             return result;
 
         }
@@ -95,6 +98,8 @@ public class ReceiveController {
             result.put("success", false);
             result.put("code", 101);
             result.put("message", "未找到user_id=" + user_id + "对应的用户");
+            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code="
+                    + category_code + "，返回的信息为：" + result.toString());
             return result;
 
         }
@@ -107,6 +112,8 @@ public class ReceiveController {
             result.put("success", false);
             result.put("code", 102);
             result.put("message", "未找到category_code=" + category_code + "对应的系统");
+            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code="
+                    + category_code + "，返回的信息为：" + result.toString());
             return result;
 
         }
@@ -122,6 +129,8 @@ public class ReceiveController {
             result.put("success", false);
             result.put("code", 103);
             result.put("message", "user_id=" + user_id + "的用户没有category_code=" + category_code + "状态正常的系统");
+            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code="
+                    + category_code + "，返回的信息为：" + result.toString());
             return result;
 
         }
@@ -147,6 +156,8 @@ public class ReceiveController {
                 result.put("success", false);
                 result.put("code", 104);
                 result.put("message", "请求中未包含文件");
+                logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code="
+                        + category_code + "，返回的信息为：" + result.toString());
                 return result;
 
             }
@@ -228,6 +239,8 @@ public class ReceiveController {
                     result.put("success", false);
                     result.put("code", 105);
                     result.put("message", "文件接收未完整！");
+                    logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code="
+                            + category_code + "，返回的信息为：" + result.toString());
                     return result;
 
                 }
@@ -265,6 +278,8 @@ public class ReceiveController {
                     result.put("success", false);
                     result.put("code", 106);
                     result.put("message", "Gif文件转换失败");
+                    logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code=" + category_code
+                            + "，number=" + number + "，second=" + second + "返回的信息为：" + result.toString());
                     return result;
 
                 }
@@ -285,6 +300,8 @@ public class ReceiveController {
                 result.put("success", false);
                 result.put("code", 107);
                 result.put("message", "文件写入数据库时发生了错误，请稍后再试");
+                logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code=" + category_code +
+                        "，返回的信息为：" + result.toString());
                 return result;
 
             }
@@ -304,11 +321,13 @@ public class ReceiveController {
                 result.put("success", false);
                 result.put("code", 108);
                 result.put("message", "验证码写入数据库中发生错误");
+                logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code="
+                        + category_code + "，返回的信息为：" + result.toString());
                 return result;
 
             }
 
-// 判断数据总量是否超过用户购买量，超过则将时间最早的数据移到回收站中
+            // 判断数据总量是否超过用户购买量，超过则将时间最早的数据移到回收站中
             if (mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
                     user.getUserId(), category.getCategoryId(), MediaDataEntity.MEDIA_STATE_NORMAL) > userCategory.getMediaNumber()) {
 
@@ -323,6 +342,8 @@ public class ReceiveController {
             result.put("success", true);
             result.put("code", 200);
             result.put("message", "数据写入系统成功");
+            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code="
+                    + category_code + "，返回的信息为：" + result.toString());
             return result;
 
         } catch (Exception e) {
@@ -330,6 +351,8 @@ public class ReceiveController {
             result.put("success", false);
             result.put("code", 99);
             result.put("message", "发生未知错误，错误信息为：" + getErrorInfoFromException(e));
+            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code="
+                    + category_code + "，返回的信息为：" + result.toString());
             return result;
 
         }

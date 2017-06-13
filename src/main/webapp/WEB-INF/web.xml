@@ -31,4 +31,13 @@
         <url-pattern>*.do</url-pattern>
     </filter-mapping>
 
+    <filter>
+        <filter-name>set log4j MDC for log</filter-name>
+        <filter-class>cn.inphoto.user.interceptor.ResFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>set log4j MDC for log</filter-name>
+        <url-pattern>*.do</url-pattern>
+    </filter-mapping>
+
 </web-app>
