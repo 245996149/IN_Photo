@@ -21,6 +21,13 @@ public class UserController {
         return "user/index";
     }
 
+    @RequestMapping("/toTable.do")
+    public String toTable(Model model, HttpSession session) {
+        UsersEntity usersEntity = (UsersEntity) session.getAttribute("loginUser");
+        model.addAttribute("usersEntity", usersEntity);
+        return "user/table";
+    }
+
     @RequestMapping("/toCategory.do")
     public String toCategory() {
         return "user/category";

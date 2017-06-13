@@ -37,10 +37,6 @@ public class UtilDaoImpl extends SuperDao implements UtilDao {
             logger.info(getErrorInfoFromException(e));
             transaction.rollback();
 
-        } finally {
-
-            session.close();
-
         }
 
         return flag;
@@ -66,10 +62,6 @@ public class UtilDaoImpl extends SuperDao implements UtilDao {
 
             logger.info(getErrorInfoFromException(e));
             transaction.rollback();
-
-        } finally {
-
-            session.close();
 
         }
 

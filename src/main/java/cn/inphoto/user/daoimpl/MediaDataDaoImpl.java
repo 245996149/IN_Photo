@@ -34,11 +34,7 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
         query.setFirstResult(tablePage.getBegin());
         query.setMaxResults(tablePage.getPageSize());
 
-        List<MediaDataEntity> mediaDataEntities =  query.list();
-
-        session.close();
-
-        return mediaDataEntities;
+        return query.list();
     }
 
 
@@ -68,11 +64,7 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
         query.setParameter(2, media_state);
         query.setMaxResults(1);
 
-        MediaDataEntity mediaDataEntity = (MediaDataEntity) query.uniqueResult();
-
-        session.close();
-
-        return mediaDataEntity;
+        return (MediaDataEntity) query.uniqueResult();
     }
 
 

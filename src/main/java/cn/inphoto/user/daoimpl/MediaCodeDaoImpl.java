@@ -29,10 +29,6 @@ public class MediaCodeDaoImpl extends SuperDao implements MediaCodeDao {
         query.setParameter(1, category_id);
         query.setParameter(2, media_code);
 
-        MediaCodeEntity mediaCodeEntity = (MediaCodeEntity) query.uniqueResult();
-
-        session.close();
-
-        return mediaCodeEntity;
+        return (MediaCodeEntity) query.uniqueResult();
     }
 }

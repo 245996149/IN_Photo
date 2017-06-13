@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width,user-scalable=no">
 
-    <title>我们制造最美的笑容</title>
+    <title>${codeWebinfo.pageTitle}</title>
 
     <script src="${pageContext.request.contextPath}/js/jquery-3.2.1.js"></script>
 
@@ -14,9 +14,6 @@
         function check_code() {
 
             var code = $("#code").val();
-            var user_id = $("#user_id").val();
-            var category_id = $("#category_id").val();
-
             alert(code);
 
         }
@@ -28,7 +25,7 @@
 
 <div class="viewDiv">
 
-    <img src="${pageContext.request.contextPath}/images/mobile/code_default.png"
+    <img src="/mobile/openMedia.do?id=${codeWebinfo.codeWebinfoId}&type=3"
          style="width: 100%;height: auto;z-index: 0;">
 
     <div class="inputDiv">
@@ -36,13 +33,13 @@
     </div>
 
     <div class="buttonDiv" onclick="check_code();">
-        <img src="${pageContext.request.contextPath}/images/mobile/code_con.png"
+        <img src="/mobile/openMedia.do?id=${codeWebinfo.codeWebinfoId}&type=4"
              style="width: 100%;height: 100%"/>
     </div>
 
     <div style="display: none">
-        <input id="user_id" value="${userCategory.userId}"/>
-        <input id="category_id" value="${userCategory.categoryId}"/>
+        <input id="user_id" value="${codeWebinfo.userId}"/>
+        <input id="category_id" value="${codeWebinfo.categoryId}"/>
     </div>
 
 </div>
