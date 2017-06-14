@@ -107,7 +107,7 @@
     <div class="col-md-3">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">七日点击量</h3>
+                <h3 class="panel-title">七日内的点击量</h3>
             </div>
             <div class="panel-body">
                 <canvas id="click_7" width="400" height="200"></canvas>
@@ -117,7 +117,7 @@
     <div class="col-md-3">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">七日分享量</h3>
+                <h3 class="panel-title">七日内的分享量</h3>
             </div>
             <div class="panel-body">
                 <canvas id="share_7" width="400" height="200"></canvas>

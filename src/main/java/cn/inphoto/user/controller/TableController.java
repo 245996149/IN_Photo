@@ -93,9 +93,9 @@ public class TableController {
      * @param type        类型码
      * @return 七天内的统计数据
      */
-    @RequestMapping("/getSharData.do")
+    @RequestMapping("/getShareData.do")
     @ResponseBody
-    public Map[] getSharData(HttpSession session, int category_id, int type) {
+    public Map[] getShareData(HttpSession session, int category_id, int type) {
 
         UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
 

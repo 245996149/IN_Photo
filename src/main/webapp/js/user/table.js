@@ -4,7 +4,7 @@ function getClick_7() {
     var category_id = $("#category_id").val();
 
     $.post(
-        "getSharData.do",
+        "getShareData.do",
         {
             "category_id": category_id,
             "type": 1
@@ -24,7 +24,7 @@ function getClick_7() {
                 data: {
                     labels: labelsArr,
                     datasets: [{
-                        label: '# 点击量',
+                        label: '点击量',
                         data: dataArr,
                         backgroundColor: 'rgba(255, 99, 132, 0.2)',
                         borderColor: 'rgba(255,99,132,1)',
@@ -149,7 +149,7 @@ function getRecycleInfo() {
                 data: {
                     labels: ["该系统数据总数", "数据7天内过期数", "数据15天内过期数"],
                     datasets: [{
-                        label: "My First Dataset",
+                        label: "回收站数据过期情况",
                         data: data_arr,
                         backgroundColor: ["rgb(255, 99, 132)", "rgb(75, 192, 192)", "rgb(255, 205, 86)",]
                     }]
