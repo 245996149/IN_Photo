@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -24,8 +26,15 @@
     <script src="${pageContext.request.contextPath}/js/jquery-3.2.1.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+
+    <script src="${pageContext.request.contextPath}/js/user/table.js"></script>
+
 </head>
 <body style="padding-top: 70px;">
+
+<div style="display: none;">
+    <input type="text" id="category_id" value="${tablePage.category_id}">
+</div>
 
 <!-- 导航栏 -->
 <nav class="navbar navbar-default navbar-fixed-top">
@@ -59,13 +68,14 @@
                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                         aria-haspopup="true" aria-expanded="false">今日数据<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">点击量 <span class="badge">42</span></a></li>
-                        <li><a href="#">好友分享量 <span class="badge">100</span></a></li>
-                        <li><a href="#">朋友圈分享量 <span class="badge">100</span></a></li>
+                        <li><a href="#">点击量 <span class="badge">${sessionScope.click_num}</span></a></li>
+                        <li><a href="#">好友分享量 <span class="badge">${sessionScope.chats_num}</span></a></li>
+                        <li><a href="#">朋友圈分享量 <span class="badge">${sessionScope.moments_num}</span></a></li>
                     </ul>
                 </li>
                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                        aria-haspopup="true" aria-expanded="false">${usersEntity.userName}<span
+                                        aria-haspopup="true"
+                                        aria-expanded="false">${sessionScope.loginUser.userName}<span
                         class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="#">用户资料</a></li>
@@ -100,7 +110,7 @@
                 <h3 class="panel-title">七日点击量</h3>
             </div>
             <div class="panel-body">
-                <canvas id="myChart" width="400" height="200"></canvas>
+                <canvas id="click_7" width="400" height="200"></canvas>
             </div>
         </div>
     </div>
@@ -110,7 +120,7 @@
                 <h3 class="panel-title">七日分享量</h3>
             </div>
             <div class="panel-body">
-                <canvas id="myChart2" width="400" height="200"></canvas>
+                <canvas id="share_7" width="400" height="200"></canvas>
             </div>
         </div>
     </div>
@@ -120,7 +130,7 @@
                 <h3 class="panel-title">系统使用情况</h3>
             </div>
             <div class="panel-body">
-                <canvas id="myChart3" width="400" height="200"></canvas>
+                <canvas id="system_info" width="400" height="200"></canvas>
             </div>
         </div>
     </div>
@@ -130,7 +140,7 @@
                 <h3 class="panel-title">回收站数据过期情况</h3>
             </div>
             <div class="panel-body">
-                <canvas id="myChart4" width="400" height="200"></canvas>
+                <canvas id="recycle_info" width="400" height="200"></canvas>
             </div>
         </div>
     </div>
@@ -162,7 +172,7 @@
                         </td>
                         <td>缩略图</td>
                         <td>创建日期</td>
-                        <td>创建设备</td>
+                        <td>提取码</td>
                         <td>操作</td>
                     </tr>
                     </thead>
@@ -184,216 +194,31 @@
                             </div>
                         </td>
                     </tr>
-                    <tr>
-                        <td><input type="checkbox"><span>12345678934</span></td>
-                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
-                            <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
-                        </a></td>
-                        <td>2017-12-30 24:00:00</td>
-                        <td>123455</td>
-                        <td>
-                            <div class="btn-group-sm" role="group" aria-label="...">
-                                <button type="button" class="btn btn-danger">删除</button>
-                                <button type="button" class="btn btn-primary">查看</button>
-                                <button type="button" class="btn btn-info">下载</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"><span>12345678934</span></td>
-                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
-                            <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
-                        </a></td>
-                        <td>2017-12-30 24:00:00</td>
-                        <td>123455</td>
-                        <td>
-                            <div class="btn-group-sm" role="group" aria-label="...">
-                                <button type="button" class="btn btn-danger">删除</button>
-                                <button type="button" class="btn btn-primary">查看</button>
-                                <button type="button" class="btn btn-info">下载</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"><span>12345678934</span></td>
-                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
-                            <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
-                        </a></td>
-                        <td>2017-12-30 24:00:00</td>
-                        <td>123455</td>
-                        <td>
-                            <div class="btn-group-sm" role="group" aria-label="...">
-                                <button type="button" class="btn btn-danger">删除</button>
-                                <button type="button" class="btn btn-primary">查看</button>
-                                <button type="button" class="btn btn-info">下载</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"><span>12345678934</span></td>
-                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
-                            <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
-                        </a></td>
-                        <td>2017-12-30 24:00:00</td>
-                        <td>123455</td>
-                        <td>
-                            <div class="btn-group-sm" role="group" aria-label="...">
-                                <button type="button" class="btn btn-danger">删除</button>
-                                <button type="button" class="btn btn-primary">查看</button>
-                                <button type="button" class="btn btn-info">下载</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"><span>12345678934</span></td>
-                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
-                            <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
-                        </a></td>
-                        <td>2017-12-30 24:00:00</td>
-                        <td>123455</td>
-                        <td>
-                            <div class="btn-group-sm" role="group" aria-label="...">
-                                <button type="button" class="btn btn-danger">删除</button>
-                                <button type="button" class="btn btn-primary">查看</button>
-                                <button type="button" class="btn btn-info">下载</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"><span>12345678934</span></td>
-                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
-                            <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
-                        </a></td>
-                        <td>2017-12-30 24:00:00</td>
-                        <td>123455</td>
-                        <td>
-                            <div class="btn-group-sm" role="group" aria-label="...">
-                                <button type="button" class="btn btn-danger">删除</button>
-                                <button type="button" class="btn btn-primary">查看</button>
-                                <button type="button" class="btn btn-info">下载</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"><span>12345678934</span></td>
-                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
-                            <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
-                        </a></td>
-                        <td>2017-12-30 24:00:00</td>
-                        <td>123455</td>
-                        <td>
-                            <div class="btn-group-sm" role="group" aria-label="...">
-                                <button type="button" class="btn btn-danger">删除</button>
-                                <button type="button" class="btn btn-primary">查看</button>
-                                <button type="button" class="btn btn-info">下载</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"><span>12345678934</span></td>
-                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
-                            <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
-                        </a></td>
-                        <td>2017-12-30 24:00:00</td>
-                        <td>123455</td>
-                        <td>
-                            <div class="btn-group-sm" role="group" aria-label="...">
-                                <button type="button" class="btn btn-danger">删除</button>
-                                <button type="button" class="btn btn-primary">查看</button>
-                                <button type="button" class="btn btn-info">下载</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"><span>12345678934</span></td>
-                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
-                            <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
-                        </a></td>
-                        <td>2017-12-30 24:00:00</td>
-                        <td>123455</td>
-                        <td>
-                            <div class="btn-group-sm" role="group" aria-label="...">
-                                <button type="button" class="btn btn-danger">删除</button>
-                                <button type="button" class="btn btn-primary">查看</button>
-                                <button type="button" class="btn btn-info">下载</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"><span>12345678934</span></td>
-                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
-                            <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
-                        </a></td>
-                        <td>2017-12-30 24:00:00</td>
-                        <td>123455</td>
-                        <td>
-                            <div class="btn-group-sm" role="group" aria-label="...">
-                                <button type="button" class="btn btn-danger">删除</button>
-                                <button type="button" class="btn btn-primary">查看</button>
-                                <button type="button" class="btn btn-info">下载</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"><span>12345678934</span></td>
-                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
-                            <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
-                        </a></td>
-                        <td>2017-12-30 24:00:00</td>
-                        <td>123455</td>
-                        <td>
-                            <div class="btn-group-sm" role="group" aria-label="...">
-                                <button type="button" class="btn btn-danger">删除</button>
-                                <button type="button" class="btn btn-primary">查看</button>
-                                <button type="button" class="btn btn-info">下载</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"><span>12345678934</span></td>
-                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
-                            <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
-                        </a></td>
-                        <td>2017-12-30 24:00:00</td>
-                        <td>123455</td>
-                        <td>
-                            <div class="btn-group-sm" role="group" aria-label="...">
-                                <button type="button" class="btn btn-danger">删除</button>
-                                <button type="button" class="btn btn-primary">查看</button>
-                                <button type="button" class="btn btn-info">下载</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"><span>12345678934</span></td>
-                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
-                            <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
-                        </a></td>
-                        <td>2017-12-30 24:00:00</td>
-                        <td>123455</td>
-                        <td>
-                            <div class="btn-group-sm" role="group" aria-label="...">
-                                <button type="button" class="btn btn-danger">删除</button>
-                                <button type="button" class="btn btn-primary">查看</button>
-                                <button type="button" class="btn btn-info">下载</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"><span>12345678934</span></td>
-                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
-                            <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
-                        </a></td>
-                        <td>2017-12-30 24:00:00</td>
-                        <td>123455</td>
-                        <td>
-                            <div class="btn-group-sm" role="group" aria-label="...">
-                                <button type="button" class="btn btn-danger">删除</button>
-                                <button type="button" class="btn btn-primary">查看</button>
-                                <button type="button" class="btn btn-info">下载</button>
-                            </div>
-                        </td>
-                    </tr>
+                    <c:forEach items="${mediaDataList}" var="m">
+                        <tr>
+                            <td><input type="checkbox"><span>${m.mediaName}</span></td>
+                            <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
+                                <img src="getThumbnail.do?media_id=${m.mediaId}" alt="...">
+                            </a></td>
+                            <td><fmt:formatDate value="${m.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                            <td>
+                                <c:forEach items="${mediaCodeList}" var="mc">
+                                    <c:choose>
+                                        <c:when test="${mc.mediaId==m.mediaId}">
+                                            ${mc.mediaCode}
+                                        </c:when>
+                                    </c:choose>
+                                </c:forEach>
+                            </td>
+                            <td>
+                                <div class="btn-group-sm" role="group" aria-label="...">
+                                    <button type="button" class="btn btn-danger">删除</button>
+                                    <button type="button" class="btn btn-primary">查看</button>
+                                    <button type="button" class="btn btn-info">下载</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </c:forEach>
                     </tbody>
                     <tfoot>
                     <tr>
@@ -481,75 +306,12 @@
 <script src="${pageContext.request.contextPath}/js/Chart.js"></script>
 <script type="text/javascript">
 
-    var ctx = document.getElementById("myChart").getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-            datasets: [{
-                label: '# 点击量',
-                data: [12, 19, 3, 5, 2, 3],
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255,99,132,1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    });
-
-    var ctx2 = document.getElementById("myChart2").getContext('2d');
-    var myChart2 = new Chart(ctx2, {
-        type: 'line',
-        data: {
-            labels: ["January", "February", "March", "April", "May", "June", "July"],
-            datasets: [{
-                label: "分享到朋友圈",
-                data: [65, 59, 80, 81, 56, 55, 40],
-                fill: false,
-                borderColor: "rgb(75, 192, 192)",
-                lineTension: 0.1
-            }, {
-                label: "分享给好友",
-                data: [100, 44, 80, 88, 10, 27, 55],
-                fill: false,
-                borderColor: "rgb(255, 99, 132)",
-                lineTension: 0.1
-            }]
-        }, options: {}
-    });
-
-    var ctx3 = document.getElementById("myChart3").getContext('2d');
-    var myChart3 = new Chart(ctx3, {
-        type: 'doughnut',
-        data: {
-            labels: ["已使用", "剩余"],
-            datasets: [{
-                label: "My First Dataset",
-                data: [300, 100],
-                backgroundColor: ["rgb(255, 99, 132)", "rgb(54, 162, 235)"]
-            }]
-        }
-    });
-
-    var ctx4 = document.getElementById("myChart4").getContext('2d');
-    var myChart4 = new Chart(ctx4, {
-        type: 'polarArea',
-        data: {
-            labels: ["该系统数据总数", "数据7天内过期数", "数据15天内过期数"],
-            datasets: [{
-                label: "My First Dataset",
-                data: [100, 30, 44],
-                backgroundColor: ["rgb(255, 99, 132)", "rgb(75, 192, 192)", "rgb(255, 205, 86)",]
-            }]
-        }
+    $(function () {
+        /*加载数据表单*/
+        getClick_7();
+        getShare_7();
+        getSystemInfo();
+        getRecycleInfo();
     });
 
     $('.carousel').carousel({

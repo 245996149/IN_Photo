@@ -22,25 +22,27 @@ public class UserDaoImpl extends SuperDao implements UserDao {
     @Override
     public UsersEntity findByUser_name(String user_name) {
 
-        Session session = sessionFactory.getCurrentSession();
+        try (Session session = sessionFactory.openSession()) {
 
-        Query query = session.createQuery("from UsersEntity where userName=?");
+            Query query = session.createQuery("from UsersEntity where userName=?");
 
-        query.setParameter(0, user_name);
+            query.setParameter(0, user_name);
 
-        return (UsersEntity) query.uniqueResult();
+            return (UsersEntity) query.uniqueResult();
+        }
     }
 
     @Override
     public UsersEntity findByUser_id(Long user_id) {
 
-        Session session = sessionFactory.getCurrentSession();
+        try (Session session = sessionFactory.openSession()) {
 
-        Query query = session.createQuery("from UsersEntity where userId=?");
+            Query query = session.createQuery("from UsersEntity where userId=?");
 
-        query.setParameter(0, user_id);
+            query.setParameter(0, user_id);
 
-        return (UsersEntity) query.uniqueResult();
+            return (UsersEntity) query.uniqueResult();
+        }
     }
 
 

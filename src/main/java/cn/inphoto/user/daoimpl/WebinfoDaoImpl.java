@@ -18,62 +18,67 @@ public class WebinfoDaoImpl extends SuperDao implements WebinfoDao {
     @Override
     public CodeWebinfoEntity findCodeByUser_idAndCategory_id(Long user_id, Integer category_id, String code_web_info_state) {
 
-        Session session = sessionFactory.getCurrentSession();
+        try (Session session = sessionFactory.openSession()) {
 
-        Query query = session.createQuery("from CodeWebinfoEntity where userId = ? and categoryId = ? and codeWebinfoState = ?");
+            Query query = session.createQuery("from CodeWebinfoEntity where userId = ? and categoryId = ? and codeWebinfoState = ?");
 
-        query.setParameter(0, user_id);
-        query.setParameter(1, category_id);
-        query.setParameter(2, code_web_info_state);
+            query.setParameter(0, user_id);
+            query.setParameter(1, category_id);
+            query.setParameter(2, code_web_info_state);
 
-        return (CodeWebinfoEntity) query.uniqueResult();
+            return (CodeWebinfoEntity) query.uniqueResult();
+        }
     }
 
     @Override
     public PicWebinfoEntity findPicByUser_idAndCategory_id(Long user_id, Integer category_id, String pic_web_info_state) {
 
-        Session session = sessionFactory.getCurrentSession();
+        try (Session session = sessionFactory.openSession()) {
 
-        Query query = session.createQuery("from PicWebinfoEntity where userId = ? and categoryId = ? and picWebinfoState = ?");
+            Query query = session.createQuery("from PicWebinfoEntity where userId = ? and categoryId = ? and picWebinfoState = ?");
 
-        query.setParameter(0, user_id);
-        query.setParameter(1, category_id);
-        query.setParameter(2, pic_web_info_state);
+            query.setParameter(0, user_id);
+            query.setParameter(1, category_id);
+            query.setParameter(2, pic_web_info_state);
 
-        return (PicWebinfoEntity) query.uniqueResult();
+            return (PicWebinfoEntity) query.uniqueResult();
+        }
     }
 
     @Override
     public PicWebinfoEntity findPicByPic_id(Long pic_web_info_id) {
 
-        Session session = sessionFactory.getCurrentSession();
+        try (Session session = sessionFactory.openSession()) {
 
-        Query query = session.createQuery("from PicWebinfoEntity where picWebinfoId = ? ");
+            Query query = session.createQuery("from PicWebinfoEntity where picWebinfoId = ? ");
 
-        query.setParameter(0, pic_web_info_id);
+            query.setParameter(0, pic_web_info_id);
 
-        return (PicWebinfoEntity) query.uniqueResult();
+            return (PicWebinfoEntity) query.uniqueResult();
+        }
     }
 
     @Override
     public CodeWebinfoEntity findCodeByCode_id(Long code_web_info_id) {
-        Session session = sessionFactory.getCurrentSession();
+        try (Session session = sessionFactory.openSession()) {
 
-        Query query = session.createQuery("from CodeWebinfoEntity where codeWebinfoId= ? ");
+            Query query = session.createQuery("from CodeWebinfoEntity where codeWebinfoId= ? ");
 
-        query.setParameter(0, code_web_info_id);
+            query.setParameter(0, code_web_info_id);
 
-        return (CodeWebinfoEntity) query.uniqueResult();
+            return (CodeWebinfoEntity) query.uniqueResult();
+        }
     }
 
     @Override
     public ShareInfoEntity findShareByShare_id(Long share_info_id) {
-        Session session = sessionFactory.getCurrentSession();
+        try (Session session = sessionFactory.openSession()) {
 
-        Query query = session.createQuery("from ShareInfoEntity where shareInfoId = ? ");
+            Query query = session.createQuery("from ShareInfoEntity where shareInfoId = ? ");
 
-        query.setParameter(0, share_info_id);
+            query.setParameter(0, share_info_id);
 
-        return (ShareInfoEntity) query.uniqueResult();
+            return (ShareInfoEntity) query.uniqueResult();
+        }
     }
 }

@@ -3,6 +3,8 @@ package cn.inphoto.user.dao;
 import cn.inphoto.user.dbentity.MediaCodeEntity;
 import cn.inphoto.user.dbentity.UsersEntity;
 
+import java.util.List;
+
 /**
  * Created by kaxia on 2017/6/5.
  */
@@ -18,5 +20,14 @@ public interface MediaCodeDao {
      * @return 媒体验证码对象
      */
     MediaCodeEntity findByUser_idAndCategory_idAndMedia_code(Long user_id, Integer category_id, String media_code);
+
+    /**
+     * 根据user_id、category_id查询所有媒体验证码对象
+     *
+     * @param user_id     用户id
+     * @param category_id 套餐系统id
+     * @return 媒体验证码对象List
+     */
+    List<MediaCodeEntity> findByUser_idAndCategory_id(Long user_id, Integer category_id);
 
 }

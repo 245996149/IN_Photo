@@ -145,4 +145,18 @@ public class UserCategoryEntity {
         result = 31 * result + (userCategoryState != null ? userCategoryState.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "UserCategoryEntity{" +
+                "userCategoryId=" + userCategoryId +
+                ", userId=" + userId +
+                ", payTime=" + payTime +
+                ", beginTime=" + beginTime +
+                ", endTime=" + endTime +
+                ", mediaNumber=" + mediaNumber +
+                ", categoryId=" + categoryId +
+                ", userCategoryState='" + userCategoryState + '\'' +
+                '}';
+    }
 }

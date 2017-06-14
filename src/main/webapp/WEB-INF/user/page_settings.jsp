@@ -65,13 +65,14 @@
                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                         aria-haspopup="true" aria-expanded="false">今日数据<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">点击量 <span class="badge">42</span></a></li>
-                        <li><a href="#">好友分享量 <span class="badge">100</span></a></li>
-                        <li><a href="#">朋友圈分享量 <span class="badge">100</span></a></li>
+                        <li><a href="#">点击量 <span class="badge">${sessionScope.click_num}</span></a></li>
+                        <li><a href="#">好友分享量 <span class="badge">${sessionScope.chats_num}</span></a></li>
+                        <li><a href="#">朋友圈分享量 <span class="badge">${sessionScope.moments_num}</span></a></li>
                     </ul>
                 </li>
                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                        aria-haspopup="true" aria-expanded="false">${usersEntity.userName}<span
+                                        aria-haspopup="true"
+                                        aria-expanded="false">${sessionScope.loginUser.userName}<span
                         class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="#">用户资料</a></li>

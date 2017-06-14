@@ -5,23 +5,23 @@ package cn.inphoto.user.dbentity.page;
  */
 public class TablePage extends Page {
 
-    private Integer user_id;
+    private Long user_id;
 
-    private Long category_id;
+    private int category_id;
 
-    public Integer getUser_id() {
+    public Long getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(Integer user_id) {
+    public void setUser_id(Long user_id) {
         this.user_id = user_id;
     }
 
-    public Long getCategory_id() {
+    public int getCategory_id() {
         return category_id;
     }
 
-    public void setCategory_id(Long category_id) {
+    public void setCategory_id(int category_id) {
         this.category_id = category_id;
     }
 
@@ -30,6 +30,6 @@ public class TablePage extends Page {
         return "TablePage{" +
                 "user_id=" + user_id +
                 ", category_id=" + category_id +
-                '}';
+                "};" + super.toString();
     }
 }

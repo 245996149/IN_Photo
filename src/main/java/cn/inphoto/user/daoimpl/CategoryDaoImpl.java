@@ -16,12 +16,13 @@ public class CategoryDaoImpl extends SuperDao implements CategoryDao {
     @Override
     public CategoryEntity findByCategory_code(String category_code) {
 
-        Session session = sessionFactory.openSession();
+        try (Session session = sessionFactory.openSession()) {
 
-        Query query = session.createQuery("from CategoryEntity where categoryCode = ?");
+            Query query = session.createQuery("from CategoryEntity where categoryCode = ?");
 
-        query.setParameter(0, category_code);
+            query.setParameter(0, category_code);
 
-        return (CategoryEntity) query.uniqueResult();
+            return (CategoryEntity) query.uniqueResult();
+        }
     }
 }

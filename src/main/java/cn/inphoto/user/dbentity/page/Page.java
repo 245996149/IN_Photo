@@ -8,7 +8,7 @@ public class Page {
     // 当前页，默认为1
     private int currentPage = 1;
     // 最大行数，默认为5
-    private int pageSize = 50;
+    private int pageSize = 20;
 
     // sql所需的分业条件，由已知条件计算得到
     // 分页的起点(currentPage - 1) * pageSize

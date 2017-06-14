@@ -22,7 +22,7 @@ public class UtilDaoImpl extends SuperDao implements UtilDao {
 
         boolean flag = false;
 
-        Session session = sessionFactory.getCurrentSession();
+        Session session = sessionFactory.openSession();
 
         Transaction transaction = session.beginTransaction();
 
@@ -37,6 +37,10 @@ public class UtilDaoImpl extends SuperDao implements UtilDao {
             logger.info(getErrorInfoFromException(e));
             transaction.rollback();
 
+        }finally {
+
+            session.close();
+
         }
 
         return flag;
@@ -48,7 +52,7 @@ public class UtilDaoImpl extends SuperDao implements UtilDao {
 
         boolean flag = false;
 
-        Session session = sessionFactory.getCurrentSession();
+        Session session = sessionFactory.openSession();
 
         Transaction transaction = session.beginTransaction();
 
@@ -62,6 +66,10 @@ public class UtilDaoImpl extends SuperDao implements UtilDao {
 
             logger.info(getErrorInfoFromException(e));
             transaction.rollback();
+
+        }finally {
+
+            session.close();
 
         }
 
