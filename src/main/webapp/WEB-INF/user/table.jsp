@@ -10,6 +10,9 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <title>Table</title>
 
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="${pageContext.request.contextPath}/js/jquery-3.2.1.js"></script>
+
     <!-- Bootstrap -->
     <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
 
@@ -22,8 +25,6 @@
     <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="${pageContext.request.contextPath}/js/jquery-3.2.1.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 
@@ -157,16 +158,16 @@
                 <table class="table table-bordered table-hover dataTable" style="font-size: x-large;">
                     <thead>
                     <tr>
-                        <td><input type="checkbox"><span>媒体编号</span>
-                            <div class="dropdown">
+                        <td><input type="checkbox" id="media_data_all_checkbox" onclick="DoCheck();"><span>媒体编号</span>
+                            <div class="dropdown" id="media_data_operation" style="display: none;">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
                                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                     操作
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                    <li><a href="#">下载</a></li>
-                                    <li><a href="#">移到回收站</a></li>
+                                    <li><a href="javascript:void(0);" onclick="downloadImgZip();">下载</a></li>
+                                    <li><a href="javascript:void(0);" onclick="delete_batch()">移到回收站</a></li>
                                 </ul>
                             </div>
                         </td>
@@ -177,28 +178,30 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td><input type="checkbox"><span>12345678934</span></td>
-                        <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
-                            <img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">
-                        </a></td>
-                        <td>2017-12-30 24:00:00</td>
-                        <td>123455</td>
-                        <td>
-                            <div class="btn-group-sm" role="group" aria-label="...">
-                                <button type="button" class="btn btn-danger">删除</button>
-                                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
-                                        data-target="#myModal">查看
-                                </button>
-                                <button type="button" class="btn btn-info">下载</button>
-                            </div>
-                        </td>
-                    </tr>
+                    <%--<tr>--%>
+                    <%--<td><input type="checkbox"><span>12345678934</span></td>--%>
+                    <%--<td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">--%>
+                    <%--<img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">--%>
+                    <%--</a></td>--%>
+                    <%--<td>2017-12-30 24:00:00</td>--%>
+                    <%--<td>123455</td>--%>
+                    <%--<td>--%>
+                    <%--<div class="btn-group-sm" role="group" aria-label="...">--%>
+                    <%--<button type="button" class="btn btn-danger">删除</button>--%>
+                    <%--<button type="button" class="btn btn-primary btn-lg">查看--%>
+                    <%--</button>--%>
+                    <%--<button type="button" class="btn btn-info">下载</button>--%>
+                    <%--</div>--%>
+                    <%--</td>--%>
+                    <%--</tr>--%>
                     <c:forEach items="${mediaDataList}" var="m">
                         <tr>
-                            <td><input type="checkbox"><span>${m.mediaName}</span></td>
-                            <td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">
-                                <img src="getThumbnail.do?media_id=${m.mediaId}" alt="...">
+                            <td><input type="checkbox" name="media_data_checkbox"
+                                       onclick="checkAllCheck();" value="${m.mediaId}"><span>${m.mediaName}</span></td>
+                            <td width="5%"><a href="javascript:void(0);" onclick="open_modal(${m.mediaName});"
+                                              class="thumbnail" style="margin-bottom:auto;">
+                                <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1&thumbnail=true"
+                                     alt="...">
                             </a></td>
                             <td><fmt:formatDate value="${m.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                             <td>
@@ -213,8 +216,11 @@
                             <td>
                                 <div class="btn-group-sm" role="group" aria-label="...">
                                     <button type="button" class="btn btn-danger">删除</button>
-                                    <button type="button" class="btn btn-primary">查看</button>
-                                    <button type="button" class="btn btn-info">下载</button>
+                                    <button type="button" class="btn btn-primary" onclick="open_modal(${m.mediaName});">
+                                        查看
+                                    </button>
+                                    <button type="button" class="btn btn-info" onclick="download(${m.mediaId});">下载
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -258,30 +264,31 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                <h4 class="modal-title" id="myModalLabel">当前页媒体数据查看</h4>
             </div>
             <div class="modal-body">
                 <div id="myCarousel" class="carousel">
                     <!-- 轮播（Carousel）指标 -->
                     <ol class="carousel-indicators">
-                        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-                        <li data-target="#myCarousel" data-slide-to="1"></li>
-                        <li data-target="#myCarousel" data-slide-to="2"></li>
+                        <%--<li data-target="#myCarousel" data-slide-to="0" class="active"></li>--%>
+                        <c:forEach items="${mediaDataList}" var="m" varStatus="mv">
+                            <li data-target="#myCarousel" data-slide-to="${mv.index}"
+                                data-media-name="${m.mediaName}"></li>
+                        </c:forEach>
                     </ol>
                     <!-- 轮播（Carousel）项目 -->
                     <div class="carousel-inner" id="carousel-object">
-                        <div class="item active">
-                            <img src="${pageContext.request.contextPath}/images/1.jpg" alt="First slide">
-                            <div class="carousel-caption">1</div>
-                        </div>
-                        <div class="item">
-                            <img src="${pageContext.request.contextPath}/images/2.jpg" alt="Second slide">
-                            <div class="carousel-caption">2</div>
-                        </div>
-                        <div class="item">
-                            <img src="${pageContext.request.contextPath}/images/3.jpg" alt="Third slide">
-                            <div class="carousel-caption">3</div>
-                        </div>
+                        <%--<div class="item active">--%>
+                        <%--<img src="${pageContext.request.contextPath}/images/1.jpg" alt="First slide">--%>
+                        <%--<div class="carousel-caption">1</div>--%>
+                        <%--</div>--%>
+                        <c:forEach items="${mediaDataList}" var="m">
+                            <div class="item" data-media-name="${m.mediaName}">
+                                <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1"
+                                     alt="${m.mediaId}">
+                                <div class="carousel-caption">${m.mediaName}</div>
+                            </div>
+                        </c:forEach>
                     </div>
                     <!-- 轮播（Carousel）导航 -->
                     <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
@@ -295,8 +302,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger">删除</button>
-                <button type="button" class="btn btn-primary" onclick="download();">下载</button>
+                <button type="button" class="btn btn-danger" onclick="modal_delete();">删除</button>
+                <button type="button" class="btn btn-primary" onclick="modal_download();">下载</button>
             </div>
         </div>
     </div>
@@ -318,11 +325,6 @@
         interval: false
     });
 
-    /*测试选择*/
-    function download() {
-        var carousel_obj = $("#carousel-object .active div");
-        alert(carousel_obj.text());
-    }
 </script>
 
 </body>

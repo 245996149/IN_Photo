@@ -7,6 +7,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 import static cn.inphoto.user.util.DirUtil.getErrorInfoFromException;
 
 /**
@@ -37,7 +39,7 @@ public class UtilDaoImpl extends SuperDao implements UtilDao {
             logger.info(getErrorInfoFromException(e));
             transaction.rollback();
 
-        }finally {
+        } finally {
 
             session.close();
 
@@ -67,7 +69,7 @@ public class UtilDaoImpl extends SuperDao implements UtilDao {
             logger.info(getErrorInfoFromException(e));
             transaction.rollback();
 
-        }finally {
+        } finally {
 
             session.close();
 
@@ -76,4 +78,6 @@ public class UtilDaoImpl extends SuperDao implements UtilDao {
         return flag;
 
     }
+
+
 }

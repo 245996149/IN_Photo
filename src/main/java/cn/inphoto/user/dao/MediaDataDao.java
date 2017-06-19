@@ -19,7 +19,6 @@ public interface MediaDataDao {
      */
     List<MediaDataEntity> findByPage(TablePage tablePage);
 
-
     /**
      * 根据user_id、category_id、media_state统计总数
      *
@@ -50,7 +49,6 @@ public interface MediaDataDao {
      */
     MediaDataEntity findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(Long user_id, int category_id, String media_state);
 
-
     /**
      * 根据media_id查询媒体对象
      *
@@ -58,4 +56,20 @@ public interface MediaDataDao {
      * @return 媒体对象
      */
     MediaDataEntity findByMedia_id(Long media_id);
+
+    /**
+     * 根据media_id查询多个媒体对象
+     *
+     * @param media_ids 媒体id队列
+     * @return 媒体对象
+     */
+    List<MediaDataEntity> findByMedia_ids(List<Long> media_ids);
+
+    /**
+     * 向数据库中更新多个对象
+     *
+     * @param mediaDataList 对象队列
+     * @return 返回是否成功
+     */
+    boolean updateMediaList(List<MediaDataEntity> mediaDataList);
 }

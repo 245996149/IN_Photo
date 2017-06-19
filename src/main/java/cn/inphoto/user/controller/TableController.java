@@ -1,12 +1,10 @@
 package cn.inphoto.user.controller;
 
-import cn.inphoto.user.dao.MediaCodeDao;
-import cn.inphoto.user.dao.MediaDataDao;
-import cn.inphoto.user.dao.ShareDataDao;
-import cn.inphoto.user.dao.UserCategoryDao;
+import cn.inphoto.user.dao.*;
 import cn.inphoto.user.dbentity.*;
 import cn.inphoto.user.dbentity.page.TablePage;
 import net.coobird.thumbnailator.Thumbnails;
+import net.sf.json.JSONArray;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +39,9 @@ public class TableController {
     @Resource
     ShareDataDao shareDataDao;
 
+    @Resource
+    UtilDao utilDao;
+
     /**
      * @param model
      * @param session
@@ -54,6 +55,8 @@ public class TableController {
         tablePage.setUser_id(usersEntity.getUserId());
 
         tablePage.setRows(mediaDataDao.countByUser_idAndCategory_idAndMedia_state(usersEntity.getUserId(), tablePage.getCategory_id(), MediaDataEntity.MEDIA_STATE_NORMAL));
+
+        tablePage.setMedia_state(MediaDataEntity.MEDIA_STATE_NORMAL);
 
         List<MediaDataEntity> mediaDataList = mediaDataDao.findByPage(tablePage);
 
@@ -69,21 +72,6 @@ public class TableController {
         return "user/table";
     }
 
-    /**
-     * 根据媒体对象id，查询媒体对象并将其缩放到100px
-     *
-     * @param response 返回
-     * @param media_id 媒体数据id号
-     * @throws IOException
-     */
-    @RequestMapping("/getThumbnail.do")
-    public void getThumbnail(HttpServletResponse response, Long media_id) throws IOException {
-
-        MediaDataEntity mediaData = mediaDataDao.findByMedia_id(media_id);
-
-        Thumbnails.of(new File(mediaData.getFilePath())).size(100, 100).toOutputStream(response.getOutputStream());
-
-    }
 
     /**
      * 根据user_id、category_id、type获取七天内type类型对应的数据
@@ -271,6 +259,82 @@ public class TableController {
 
         return result;
 
+    }
+
+    /**
+     * 将媒体数据移动到回收站中
+     *
+     * @param media_id
+     * @return
+     */
+    @RequestMapping("/deleteMediaData.do")
+    @ResponseBody
+    public Map deleteMediaData(Long media_id) {
+
+        // 创建返回的数组
+        Map<String, Object> result = new HashMap<>();
+
+        // 查找media_id对应的mediaData
+        MediaDataEntity mediaData = mediaDataDao.findByMedia_id(media_id);
+
+        mediaData.setMediaState(MediaDataEntity.MEDIA_STATE_RECYCLE);
+
+        if (!utilDao.update(mediaData)) {
+
+            result.put("success", false);
+            result.put("message", "媒体数据删除失败，请稍后再试");
+            return result;
+
+        }
+
+        result.put("success", true);
+        result.put("message", "已经将媒体数据移动到回收站中，数据有30天的缓存状态，30天后将完全删除;");
+        return result;
+
+    }
+
+
+    /**
+     * 将多个媒体数据移动到回收站中
+     *
+     * @param media_id_list 媒体数据ID队列
+     * @return
+     */
+    @RequestMapping("/deleteMediaDataList.do")
+    @ResponseBody
+    public Map deleteMediaDataList(String media_id_list) {
+
+        Map<String, Object> result = new HashMap<>();
+
+        // 将接收到的数组转换为JSONArray
+        JSONArray jsonArray = new JSONArray(media_id_list);
+
+        // 创建用于查询的media_ids队列
+        List<Long> media_ids = new ArrayList<>();
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            media_ids.add(jsonArray.getLong(i));
+        }
+
+        // 加载数据库中的对象
+        List<MediaDataEntity> mediaDataList = mediaDataDao.findByMedia_ids(media_ids);
+
+        for (MediaDataEntity m : mediaDataList
+                ) {
+            m.setMediaState(MediaDataEntity.MEDIA_STATE_RECYCLE);
+        }
+
+        if (!mediaDataDao.updateMediaList(mediaDataList)) {
+
+            result.put("success", false);
+            result.put("message", "更新失败，请稍后再试！");
+            return result;
+
+        }
+
+        result.put("success", true);
+        result.put("message", "更新成功！");
+        return result;
     }
 
 }

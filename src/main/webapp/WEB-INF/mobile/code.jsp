@@ -25,7 +25,7 @@
 
 <div class="viewDiv">
 
-    <img src="/mobile/openMedia.do?id=${codeWebinfo.codeWebinfoId}&type=3"
+    <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${codeWebinfo.codeWebinfoId}&type=3"
          style="width: 100%;height: auto;z-index: 0;">
 
     <div class="inputDiv">
@@ -33,7 +33,7 @@
     </div>
 
     <div class="buttonDiv" onclick="check_code();">
-        <img src="/mobile/openMedia.do?id=${codeWebinfo.codeWebinfoId}&type=4"
+        <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${codeWebinfo.codeWebinfoId}&type=4"
              style="width: 100%;height: 100%"/>
     </div>
 

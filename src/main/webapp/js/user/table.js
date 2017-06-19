@@ -53,7 +53,7 @@ function getShare_7() {
     var category_id = $("#category_id").val();
 
     $.post(
-        "getSharData.do",
+        "getShareData.do",
         {
             "category_id": category_id,
             "type": 2
@@ -157,5 +157,174 @@ function getRecycleInfo() {
             });
 
         });
+
+}
+
+/*打开model*/
+function open_modal(mediaName) {
+
+    var ol = $("#myCarousel ol li");
+    var carousel = $("#carousel-object div");
+
+    for (var i = 0; i < ol.length; i++) {
+
+        if (mediaName == $(ol[i]).attr("data-media-name")) {
+
+            $(ol[i]).addClass("active");
+
+            for (var i = 0; i < carousel.length; i++) {
+
+                if (mediaName == $(carousel[i]).attr("data-media-name")) {
+
+                    $(carousel[i]).addClass("active");
+
+                } else {
+
+                    $(carousel[i]).removeClass("active");
+
+                }
+
+            }
+
+        } else {
+
+            $(ol[i]).removeClass("active");
+
+        }
+
+    }
+
+    $('#myModal').modal('show');
+
+}
+
+/*判断顶部checkbox逻辑*/
+function DoCheck() {
+    var media_data_checkbox = document.getElementsByName("media_data_checkbox");
+    if (document.getElementById("media_data_all_checkbox").checked == true) {
+        for (var i = 0; i < media_data_checkbox.length; i++) {
+            media_data_checkbox[i].checked = true;
+        }
+        $("#media_data_operation").show();
+    } else {
+        for (var i = 0; i < media_data_checkbox.length; i++) {
+            media_data_checkbox[i].checked = false;
+        }
+        $("#media_data_operation").hide();
+    }
+}
+
+/*判断其他checkbox逻辑*/
+function checkAllCheck() {
+    var media_data_checkbox = document.getElementsByName("media_data_checkbox");
+    for (var i = 0; i < media_data_checkbox.length - 1; i++) {
+        if (media_data_checkbox[i].checked != media_data_checkbox[i + 1].checked) {
+            document.getElementById("media_data_all_checkbox").checked = false;
+            $("#media_data_operation").show();
+            return;
+        }
+    }
+    if (media_data_checkbox[0].checked == true) {
+        document.getElementById("media_data_all_checkbox").checked = true;
+        $("#media_data_operation").show();
+    } else {
+        document.getElementById("media_data_all_checkbox").checked = false;
+        $("#media_data_operation").hide();
+    }
+}
+
+/*modal中的下载按钮的下载逻辑*/
+function modal_download() {
+
+    var carousel_obj = $("#carousel-object .active img");
+
+    download(carousel_obj.attr("alt"));
+
+}
+
+/*页面中的下载按钮的下载逻辑*/
+function download(id) {
+
+    window.location.href = "/IN_Photo/get/getMedia.do?id=" + id + "&type=1&download=true";
+
+}
+
+/*批量下载按钮的下载逻辑*/
+function downloadImgZip() {
+
+    if (!confirm("批量下载需要打包，打包时间由媒体数据量决定，请耐心等候")) {
+        return;
+    }
+
+    var media_data_checkbox = document.getElementsByName("media_data_checkbox");
+    var _list = [];
+    var _list_num = 0;
+    for (var i = 0; i < media_data_checkbox.length; i++) {
+        if (media_data_checkbox[i].checked == true) {
+            _list[_list_num] = media_data_checkbox[i].value;
+            _list_num++;
+        }
+    }
+    location.href = "/IN_Photo/get/getMedias.do?media_id_list=" + JSON.stringify(_list);
+
+}
+
+/*modal中的删除媒体*/
+function modal_delete() {
+
+    var carousel_obj = $("#carousel-object .active img");
+
+    delete_media(carousel_obj.attr("alt"));
+}
+
+/*页面中的删除媒体*/
+function delete_media(id) {
+
+    if (!confirm("请确认将文件移入到回收站中，回收站中有30天的缓存时间，超过30天，系统将会彻底清理文件")) {
+        return;
+    }
+
+    $.post(
+        "deleteMediaData.do",
+        {"media_id": id},
+        function (res) {
+            if (res.success) {
+                alert(res.message);
+                window.location.reload();
+            } else {
+                alert(res.message);
+            }
+        }
+    )
+}
+
+function delete_batch() {
+
+    if (!confirm("请确认将这些文件移入到回收站中，回收站中有30天的缓存时间，超过30天，系统将会彻底清理文件")) {
+        return;
+    }
+
+    var media_data_checkbox = document.getElementsByName("media_data_checkbox");
+    var _list = [];
+    var _list_num = 0;
+    for (var i = 0; i < media_data_checkbox.length; i++) {
+        if (media_data_checkbox[i].checked == true) {
+            _list[_list_num] = media_data_checkbox[i].value;
+            _list_num++;
+        }
+    }
+
+    $.post(
+        "deleteMediaDataList.do",
+        {"media_id_list": JSON.stringify(_list)},
+        function (res) {
+            if (res.success) {
+                alert(res.message);
+                window.location.reload();
+            } else {
+                alert(res.message);
+            }
+        }
+    )
 
 }

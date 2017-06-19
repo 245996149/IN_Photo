@@ -9,6 +9,8 @@ public class TablePage extends Page {
 
     private int category_id;
 
+    private String media_state;
+
     public Long getUser_id() {
         return user_id;
     }
@@ -25,11 +27,20 @@ public class TablePage extends Page {
         this.category_id = category_id;
     }
 
+    public String getMedia_state() {
+        return media_state;
+    }
+
+    public void setMedia_state(String media_state) {
+        this.media_state = media_state;
+    }
+
     @Override
     public String toString() {
         return "TablePage{" +
                 "user_id=" + user_id +
                 ", category_id=" + category_id +
-                "};" + super.toString();
+                ", media_state='" + media_state + '\'' +
+                '}';
     }
 }
