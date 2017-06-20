@@ -65,8 +65,6 @@
         var password = $("#inputPassword").val();
         var error_message = $("#error_message");
 
-        //alert("user_name = " + user_name + " password = " + password);
-
         $.post(
             "checkUser.do",
             {

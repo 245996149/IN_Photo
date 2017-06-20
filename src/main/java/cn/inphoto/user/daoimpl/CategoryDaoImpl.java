@@ -7,6 +7,8 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Created by kaxia on 2017/6/5.
  */
@@ -18,11 +20,23 @@ public class CategoryDaoImpl extends SuperDao implements CategoryDao {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from CategoryEntity where categoryCode = ?");
+            Query query = session.createQuery("from CategoryEntity where categoryCode = :category_code");
 
-            query.setParameter(0, category_code);
+            query.setParameter("category_code", category_code);
 
             return (CategoryEntity) query.uniqueResult();
         }
+    }
+
+    @Override
+    public List<CategoryEntity> findAll() {
+
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery("from CategoryEntity");
+
+            return query.list();
+        }
+
     }
 }

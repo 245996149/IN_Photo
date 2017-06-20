@@ -41,6 +41,6 @@ public class TablePage extends Page {
                 "user_id=" + user_id +
                 ", category_id=" + category_id +
                 ", media_state='" + media_state + '\'' +
-                '}';
+                '}' + super.toString();
     }
 }

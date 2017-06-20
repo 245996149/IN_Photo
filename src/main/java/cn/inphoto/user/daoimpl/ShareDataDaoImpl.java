@@ -2,16 +2,12 @@ package cn.inphoto.user.daoimpl;
 
 import cn.inphoto.user.dao.ShareDataDao;
 import cn.inphoto.user.dao.SuperDao;
-import cn.inphoto.user.dbentity.ShareDataEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
-
-import static cn.inphoto.user.util.DirUtil.getErrorInfoFromException;
 
 /**
  * Created by kaxia on 2017/6/5.
@@ -26,12 +22,13 @@ public class ShareDataDaoImpl extends SuperDao implements ShareDataDao {
         try (Session session = sessionFactory.openSession()) {
 
             Query query = session.createQuery(
-                    "select count(*) from ShareDataEntity where userId = ?  and shareType = ? and shareTime between ? and ?");
+                    "select count(*) from ShareDataEntity where userId = :user_id  and shareType = :share_type and " +
+                            "shareTime between :beginTime and :endTime");
 
-            query.setParameter(0, user_id);
-            query.setParameter(1, share_type);
-            query.setParameter(2, beginTime);
-            query.setParameter(3, endTime);
+            query.setParameter("user_id", user_id);
+            query.setParameter("share_type", share_type);
+            query.setParameter("beginTime", beginTime);
+            query.setParameter("endTime", endTime);
 
             return ((Long) query.uniqueResult()).intValue();
 
@@ -44,13 +41,14 @@ public class ShareDataDaoImpl extends SuperDao implements ShareDataDao {
         try (Session session = sessionFactory.openSession()) {
 
             Query query = session.createQuery(
-                    "select count(*) from ShareDataEntity where userId = ? and categoryId = ? and shareType = ? and shareTime between ? and ?");
+                    "select count(*) from ShareDataEntity where userId = :user_id and categoryId = :category_id and shareType = :share_type and " +
+                            "shareTime between :beginTime and :endTime");
 
-            query.setParameter(0, user_id);
-            query.setParameter(1, category_id);
-            query.setParameter(2, share_type);
-            query.setParameter(3, beginTime);
-            query.setParameter(4, endTime);
+            query.setParameter("category_id", category_id);
+            query.setParameter("user_id", user_id);
+            query.setParameter("share_type", share_type);
+            query.setParameter("beginTime", beginTime);
+            query.setParameter("endTime", endTime);
 
             return ((Long) query.uniqueResult()).intValue();
 

@@ -2,6 +2,8 @@ package cn.inphoto.user.dao;
 
 import cn.inphoto.user.dbentity.CategoryEntity;
 
+import java.util.List;
+
 /**
  * Created by kaxia on 2017/6/12.
  */
@@ -14,5 +16,11 @@ public interface CategoryDao {
      * @return
      */
     CategoryEntity findByCategory_code(String category_code);
+
+    /**
+     * 查询系统中所有的套餐系统
+     * @return 套餐系统队列
+     */
+    List<CategoryEntity> findAll();
 
 }

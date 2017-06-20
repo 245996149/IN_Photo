@@ -21,11 +21,11 @@ public class MediaCodeDaoImpl extends SuperDao implements MediaCodeDao {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from MediaCodeEntity where userId = ? and categoryId = ? and mediaCode = ?");
+            Query query = session.createQuery("from MediaCodeEntity where userId = :user_id and categoryId = :category_id and mediaCode = :media_code");
 
-            query.setParameter(0, user_id);
-            query.setParameter(1, category_id);
-            query.setParameter(2, media_code);
+            query.setParameter("user_id", user_id);
+            query.setParameter("category_id", category_id);
+            query.setParameter("media_code", media_code);
 
             return (MediaCodeEntity) query.uniqueResult();
         }
@@ -36,10 +36,10 @@ public class MediaCodeDaoImpl extends SuperDao implements MediaCodeDao {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from MediaCodeEntity where userId = ? and categoryId = ? ");
+            Query query = session.createQuery("from MediaCodeEntity where userId = :user_id and categoryId = :category_id ");
 
-            query.setParameter(0, user_id);
-            query.setParameter(1, category_id);
+            query.setParameter("user_id", user_id);
+            query.setParameter("category_id", category_id);
 
             return query.list();
         }

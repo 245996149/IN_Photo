@@ -27,7 +27,7 @@ public interface MediaDataDao {
      * @param media_state 媒体书记状态
      * @return 统计数据
      */
-    int countByUser_idAndCategory_idAndMedia_state(Long user_id, int category_id, String media_state);
+    int countByUser_idAndCategory_idAndMedia_state(Long user_id, Integer category_id, String media_state);
 
     /**
      * 根据user_id、category_id、media_state统计总数
@@ -37,7 +37,7 @@ public interface MediaDataDao {
      * @param media_state 媒体书记状态
      * @return 统计数据
      */
-    int countByUser_idAndCategory_idAndMedia_state(Long user_id, int category_id, Date beginTime, Date endTime, String media_state);
+    int countByUser_idAndCategory_idAndMedia_state(Long user_id, Integer category_id, Date beginTime, Date endTime, String media_state);
 
     /**
      * 根据user_id、category_id、media_state查询时间最前的一个media

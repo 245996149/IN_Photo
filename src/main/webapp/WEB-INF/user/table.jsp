@@ -37,59 +37,8 @@
     <input type="text" id="category_id" value="${tablePage.category_id}">
 </div>
 
-<!-- 导航栏 -->
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false"><span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button>
-            <a class="navbar-brand" href="#">IN Photo</a></div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li><a href="#">首页 </a></li>
-                <li><a href="#">套餐管理</a></li>
-                <li class="dropdown active"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                               aria-haspopup="true" aria-expanded="false">数据管理<span
-                        class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">A系统</a></li>
-                        <li><a href="#">B系统</a></li>
-                        <li><a href="#">C系统</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">回收站</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">页面设置</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                        aria-haspopup="true" aria-expanded="false">今日数据<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">点击量 <span class="badge">${sessionScope.click_num}</span></a></li>
-                        <li><a href="#">好友分享量 <span class="badge">${sessionScope.chats_num}</span></a></li>
-                        <li><a href="#">朋友圈分享量 <span class="badge">${sessionScope.moments_num}</span></a></li>
-                    </ul>
-                </li>
-                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                        aria-haspopup="true"
-                                        aria-expanded="false">${sessionScope.loginUser.userName}<span
-                        class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">用户资料</a></li>
-                        <li><a href="#">安全设置</a></li>
-                        <li><a href="#">退出</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>
-    <!-- /.container-fluid -->
-</nav>
+<%-- 导航栏 --%>
+<jsp:include page="/WEB-INF/user/menu.jsp"/>
 
 <%-- 开始 --%>
 
@@ -215,7 +164,7 @@
                             </td>
                             <td>
                                 <div class="btn-group-sm" role="group" aria-label="...">
-                                    <button type="button" class="btn btn-danger">删除</button>
+                                    <button type="button" class="btn btn-danger" onclick="delete_media(${m.mediaId});">删除</button>
                                     <button type="button" class="btn btn-primary" onclick="open_modal(${m.mediaName});">
                                         查看
                                     </button>
@@ -231,21 +180,100 @@
                         <td colspan="5" style="text-align: center;">
                             <nav aria-label="Page navigation">
                                 <ul class="pagination">
-                                    <li class="disabled">
-                                        <a href="#" aria-label="Previous">
-                                            <span aria-hidden="true">&laquo;</span>
-                                        </a>
-                                    </li>
-                                    <li class="active"><a href="#">1</a></li>
-                                    <li><a href="#">2</a></li>
-                                    <li><a href="#">3</a></li>
-                                    <li><a href="#">4</a></li>
-                                    <li><a href="#">5</a></li>
-                                    <li>
-                                        <a href="#" aria-label="Next">
-                                            <span aria-hidden="true">&raquo;</span>
-                                        </a>
-                                    </li>
+                                    <c:choose>
+                                        <c:when test="${tablePage.currentPage==1}">
+                                            <li class="disabled">
+                                                <a href="javascript:void(0);" aria-label="Previous">
+                                                    <span aria-hidden="true">&laquo;</span>
+                                                </a>
+                                            </li>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <li>
+                                                <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${tablePage.currentPage-1}"
+                                                   aria-label="Previous">
+                                                    <span aria-hidden="true">&laquo;</span>
+                                                </a>
+                                            </li>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <c:choose>
+                                        <c:when test="${tablePage.totalPage<11}">
+                                            <c:forEach begin="1" end="${tablePage.totalPage}" var="i">
+                                                <c:choose>
+                                                    <c:when test="${i==tablePage.currentPage}">
+                                                        <li class="active"><a href="javascript:void(0);">${i}</a></li>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <li>
+                                                            <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
+                                                        </li>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:when test="${tablePage.totalPage>10 && tablePage.currentPage<6}">
+                                            <c:forEach begin="1" end="10" var="i">
+                                                <c:choose>
+                                                    <c:when test="${i==tablePage.currentPage}">
+                                                        <li class="active"><a href="javascript:void(0);">${i}</a></li>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <li>
+                                                            <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
+                                                        </li>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:when test="${tablePage.totalPage>10 && tablePage.currentPage<(tablePage.totalPage-1)}">
+                                            <c:forEach begin="${tablePage.currentPage-4}"
+                                                       end="${tablePage.currentPage+5}" var="i">
+                                                <c:choose>
+                                                    <c:when test="${i==tablePage.currentPage}">
+                                                        <li class="active"><a href="javascript:void(0);">${i}</a></li>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <li>
+                                                            <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
+                                                        </li>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:when test="${tablePage.totalPage>10 && tablePage.currentPage>(tablePage.totalPage-5)}">
+                                            <c:forEach begin="${tablePage.totalPage-10}" end="${tablePage.totalPage}"
+                                                       var="i">
+                                                <c:choose>
+                                                    <c:when test="${i==tablePage.currentPage}">
+                                                        <li class="active"><a href="javascript:void(0);">${i}</a></li>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <li>
+                                                            <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
+                                                        </li>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+                                        </c:when>
+                                    </c:choose>
+                                    <c:choose>
+                                        <c:when test="${tablePage.currentPage==tablePage.totalPage}">
+                                            <li class="disabled">
+                                                <a href="javascript:void(0);" aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                            </li>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <li>
+                                                <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${tablePage.currentPage+1}"
+                                                aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                            </li>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </ul>
                             </nav>
                         </td>

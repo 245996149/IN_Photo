@@ -14,10 +14,23 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/user")
 public class UserController {
 
+    /*首页简码*/
+    public static int INDEX_CODE = 1;
+    /*套餐管理简码*/
+    public static int CATEGORY_CODE = 2;
+    /*数据管理简码*/
+    public static int TABLE_CODE = 3;
+    /*页面设置简码*/
+    public static int PAGESETTINGS_CODE = 4;
+    /*用户选项简码*/
+    public static int USER_CODE = 0;
+
+
     @RequestMapping("/index.do")
     public String index(Model model, HttpSession session) {
         UsersEntity usersEntity = (UsersEntity) session.getAttribute("loginUser");
         model.addAttribute("usersEntity", usersEntity);
+        session.setAttribute("nav_code", UserController.INDEX_CODE);
         return "user/index";
     }
 

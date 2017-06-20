@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -58,6 +59,8 @@ public class TableController {
 
         tablePage.setMedia_state(MediaDataEntity.MEDIA_STATE_NORMAL);
 
+        System.out.println(tablePage.toString());
+
         List<MediaDataEntity> mediaDataList = mediaDataDao.findByPage(tablePage);
 
         List<MediaCodeEntity> mediaCodeList = mediaCodeDao.findByUser_idAndCategory_id(usersEntity.getUserId(), tablePage.getCategory_id());
@@ -66,12 +69,47 @@ public class TableController {
         model.addAttribute("mediaCodeList", mediaCodeList);
         model.addAttribute("tablePage", tablePage);
 
-        // 查询今日数据并写入session
-        selectTodayData(session, usersEntity);
+        session.setAttribute("nav_code", UserController.TABLE_CODE);
 
         return "user/table";
     }
 
+    @RequestMapping("/toRecycle.do")
+    public String toRecycle(Model model, HttpSession session, TablePage tablePage) {
+
+        UsersEntity usersEntity = (UsersEntity) session.getAttribute("loginUser");
+
+        tablePage.setUser_id(usersEntity.getUserId());
+
+        tablePage.setRows(mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
+                usersEntity.getUserId(), null, MediaDataEntity.MEDIA_STATE_RECYCLE));
+
+        tablePage.setMedia_state(MediaDataEntity.MEDIA_STATE_RECYCLE);
+
+        List<MediaDataEntity> mediaDataList = mediaDataDao.findByPage(tablePage);
+
+        Map<Long, Long> tempMap = new HashMap<>();
+
+        Calendar calendarNow = Calendar.getInstance();
+
+        Calendar calendarTemp = Calendar.getInstance();
+
+        for (MediaDataEntity m : mediaDataList
+                ) {
+            calendarTemp.setTime(m.getOverTime());
+            long diffDays = (calendarTemp.getTimeInMillis() - calendarNow.getTimeInMillis()) / (1000 * 60 * 60 * 24);
+            tempMap.put(m.getMediaId(), diffDays + 1);
+        }
+
+        model.addAttribute("mediaDataList", mediaDataList);
+        model.addAttribute("tablePage", tablePage);
+        model.addAttribute("tempMap", tempMap);
+
+        session.setAttribute("nav_code", UserController.TABLE_CODE);
+
+        return "user/recycle";
+
+    }
 
     /**
      * 根据user_id、category_id、type获取七天内type类型对应的数据
@@ -193,12 +231,12 @@ public class TableController {
         // 计算用户该套餐系统内状态为张昌的媒体数据的数量
         int media_num = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(user.getUserId(), category_id, MediaDataEntity.MEDIA_STATE_NORMAL);
 
-        System.out.println(userCategory);
+        // System.out.println(userCategory);
 
         result.put("use", media_num);
         result.put("remaining", (userCategory.getMediaNumber() - media_num));
 
-        System.out.println(result.get("remaining"));
+        // System.out.println(result.get("remaining"));
 
         return result;
 
@@ -262,6 +300,62 @@ public class TableController {
     }
 
     /**
+     * 获取回收站媒体数据过期情况信息
+     *
+     * @param session session
+     * @return 回收站媒体数据过期情况信息
+     */
+    @RequestMapping("/getRecycleInfoTotal.do")
+    @ResponseBody
+    public Map getRecycleInfoTotal(HttpSession session) {
+
+        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
+
+        // 创建返回的数组
+        Map<String, Object> result = new HashMap<>();
+
+        // 创建日历对象
+        Calendar calendar = Calendar.getInstance();
+
+        // 给日历对象设置时间
+        calendar.setTime(new Date());
+
+        // 从日历中创建Data对象
+        Date begin = calendar.getTime();
+
+        // 将日历设置都七天之后
+        calendar.add(Calendar.DATE, 7);
+
+        // 从日历中创建Data对象
+        Date end = calendar.getTime();
+
+        // 查询回收站中该套餐系统的总数
+        int recycle_total = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
+                user.getUserId(), null, MediaDataEntity.MEDIA_STATE_RECYCLE);
+
+        // 查询回收站中该套餐系统的7天内过期的媒体数
+        int recycle_7 = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
+                user.getUserId(), null, begin, end, MediaDataEntity.MEDIA_STATE_RECYCLE);
+
+        // 将日历设置都15天之后
+        calendar.add(Calendar.DATE, 8);
+
+        // end对象重新设置为15天之后
+        end = calendar.getTime();
+
+        // 查询回收站中该套餐系统的15天内过期的媒体数
+        int recycle_15 = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
+                user.getUserId(), null, begin, end, MediaDataEntity.MEDIA_STATE_RECYCLE);
+
+        result.put("recycle_total", recycle_total);
+        result.put("recycle_7", recycle_7);
+        result.put("recycle_15", recycle_15);
+
+        return result;
+
+    }
+
+    /**
      * 将媒体数据移动到回收站中
      *
      * @param media_id
@@ -277,7 +371,16 @@ public class TableController {
         // 查找media_id对应的mediaData
         MediaDataEntity mediaData = mediaDataDao.findByMedia_id(media_id);
 
+        Date date = new Date();
+
         mediaData.setMediaState(MediaDataEntity.MEDIA_STATE_RECYCLE);
+        mediaData.setDeleteTime(new Timestamp((date.getTime())));
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DATE, 30);
+
+        mediaData.setOverTime(new Timestamp(calendar.getTimeInMillis()));
 
         if (!utilDao.update(mediaData)) {
 
@@ -319,9 +422,17 @@ public class TableController {
         // 加载数据库中的对象
         List<MediaDataEntity> mediaDataList = mediaDataDao.findByMedia_ids(media_ids);
 
+        Date date = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DATE, 30);
+
         for (MediaDataEntity m : mediaDataList
                 ) {
             m.setMediaState(MediaDataEntity.MEDIA_STATE_RECYCLE);
+            m.setDeleteTime(new Timestamp(date.getTime()));
+            m.setOverTime(new Timestamp(calendar.getTimeInMillis()));
         }
 
         if (!mediaDataDao.updateMediaList(mediaDataList)) {

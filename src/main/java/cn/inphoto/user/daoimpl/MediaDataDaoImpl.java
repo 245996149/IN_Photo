@@ -28,11 +28,22 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery(" from MediaDataEntity where userId = ? and categoryId = ? and mediaState = ? order by mediaId desc");
+            Query query = null;
+
+            // 判断是否有category_id参数
+            if (tablePage.getCategory_id() == 0) {
+
+                query = session.createQuery(" from MediaDataEntity where userId = ? and mediaState = ? order by deleteTime desc");
+
+            } else {
+
+                query = session.createQuery(" from MediaDataEntity where userId = ? and mediaState = ? and categoryId = ? order by mediaId desc");
+                query.setParameter(2, tablePage.getCategory_id());
+            }
 
             query.setParameter(0, tablePage.getUser_id());
-            query.setParameter(1, tablePage.getCategory_id());
-            query.setParameter(2, tablePage.getMedia_state());
+            query.setParameter(1, tablePage.getMedia_state());
+
             query.setFirstResult(tablePage.getBegin());
             query.setMaxResults(tablePage.getPageSize());
 
@@ -41,32 +52,51 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     }
 
     @Override
-    public int countByUser_idAndCategory_idAndMedia_state(Long user_id, int category_id, String media_state) {
+    public int countByUser_idAndCategory_idAndMedia_state(Long user_id, Integer category_id, String media_state) {
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery(
-                    "select count(*) from MediaDataEntity where userId = ? and categoryId = ? and mediaState = ?");
+            Query query = null;
+
+            // 判断是否有category_id参数
+            if (category_id == null) {
+                query = session.createQuery(
+                        "select count(*) from MediaDataEntity where userId = ?  and mediaState = ?");
+            } else {
+                query = session.createQuery(
+                        "select count(*) from MediaDataEntity where userId = ? and mediaState = ? and categoryId = ?");
+                query.setParameter(2, category_id);
+            }
 
             query.setParameter(0, user_id);
-            query.setParameter(1, category_id);
-            query.setParameter(2, media_state);
+            query.setParameter(1, media_state);
 
             return ((Long) query.uniqueResult()).intValue();
         }
     }
 
     @Override
-    public int countByUser_idAndCategory_idAndMedia_state(Long user_id, int category_id, Date beginTime, Date endTime, String media_state) {
+    public int countByUser_idAndCategory_idAndMedia_state(Long user_id, Integer category_id, Date beginTime, Date endTime, String media_state) {
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery(
-                    "select count(*) from MediaDataEntity where userId = ? and categoryId = ? and mediaState = ? and overTime between ? and ?");
+            Query query = null;
 
-            query.setParameter(0, user_id);
-            query.setParameter(1, category_id);
-            query.setParameter(2, media_state);
-            query.setParameter(3, beginTime);
-            query.setParameter(4, endTime);
+            if (category_id == null) {
+                query = session.createQuery(
+                        "select count(*) from MediaDataEntity where userId = :user_id  and mediaState = :media_state and" +
+                                " overTime between :beginTime and :endTime");
+
+            } else {
+                query = session.createQuery(
+                        "select count(*) from MediaDataEntity where" +
+                                " userId = :user_id  and mediaState = :media_state and categoryId = :category_id and " +
+                                "overTime between :beginTime and :endTime ");
+                query.setParameter("category_id", category_id);
+            }
+
+            query.setParameter("user_id", user_id);
+            query.setParameter("media_state", media_state);
+            query.setParameter("beginTime", beginTime);
+            query.setParameter("endTime", endTime);
 
             return ((Long) query.uniqueResult()).intValue();
         }
@@ -77,11 +107,11 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
         try (Session session = sessionFactory.openSession()) {
 
             Query query = session.createQuery(
-                    "from MediaDataEntity where userId = ? and categoryId = ? and mediaState = ? order by createTime");
+                    "from MediaDataEntity where userId = :user_id  and mediaState = :media_state and categoryId = :category_id order by createTime");
 
-            query.setParameter(0, user_id);
-            query.setParameter(1, category_id);
-            query.setParameter(2, media_state);
+            query.setParameter("category_id", category_id);
+            query.setParameter("user_id", user_id);
+            query.setParameter("media_state", media_state);
             query.setMaxResults(1);
 
             return (MediaDataEntity) query.uniqueResult();

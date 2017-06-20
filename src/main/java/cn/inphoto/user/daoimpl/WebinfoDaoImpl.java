@@ -20,11 +20,12 @@ public class WebinfoDaoImpl extends SuperDao implements WebinfoDao {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from CodeWebinfoEntity where userId = ? and categoryId = ? and codeWebinfoState = ?");
+            Query query = session.createQuery("from CodeWebinfoEntity where userId = :user_id and categoryId = :category_id and " +
+                    "codeWebinfoState = :code_web_info_state");
 
-            query.setParameter(0, user_id);
-            query.setParameter(1, category_id);
-            query.setParameter(2, code_web_info_state);
+            query.setParameter("user_id", user_id);
+            query.setParameter("category_id", category_id);
+            query.setParameter("code_web_info_state", code_web_info_state);
 
             return (CodeWebinfoEntity) query.uniqueResult();
         }
@@ -35,11 +36,12 @@ public class WebinfoDaoImpl extends SuperDao implements WebinfoDao {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from PicWebinfoEntity where userId = ? and categoryId = ? and picWebinfoState = ?");
+            Query query = session.createQuery("from PicWebinfoEntity where userId = :user_id and categoryId = :category_id and" +
+                    " picWebinfoState = :pic_web_info_state");
 
-            query.setParameter(0, user_id);
-            query.setParameter(1, category_id);
-            query.setParameter(2, pic_web_info_state);
+            query.setParameter("user_id", user_id);
+            query.setParameter("category_id", category_id);
+            query.setParameter("pic_web_info_state", pic_web_info_state);
 
             return (PicWebinfoEntity) query.uniqueResult();
         }
@@ -50,9 +52,9 @@ public class WebinfoDaoImpl extends SuperDao implements WebinfoDao {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from PicWebinfoEntity where picWebinfoId = ? ");
+            Query query = session.createQuery("from PicWebinfoEntity where picWebinfoId = :pic_web_info_id ");
 
-            query.setParameter(0, pic_web_info_id);
+            query.setParameter("pic_web_info_id", pic_web_info_id);
 
             return (PicWebinfoEntity) query.uniqueResult();
         }
@@ -62,9 +64,9 @@ public class WebinfoDaoImpl extends SuperDao implements WebinfoDao {
     public CodeWebinfoEntity findCodeByCode_id(Long code_web_info_id) {
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from CodeWebinfoEntity where codeWebinfoId= ? ");
+            Query query = session.createQuery("from CodeWebinfoEntity where codeWebinfoId= :code_web_info_id ");
 
-            query.setParameter(0, code_web_info_id);
+            query.setParameter("code_web_info_id", code_web_info_id);
 
             return (CodeWebinfoEntity) query.uniqueResult();
         }
@@ -74,9 +76,9 @@ public class WebinfoDaoImpl extends SuperDao implements WebinfoDao {
     public ShareInfoEntity findShareByShare_id(Long share_info_id) {
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from ShareInfoEntity where shareInfoId = ? ");
+            Query query = session.createQuery("from ShareInfoEntity where shareInfoId = :share_info_id ");
 
-            query.setParameter(0, share_info_id);
+            query.setParameter("share_info_id", share_info_id);
 
             return (ShareInfoEntity) query.uniqueResult();
         }

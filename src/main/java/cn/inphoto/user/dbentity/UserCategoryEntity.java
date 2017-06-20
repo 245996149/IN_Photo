@@ -3,6 +3,7 @@ package cn.inphoto.user.dbentity;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
@@ -10,7 +11,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "user_category", schema = "IN_Photo", catalog = "")
-public class UserCategoryEntity {
+public class UserCategoryEntity implements Serializable {
 
     /*系统正常*/
     public static final String USER_CATEGORY_STATE_NORMAL = "0";
