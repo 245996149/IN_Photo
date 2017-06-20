@@ -358,8 +358,8 @@ public class TableController {
     /**
      * 将媒体数据移动到回收站中
      *
-     * @param media_id
-     * @return
+     * @param media_id 媒体数据id
+     * @return 是否成功将媒体数据移动到回收站中
      */
     @RequestMapping("/deleteMediaData.do")
     @ResponseBody
@@ -401,7 +401,7 @@ public class TableController {
      * 将多个媒体数据移动到回收站中
      *
      * @param media_id_list 媒体数据ID队列
-     * @return
+     * @return 是否成功将媒体数据移动到回收站中
      */
     @RequestMapping("/deleteMediaDataList.do")
     @ResponseBody
@@ -446,6 +446,231 @@ public class TableController {
         result.put("success", true);
         result.put("message", "更新成功！");
         return result;
+    }
+
+    /**
+     * 彻底清除媒体数据
+     *
+     * @param media_id 媒体数据的id
+     * @return 是否成功将媒体数据彻底删除
+     */
+    @RequestMapping("/cleanMediaData.do")
+    @ResponseBody
+    public Map cleanMediaData(Long media_id) {
+
+        Map<String, Object> result = new HashMap<>();
+
+        // 查找media_id对应的mediaData
+        MediaDataEntity mediaData = mediaDataDao.findByMedia_id(media_id);
+
+        mediaData.setMediaState(MediaDataEntity.MEDIA_STATE_DELETE);
+        mediaData.setOverTime(new Timestamp(System.currentTimeMillis()));
+
+        if (!utilDao.update(mediaData)) {
+
+            result.put("success", false);
+            result.put("message", "媒体数据删除失败，请稍后再试");
+            return result;
+
+        }
+
+        result.put("success", true);
+        result.put("message", "已经彻底删除该媒体数据");
+        return result;
+
+    }
+
+    /**
+     * 彻底清除媒体数据
+     *
+     * @param media_id_list 媒体数据ID队列
+     * @return 是否成功将媒体数据彻底删除
+     */
+    @RequestMapping("/cleanMediaDataList.do")
+    @ResponseBody
+    public Map cleanMediaDataList(String media_id_list) {
+
+        Map<String, Object> result = new HashMap<>();
+
+        // 将接收到的数组转换为JSONArray
+        JSONArray jsonArray = new JSONArray(media_id_list);
+
+        // 创建用于查询的media_ids队列
+        List<Long> media_ids = new ArrayList<>();
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            media_ids.add(jsonArray.getLong(i));
+        }
+
+        // 加载数据库中的对象
+        List<MediaDataEntity> mediaDataList = mediaDataDao.findByMedia_ids(media_ids);
+
+        // 循环更新队列中的媒体数据的信息
+        for (MediaDataEntity m : mediaDataList
+                ) {
+            m.setMediaState(MediaDataEntity.MEDIA_STATE_DELETE);
+            m.setOverTime(new Timestamp(System.currentTimeMillis()));
+        }
+
+        // 更新数据库中媒体数据的信息
+        if (!mediaDataDao.updateMediaList(mediaDataList)) {
+
+            result.put("success", false);
+            result.put("message", "更新失败，请稍后再试！");
+            return result;
+
+        }
+
+        result.put("success", true);
+        result.put("message", "更新成功！");
+        return result;
+
+    }
+
+
+    /**
+     * 彻底清除媒体数据
+     *
+     * @param media_id 媒体数据的id
+     * @return 是否成功将媒体数据彻底删除
+     */
+    @RequestMapping("/reductionMediaData.do")
+    @ResponseBody
+    public Map reductionMediaData(Long media_id, HttpSession session) {
+
+        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
+
+        Map<String, Object> result = new HashMap<>();
+
+        // 查找media_id对应的mediaData
+        MediaDataEntity mediaData = mediaDataDao.findByMedia_id(media_id);
+
+        UserCategoryEntity userCategory = userCategoryDao.findByUser_idAndCategory_id(
+                user.getUserId(), mediaData.getCategoryId(), UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
+
+        if (userCategory == null) {
+
+            result.put("success", false);
+            result.put("message", "系统已经过期失效，无法还原。请联系客服。");
+            return result;
+
+        }
+
+        if (mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
+                user.getUserId(), mediaData.getCategoryId(), MediaDataEntity.MEDIA_STATE_NORMAL) >= userCategory.getMediaNumber()) {
+
+            result.put("success", false);
+            result.put("message", "该媒体数据隶属于的系统已经达到最大媒体数据容量，请联系客服另行购买。");
+            return result;
+
+        }
+
+        mediaData.setMediaState(MediaDataEntity.MEDIA_STATE_NORMAL);
+        mediaData.setOverTime(null);
+        mediaData.setDeleteTime(null);
+
+        if (!utilDao.update(mediaData)) {
+
+            result.put("success", false);
+            result.put("message", "媒体数据还原失败，请稍后再试");
+            return result;
+
+        }
+
+        result.put("success", true);
+        result.put("message", "已经还原该媒体数据");
+        return result;
+
+    }
+
+
+    /**
+     * 彻底清除媒体数据
+     *
+     * @param media_id_list 媒体数据ID队列
+     * @return 是否成功将媒体数据彻底删除
+     */
+    @RequestMapping("/reductionMediaDataList.do")
+    @ResponseBody
+    public Map reductionMediaDataList(String media_id_list, HttpSession session) {
+
+        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
+
+        Map<String, Object> result = new HashMap<>();
+
+        // 将接收到的数组转换为JSONArray
+        JSONArray jsonArray = new JSONArray(media_id_list);
+
+        // 创建用于查询的media_ids队列
+        List<Long> media_ids = new ArrayList<>();
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            media_ids.add(jsonArray.getLong(i));
+        }
+
+        // 加载数据库中的对象
+        List<MediaDataEntity> mediaDataList = mediaDataDao.findByMedia_ids(media_ids);
+
+        // 创建用于判断媒体数据容量的临时map对象
+        Map<Integer, Integer> tempMap = new HashMap<>();
+
+        // 循环媒体数据对象队列，
+        for (MediaDataEntity m : mediaDataList
+                ) {
+
+            // 判断临时map对象中是否有对应的key，有的话加1
+            if (tempMap.containsKey(m.getCategoryId())) {
+                tempMap.put(m.getCategoryId(), tempMap.get(m.getCategoryId()) + 1);
+            } else {
+                tempMap.put(m.getCategoryId(), 1);
+            }
+        }
+
+        // 查询该用户所有正常状态的
+        List<UserCategoryEntity> userCategoryList = (List<UserCategoryEntity>) session.getAttribute("allUserCategory");
+
+        for (UserCategoryEntity u : userCategoryList
+                ) {
+
+            if (tempMap.containsKey(u.getCategoryId())) {
+
+                int tempMapNum = tempMap.get(u.getCategoryId());
+
+                int mediaDataTotal = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
+                        user.getUserId(), u.getCategoryId(), MediaDataEntity.MEDIA_STATE_NORMAL);
+
+                if ((tempMapNum + mediaDataTotal) >= u.getMediaNumber()) {
+
+                    result.put("success", false);
+                    result.put("message", "该媒体数据隶属于的系统已经达到最大媒体数据容量，请联系客服另行购买。");
+                    return result;
+
+                }
+
+            }
+
+        }
+
+        // 循环更新队列中的媒体数据的信息
+        for (MediaDataEntity m : mediaDataList
+                ) {
+            m.setMediaState(MediaDataEntity.MEDIA_STATE_DELETE);
+            m.setOverTime(new Timestamp(System.currentTimeMillis()));
+        }
+
+        // 更新数据库中媒体数据的信息
+        if (!mediaDataDao.updateMediaList(mediaDataList)) {
+
+            result.put("success", false);
+            result.put("message", "更新失败，请稍后再试！");
+            return result;
+
+        }
+
+        result.put("success", true);
+        result.put("message", "更新成功！");
+        return result;
+
     }
 
 }

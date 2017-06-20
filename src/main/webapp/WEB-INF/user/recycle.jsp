@@ -87,8 +87,8 @@
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                    <li><a href="javascript:void(0);">还原</a></li>
-                                    <li><a href="javascript:void(0);">彻底删除</a></li>
+                                    <li><a href="javascript:void(0);" onclick="reductionMediaDataList();">还原</a></li>
+                                    <li><a href="javascript:void(0);" onclick="cleanMediaDataList();">彻底删除</a></li>
                                 </ul>
                             </div>
                         </td>
@@ -125,8 +125,12 @@
                             </td>
                             <td>
                                 <div class="btn-group-sm" role="group" aria-label="...">
-                                    <button type="button" class="btn btn-danger">彻底删除</button>
-                                    <button type="button" class="btn btn-info">还原</button>
+                                    <button type="button" class="btn btn-danger" onclick="cleanMediaData(${m.mediaId})">
+                                        彻底删除
+                                    </button>
+                                    <button type="button" class="btn btn-info"
+                                            onclick="reductionMediaData(${m.mediaId})">还原
+                                    </button>
                                 </div>
                             </td>
                         </tr>

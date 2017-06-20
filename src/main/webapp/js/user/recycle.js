@@ -64,3 +64,103 @@ function checkAllCheck() {
     }
 }
 
+function cleanMediaData(media_id) {
+
+    if (!confirm("请确认将媒体数据彻底清除")) {
+        return;
+    }
+
+    $.post(
+        "cleanMediaData.do",
+        {"media_id": media_id},
+        function (res) {
+            if (res.success) {
+                alert(res.message);
+                window.location.reload();
+            } else {
+                alert(res.message);
+            }
+        }
+    )
+
+}
+
+function cleanMediaDataList() {
+
+    if (!confirm("请确认将这些媒体数据彻底清除")) {
+        return;
+    }
+
+    var media_data_checkbox = document.getElementsByName("media_data_checkbox");
+    var _list = [];
+    var _list_num = 0;
+    for (var i = 0; i < media_data_checkbox.length; i++) {
+        if (media_data_checkbox[i].checked == true) {
+            _list[_list_num] = media_data_checkbox[i].value;
+            _list_num++;
+        }
+    }
+
+    $.post(
+        "cleanMediaDataList.do",
+        {"media_id_list": JSON.stringify(_list)},
+        function (res) {
+            if (res.success) {
+                alert(res.message);
+                window.location.reload();
+            } else {
+                alert(res.message);
+            }
+        }
+    )
+
+}
+
+function reductionMediaData(media_id) {
+
+    $.post(
+        "reductionMediaData.do",
+        {"media_id": media_id},
+        function (res) {
+            if (res.success) {
+                alert(res.message);
+                window.location.reload();
+            } else {
+                alert(res.message);
+            }
+        }
+    )
+
+}
+
+function reductionMediaDataList() {
+
+    if (!confirm("请确认将这些媒体数据彻底清除")) {
+        return;
+    }
+
+    var media_data_checkbox = document.getElementsByName("media_data_checkbox");
+    var _list = [];
+    var _list_num = 0;
+    for (var i = 0; i < media_data_checkbox.length; i++) {
+        if (media_data_checkbox[i].checked == true) {
+            _list[_list_num] = media_data_checkbox[i].value;
+            _list_num++;
+        }
+    }
+
+    $.post(
+        "reductionMediaDataList.do",
+        {"media_id_list": JSON.stringify(_list)},
+        function (res) {
+            if (res.success) {
+                alert(res.message);
+                window.location.reload();
+            } else {
+                alert(res.message);
+            }
+        }
+    )
+
+}
+
