@@ -166,4 +166,20 @@ public class PicWebinfoEntity {
         result = 31 * result + (picWebinfoState != null ? picWebinfoState.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "PicWebinfoEntity{" +
+                "picWebinfoId=" + picWebinfoId +
+                ", userId=" + userId +
+                ", categoryId=" + categoryId +
+                ", pageTitle='" + pageTitle + '\'' +
+                ", background='" + background + '\'' +
+                ", pictureTop=" + pictureTop +
+                ", pictureLeft=" + pictureLeft +
+                ", pictureRight=" + pictureRight +
+                ", pictureBottom=" + pictureBottom +
+                ", picWebinfoState='" + picWebinfoState + '\'' +
+                '}';
+    }
 }

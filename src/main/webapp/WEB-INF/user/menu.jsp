@@ -26,7 +26,7 @@
                         <li class="active"><a href="#">套餐管理</a></li>
                     </c:when>
                     <c:otherwise>
-                        <li><a href="#">套餐管理</a></li>
+                        <li><a href="${pageContext.request.contextPath}/category/toCategory.do">套餐管理</a></li>
                     </c:otherwise>
                 </c:choose>
                 <c:choose>
@@ -85,7 +85,7 @@
                                     <c:forEach items="${category}" var="c">
                                         <c:if test="${auc.categoryId==c.categoryId}">
                                             <li>
-                                                <a href="#">${c.categoryName}</a>
+                                                <a href="${pageContext.request.contextPath}/setting/toPageSettings.do?category_id=${auc.categoryId}">${c.categoryName}</a>
                                             </li>
                                         </c:if>
                                     </c:forEach>
@@ -104,7 +104,7 @@
                                     <c:forEach items="${category}" var="c">
                                         <c:if test="${auc.categoryId==c.categoryId}">
                                             <li>
-                                                <a href="#">${c.categoryName}</a>
+                                                <a href="${pageContext.request.contextPath}/setting/toPageSettings.do?category_id=${auc.categoryId}">${c.categoryName}</a>
                                             </li>
                                         </c:if>
                                     </c:forEach>

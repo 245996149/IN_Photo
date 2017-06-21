@@ -1,6 +1,8 @@
 package cn.inphoto.user.util;
 
+import cn.inphoto.user.dbentity.UsersEntity;
 import org.apache.log4j.Logger;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.Properties;
@@ -80,6 +82,29 @@ public class DirUtil {
         } catch (Exception e2) {
             return "bad getErrorInfoFromException";
         }
+    }
+
+    public static String createSettingsPic(MultipartFile file, UsersEntity user) throws IOException {
+        // 获取上传文件名
+        String fileName = file.getOriginalFilename();
+        // 获取配置文件中的存储数据的根目录
+        String path = getConfigInfo("data_path");
+        //设置InPhoto媒体数据用户存储的目录
+        String userPath = path + File.separator + user.getUserId();
+        createDirectory(userPath);
+        //设置InPhoto媒体数据用户设置存储的目录
+        String settingsPath = userPath + File.separator + "settings";
+        createDirectory(settingsPath);
+        // 获取图片尾缀
+        String tempFileName[] = fileName.split("\\.");
+        // 设置文件路径
+        String filePath = settingsPath + File.separator + "settings_pic_" + (int) ((Math.random() * 9 + 1) * 10000) + "." + tempFileName[1];
+        // 创建文件
+        File localFile = new File(filePath);
+        // 将上传文件转移到创建的文件中
+        file.transferTo(localFile);
+
+        return filePath;
     }
 
 }

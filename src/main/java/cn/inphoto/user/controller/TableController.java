@@ -3,23 +3,22 @@ package cn.inphoto.user.controller;
 import cn.inphoto.user.dao.*;
 import cn.inphoto.user.dbentity.*;
 import cn.inphoto.user.dbentity.page.TablePage;
-import net.coobird.thumbnailator.Thumbnails;
+import cn.inphoto.user.log.UserLog;
 import net.sf.json.JSONArray;
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static cn.inphoto.user.util.DBUtil.selectTodayData;
 
 /**
  * Created by kaxia on 2017/6/12.
@@ -27,6 +26,8 @@ import static cn.inphoto.user.util.DBUtil.selectTodayData;
 @Controller
 @RequestMapping("/table")
 public class TableController {
+
+    private static Logger logger = Logger.getLogger(TableController.class);
 
     @Resource
     MediaDataDao mediaDataDao;
@@ -58,8 +59,6 @@ public class TableController {
         tablePage.setRows(mediaDataDao.countByUser_idAndCategory_idAndMedia_state(usersEntity.getUserId(), tablePage.getCategory_id(), MediaDataEntity.MEDIA_STATE_NORMAL));
 
         tablePage.setMedia_state(MediaDataEntity.MEDIA_STATE_NORMAL);
-
-        System.out.println(tablePage.toString());
 
         List<MediaDataEntity> mediaDataList = mediaDataDao.findByPage(tablePage);
 
@@ -363,7 +362,9 @@ public class TableController {
      */
     @RequestMapping("/deleteMediaData.do")
     @ResponseBody
-    public Map deleteMediaData(Long media_id) {
+    public Map deleteMediaData(Long media_id, HttpSession session) {
+
+        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
 
         // 创建返回的数组
         Map<String, Object> result = new HashMap<>();
@@ -382,16 +383,24 @@ public class TableController {
 
         mediaData.setOverTime(new Timestamp(calendar.getTimeInMillis()));
 
-        if (!utilDao.update(mediaData)) {
+        MDC.put("user_id", user.getUserId());
+        MDC.put("category_id", mediaData.getCategoryId());
+
+        if (utilDao.update(mediaData)) {
+
+            result.put("success", true);
+            result.put("message", "已经将媒体数据移动到回收站中，数据有30天的缓存状态，30天后将完全删除;");
+
+        } else {
 
             result.put("success", false);
             result.put("message", "媒体数据删除失败，请稍后再试");
-            return result;
 
         }
 
-        result.put("success", true);
-        result.put("message", "已经将媒体数据移动到回收站中，数据有30天的缓存状态，30天后将完全删除;");
+        logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 对media_id=" +
+                mediaData.getMediaId() + " 的媒体数据执行了移动到回收站的操作，操作结果为：" + result.toString());
+
         return result;
 
     }
@@ -405,7 +414,9 @@ public class TableController {
      */
     @RequestMapping("/deleteMediaDataList.do")
     @ResponseBody
-    public Map deleteMediaDataList(String media_id_list) {
+    public Map deleteMediaDataList(String media_id_list, HttpSession session) {
+
+        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
 
         Map<String, Object> result = new HashMap<>();
 
@@ -435,16 +446,23 @@ public class TableController {
             m.setOverTime(new Timestamp(calendar.getTimeInMillis()));
         }
 
-        if (!mediaDataDao.updateMediaList(mediaDataList)) {
+        MDC.put("user_id", user.getUserId());
+
+        if (mediaDataDao.updateMediaList(mediaDataList)) {
+
+            result.put("success", true);
+            result.put("message", "更新成功！");
+
+        } else {
 
             result.put("success", false);
             result.put("message", "更新失败，请稍后再试！");
-            return result;
 
         }
 
-        result.put("success", true);
-        result.put("message", "更新成功！");
+        logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 对media_id=" +
+                media_id_list + " 的媒体数据执行了移动到回收站的操作，操作结果为：" + result.toString());
+
         return result;
     }
 
@@ -456,7 +474,9 @@ public class TableController {
      */
     @RequestMapping("/cleanMediaData.do")
     @ResponseBody
-    public Map cleanMediaData(Long media_id) {
+    public Map cleanMediaData(Long media_id, HttpSession session) {
+
+        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
 
         Map<String, Object> result = new HashMap<>();
 
@@ -466,16 +486,24 @@ public class TableController {
         mediaData.setMediaState(MediaDataEntity.MEDIA_STATE_DELETE);
         mediaData.setOverTime(new Timestamp(System.currentTimeMillis()));
 
-        if (!utilDao.update(mediaData)) {
+        MDC.put("user_id", user.getUserId());
+        MDC.put("category_id", mediaData.getCategoryId());
+
+        if (utilDao.update(mediaData)) {
+
+            result.put("success", true);
+            result.put("message", "已经彻底删除该媒体数据");
+
+        } else {
 
             result.put("success", false);
             result.put("message", "媒体数据删除失败，请稍后再试");
-            return result;
 
         }
 
-        result.put("success", true);
-        result.put("message", "已经彻底删除该媒体数据");
+        logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 对media_id=" +
+                mediaData.getMediaId() + " 的媒体数据执行了彻底删除的操作，操作结果为：" + result.toString());
+
         return result;
 
     }
@@ -488,7 +516,9 @@ public class TableController {
      */
     @RequestMapping("/cleanMediaDataList.do")
     @ResponseBody
-    public Map cleanMediaDataList(String media_id_list) {
+    public Map cleanMediaDataList(String media_id_list, HttpSession session) {
+
+        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
 
         Map<String, Object> result = new HashMap<>();
 
@@ -512,24 +542,31 @@ public class TableController {
             m.setOverTime(new Timestamp(System.currentTimeMillis()));
         }
 
+        MDC.put("user_id", user.getUserId());
+
         // 更新数据库中媒体数据的信息
-        if (!mediaDataDao.updateMediaList(mediaDataList)) {
+        if (mediaDataDao.updateMediaList(mediaDataList)) {
+
+            result.put("success", true);
+            result.put("message", "更新成功！");
+
+        } else {
 
             result.put("success", false);
             result.put("message", "更新失败，请稍后再试！");
-            return result;
 
         }
 
-        result.put("success", true);
-        result.put("message", "更新成功！");
+        logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 对media_id=" +
+                media_id_list + " 的媒体数据执行了彻底删除的操作，操作结果为：" + result.toString());
+
         return result;
 
     }
 
 
     /**
-     * 彻底清除媒体数据
+     * 还原媒体数据
      *
      * @param media_id 媒体数据的id
      * @return 是否成功将媒体数据彻底删除
@@ -545,54 +582,71 @@ public class TableController {
         // 查找media_id对应的mediaData
         MediaDataEntity mediaData = mediaDataDao.findByMedia_id(media_id);
 
+        // 查询该媒体数据对应的系统
         UserCategoryEntity userCategory = userCategoryDao.findByUser_idAndCategory_id(
                 user.getUserId(), mediaData.getCategoryId(), UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
 
+        MDC.put("user_id", user.getUserId());
+        MDC.put("category_id", mediaData.getCategoryId());
+
+        // 判断系统是否过期
         if (userCategory == null) {
 
             result.put("success", false);
             result.put("message", "系统已经过期失效，无法还原。请联系客服。");
+            logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 尝试还原回收站中media_id为：" +
+                    mediaData.getMediaId() + "的数据，返回的结果是：" + result.toString());
             return result;
 
         }
 
+        // 判断数据库中该系统草滩媒体数据总量是否超过套餐总量
         if (mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
                 user.getUserId(), mediaData.getCategoryId(), MediaDataEntity.MEDIA_STATE_NORMAL) >= userCategory.getMediaNumber()) {
 
             result.put("success", false);
             result.put("message", "该媒体数据隶属于的系统已经达到最大媒体数据容量，请联系客服另行购买。");
+            logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 尝试还原回收站中media_id为：" +
+                    mediaData.getMediaId() + "的数据，返回的结果是：" + result.toString());
             return result;
 
         }
 
+        // 给媒体数据信息赋予新的值
         mediaData.setMediaState(MediaDataEntity.MEDIA_STATE_NORMAL);
         mediaData.setOverTime(null);
         mediaData.setDeleteTime(null);
 
+        // 更新数据库中媒体的数据
         if (!utilDao.update(mediaData)) {
 
             result.put("success", false);
             result.put("message", "媒体数据还原失败，请稍后再试");
-            return result;
+
+        } else {
+
+            result.put("success", true);
+            result.put("message", "已经还原该媒体数据");
 
         }
 
-        result.put("success", true);
-        result.put("message", "已经还原该媒体数据");
+        logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 尝试还原回收站中media_id为：" +
+                mediaData.getMediaId() + "的数据，返回的结果是：" + result.toString());
+
         return result;
 
     }
 
 
     /**
-     * 彻底清除媒体数据
+     * 还原媒体数据
      *
      * @param media_id_list 媒体数据ID队列
      * @return 是否成功将媒体数据彻底删除
      */
     @RequestMapping("/reductionMediaDataList.do")
     @ResponseBody
-    public Map reductionMediaDataList(String media_id_list, HttpSession session) {
+    public Map reductionMediaDataList(String media_id_list, HttpSession session, HttpServletRequest request) {
 
         UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
 
@@ -607,6 +661,8 @@ public class TableController {
         for (int i = 0; i < jsonArray.length(); i++) {
             media_ids.add(jsonArray.getLong(i));
         }
+
+        MDC.put("user_id", user.getUserId());
 
         // 加载数据库中的对象
         List<MediaDataEntity> mediaDataList = mediaDataDao.findByMedia_ids(media_ids);
@@ -629,21 +685,48 @@ public class TableController {
         // 查询该用户所有正常状态的
         List<UserCategoryEntity> userCategoryList = (List<UserCategoryEntity>) session.getAttribute("allUserCategory");
 
+        boolean flag = true;
+
+        String msg = "选择的媒体数据中，";
+
+        // 获取application对象
+        ServletContext application = request.getSession().getServletContext();
+
+        // 从application中获取所有套餐系统对象
+        List<CategoryEntity> categoryList = (List<CategoryEntity>) application.getAttribute("category");
+
+        // 遍历用户的套餐系统
         for (UserCategoryEntity u : userCategoryList
                 ) {
 
+            // 判断临时map对象中是否有key
             if (tempMap.containsKey(u.getCategoryId())) {
 
+                // 取出临时map对象中的值
                 int tempMapNum = tempMap.get(u.getCategoryId());
 
+                // 获取数据库中的钙系统媒体总量
                 int mediaDataTotal = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
                         user.getUserId(), u.getCategoryId(), MediaDataEntity.MEDIA_STATE_NORMAL);
 
+                // 比较两个值，判断是否能还原
                 if ((tempMapNum + mediaDataTotal) >= u.getMediaNumber()) {
 
-                    result.put("success", false);
-                    result.put("message", "该媒体数据隶属于的系统已经达到最大媒体数据容量，请联系客服另行购买。");
-                    return result;
+                    // 创建套餐系统对象
+                    CategoryEntity categoryEntity = null;
+
+                    // 遍历套餐系统对象，从中取出相应的套餐系统对象
+                    for (CategoryEntity c : categoryList
+                            ) {
+
+                        if (c.getCategoryId() == u.getCategoryId()) {
+                            categoryEntity = c;
+                        }
+
+                    }
+
+                    flag = false;
+                    msg += categoryEntity.getCategoryName() + ",";
 
                 }
 
@@ -651,11 +734,23 @@ public class TableController {
 
         }
 
+        // 队列中有媒体数据因容量原因无法还原
+        if (!flag) {
+
+            result.put("success", false);
+            result.put("message", msg + "系统容量不足");
+            logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 尝试还原回收站中media_id为：" +
+                    media_id_list + "的数据，返回的结果是：" + result.toString());
+            return result;
+
+        }
+
         // 循环更新队列中的媒体数据的信息
         for (MediaDataEntity m : mediaDataList
                 ) {
-            m.setMediaState(MediaDataEntity.MEDIA_STATE_DELETE);
-            m.setOverTime(new Timestamp(System.currentTimeMillis()));
+            m.setMediaState(MediaDataEntity.MEDIA_STATE_NORMAL);
+            m.setOverTime(null);
+            m.setDeleteTime(null);
         }
 
         // 更新数据库中媒体数据的信息
@@ -663,12 +758,16 @@ public class TableController {
 
             result.put("success", false);
             result.put("message", "更新失败，请稍后再试！");
-            return result;
 
+        } else {
+
+            result.put("success", true);
+            result.put("message", "更新成功！");
         }
 
-        result.put("success", true);
-        result.put("message", "更新成功！");
+        logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 尝试还原回收站中media_id为：" +
+                media_id_list + "的数据，返回的结果是：" + result.toString());
+
         return result;
 
     }

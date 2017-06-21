@@ -4,6 +4,9 @@ import cn.inphoto.user.dao.UserCategoryDao;
 import cn.inphoto.user.dao.UserDao;
 import cn.inphoto.user.dbentity.UserCategoryEntity;
 import cn.inphoto.user.dbentity.UsersEntity;
+import cn.inphoto.user.log.UserLog;
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,6 +28,8 @@ import static cn.inphoto.user.util.DBUtil.selectTodayData;
 @Controller
 @RequestMapping("/login")
 public class LoginController {
+
+    private static Logger logger = Logger.getLogger(LoginController.class);
 
     @Resource
     UserDao userDao;
@@ -54,11 +59,15 @@ public class LoginController {
         if (!password.equals(usersEntity.getPassword())) {
             result.put("success", false);
             result.put("message", "密码错误，请重新输入密码!");
+            logger.log(UserLog.USER, "用户user_name=" + user_name + " 的用户尝试登陆，登陆结果为：" + result.toString());
             return result;
         }
 
+        MDC.put("user_id", usersEntity.getUserId());
+
         // 查询该用户所有的用户套餐系统
-        List<UserCategoryEntity> userCategoryList = userCategoryDao.findByUser_idAndState(usersEntity.getUserId(), UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
+        List<UserCategoryEntity> userCategoryList = userCategoryDao.findByUser_idAndState(
+                usersEntity.getUserId(), UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
 
         //查询所有的套餐系统
         judgeCategory(request);
@@ -71,6 +80,7 @@ public class LoginController {
 
         result.put("success", true);
         result.put("message", "登陆成功");
+        logger.log(UserLog.USER, "用户user_name=" + user_name + " 的用户尝试登陆，登陆结果为：" + result.toString());
 
         session.setAttribute("loginUser", usersEntity);
 

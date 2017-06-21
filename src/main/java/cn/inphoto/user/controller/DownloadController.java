@@ -1,6 +1,7 @@
 package cn.inphoto.user.controller;
 
-import cn.inphoto.user.dao.*;
+import cn.inphoto.user.dao.MediaDataDao;
+import cn.inphoto.user.dao.WebinfoDao;
 import cn.inphoto.user.dbentity.*;
 import net.coobird.thumbnailator.Thumbnails;
 import net.sf.json.JSONArray;
@@ -51,6 +52,7 @@ public class DownloadController {
      */
     @RequestMapping("getMedia.do")
     public void openMedia(HttpServletResponse response, HttpServletRequest request, Long id, int type, boolean thumbnail, boolean download) throws IOException {
+
 
         String file_path = null;
 
@@ -162,6 +164,7 @@ public class DownloadController {
 
     /**
      * 根据媒体数据ID队列，打包下载媒体数据
+     *
      * @param response
      * @param session
      * @param media_id_list 媒体数据ID队列

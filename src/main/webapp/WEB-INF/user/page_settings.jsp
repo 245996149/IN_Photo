@@ -8,6 +8,10 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <title>PageSettings</title>
 
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="${pageContext.request.contextPath}/js/jquery-3.2.1.js"></script>
+    <script src="${pageContext.request.contextPath}/js/jquery.form.js"></script>
+
     <!-- Bootstrap -->
     <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
 
@@ -18,76 +22,22 @@
     <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="${pageContext.request.contextPath}/js/jquery-3.2.1.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+
+    <script src="${pageContext.request.contextPath}/js/user/page_settings.js"></script>
 </head>
 <body style="padding-top: 70px;">
 
-<!-- 导航栏 -->
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false"><span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button>
-            <a class="navbar-brand" href="#">IN Photo</a></div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li><a href="#">首页 </a></li>
-                <li><a href="#">套餐管理</a></li>
-                <li class="dropdown "><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                         aria-haspopup="true" aria-expanded="false">数据管理<span
-                        class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">A系统</a></li>
-                        <li><a href="#">B系统</a></li>
-                        <li><a href="#">C系统</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">回收站</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown active"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                               aria-haspopup="true" aria-expanded="false">页面设置<span
-                        class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">A系统</a></li>
-                        <li><a href="#">B系统</a></li>
-                        <li><a href="#">C系统</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                        aria-haspopup="true" aria-expanded="false">今日数据<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">点击量 <span class="badge">${sessionScope.click_num}</span></a></li>
-                        <li><a href="#">好友分享量 <span class="badge">${sessionScope.chats_num}</span></a></li>
-                        <li><a href="#">朋友圈分享量 <span class="badge">${sessionScope.moments_num}</span></a></li>
-                    </ul>
-                </li>
-                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                        aria-haspopup="true"
-                                        aria-expanded="false">${sessionScope.loginUser.userName}<span
-                        class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">用户资料</a></li>
-                        <li><a href="#">安全设置</a></li>
-                        <li><a href="#">退出</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>
-    <!-- /.container-fluid -->
-</nav>
+<%-- 导航栏 --%>
+<jsp:include page="/WEB-INF/user/menu.jsp"/>
 
 <%-- 开始 --%>
+
+<div style="display: none;">
+    <input type="text" id="category_id" value="${category_id}">
+</div>
+
 <div class="row">
     <div class="col-md-12">
         <div class="page-header">
@@ -120,57 +70,73 @@
                         <div class="col-md-6">
                             <div class="panel panel-default">
                                 <div class="panel-body">
-                                    <div class="input-group">
-                                        <span class="input-group-addon" id="show_page_title_span">页面标题</span>
-                                        <input type="text" class="form-control" id="show_page_title"
-                                               aria-describedby="show_page_title_span">
-                                    </div>
-                                    <br>
-                                    <div class="form-group">
-                                        <label for="exampleInputFile">页面背景图片</label>
-                                        <input type="file" id="exampleInputFile">
-                                        <p class="help-block">
-                                            仅支持大小为200kb以内的jpg、png格式的图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
-                                    </div>
-                                    <br>
-                                    <label for="show_pic_top">媒体上边距离版面顶部的百分比</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="show_pic_top"
-                                               aria-describedby="basic-addon3">
-                                        <span class="input-group-addon">%</span>
-                                    </div>
-                                    <br>
-                                    <label for="show_pic_bottom">媒体下边距离版面底部的百分比</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="show_pic_bottom"
-                                               aria-describedby="basic-addon3">
-                                        <span class="input-group-addon">%</span>
-                                    </div>
-                                    <br>
-                                    <label for="show_pic_left">媒体左边距离版面左边的百分比</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="show_pic_left"
-                                               aria-describedby="basic-addon3">
-                                        <span class="input-group-addon">%</span>
-                                    </div>
-                                    <br>
-                                    <label for="show_pic_right">媒体右边距离版面右边的百分比</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="show_pic_right"
-                                               aria-describedby="basic-addon3">
-                                        <span class="input-group-addon">%</span>
-                                    </div>
-                                    <br>
-                                    <div class="row">
-                                        <div class="col-md-12" style="text-align: center;">
-                                            <div class="btn-group" role="group" aria-label="...">
-                                                <button type="button" class="btn btn-success">确认</button>
-                                                <button type="button" class="btn btn-primary">预览</button>
-                                                <button type="button" class="btn btn-danger">恢复默认</button>
+                                    <form id="show_form" name="show_form" enctype="multipart/form-data">
+                                        <div style="display: none;">
+                                            <input type="text" name="categoryId" value="${category_id}">
+                                        </div>
+                                        <div class="input-group">
+                                            <span class="input-group-addon" id="show_page_title_span">页面标题</span>
+                                            <input type="text" class="form-control" id="show_page_title"
+                                                   name="pageTitle"
+                                                   aria-describedby="show_page_title_span">
+                                        </div>
+                                        <br>
+                                        <div class="form-group">
+                                            <label for="show_pic_bg">页面背景图片</label>
+                                            <input type="file" id="show_pic_bg" name="show_pic_bg"
+                                                   onchange="fileChange(this);">
+                                            <p class="help-block">
+                                                仅支持大小为200kb以内的jpg、png格式的图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
+                                        </div>
+                                        <br>
+                                        <label for="show_pic_top">媒体上边距离版面顶部的百分比</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="show_pic_top" name="pictureTop"
+                                                   aria-describedby="basic-addon3">
+                                            <span class="input-group-addon">%</span>
+                                        </div>
+                                        <br>
+                                        <label for="show_pic_bottom">媒体下边距离版面底部的百分比</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="show_pic_bottom"
+                                                   name="pictureBottom"
+                                                   aria-describedby="basic-addon3">
+                                            <span class="input-group-addon">%</span>
+                                        </div>
+                                        <br>
+                                        <label for="show_pic_left">媒体左边距离版面左边的百分比</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="show_pic_left"
+                                                   name="pictureLeft"
+                                                   aria-describedby="basic-addon3">
+                                            <span class="input-group-addon">%</span>
+                                        </div>
+                                        <br>
+                                        <label for="show_pic_right">媒体右边距离版面右边的百分比</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="show_pic_right"
+                                                   name="pictureRight"
+                                                   aria-describedby="basic-addon3">
+                                            <span class="input-group-addon">%</span>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-12" style="text-align: center;">
+                                                <div class="btn-group" role="group">
+                                                    <button type="button" class="btn btn-success"
+                                                            style="display: none;">
+                                                        确认
+                                                    </button>
+                                                    <button type="button" id="aaaaa" class="btn btn-primary"
+                                                            data-toggle="popover" data-placement="top"
+                                                            onclick="show_click()">
+                                                        预览
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger">恢复默认</button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -499,5 +465,20 @@
             </div>
         </div>
     </div>
+</div>
+
+<script type="text/javascript">
+
+    $('#aaaaa').popover(
+        {
+            content: "<img src='../images/QRcode_test.png' width='200px' height='auto'>",
+            html: true,
+            container: false
+
+        }
+    )
+
+</script>
+
 </body>
 </html>

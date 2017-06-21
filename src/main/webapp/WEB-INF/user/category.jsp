@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -25,58 +27,8 @@
 </head>
 <body style="padding-top: 70px;">
 
-<!-- 导航栏 -->
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false"><span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button>
-            <a class="navbar-brand" href="#">IN Photo</a></div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li><a href="#">首页 </a></li>
-                <li class="active"><a href="#">套餐管理</a></li>
-                <li class="dropdown "><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                         aria-haspopup="true" aria-expanded="false">数据管理<span
-                        class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">A系统</a></li>
-                        <li><a href="#">B系统</a></li>
-                        <li><a href="#">C系统</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">回收站</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">页面设置</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                        aria-haspopup="true" aria-expanded="false">今日数据<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">点击量 <span class="badge">${sessionScope.click_num}</span></a></li>
-                        <li><a href="#">好友分享量 <span class="badge">${sessionScope.chats_num}</span></a></li>
-                        <li><a href="#">朋友圈分享量 <span class="badge">${sessionScope.moments_num}</span></a></li>
-                    </ul>
-                </li>
-                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                        aria-haspopup="true" aria-expanded="false">${sessionScope.loginUser.userName}<span
-                        class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">用户资料</a></li>
-                        <li><a href="#">安全设置</a></li>
-                        <li><a href="#">退出</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>
-    <!-- /.container-fluid -->
-</nav>
+<%-- 导航栏 --%>
+<jsp:include page="/WEB-INF/user/menu.jsp"/>
 
 <%-- 开始 --%>
 <div class="row">
@@ -126,182 +78,48 @@
                         </td>
                         <td>操作</td>
                     </tr>
-                    <tr>
-                        <td>100</td>
-                        <td>铝木抠像系统</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0"
-                                     aria-valuemax="100" style="width: 60%;min-width: 2%;">
-                                    60%
-                                </div>
-                            </div>
-                        </td>
-                        <td>操作</td>
-                    </tr>
-                    <tr>
-                        <td>100</td>
-                        <td>铝木抠像系统</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0"
-                                     aria-valuemax="100" style="width: 60%;min-width: 2%;">
-                                    60%
-                                </div>
-                            </div>
-                        </td>
-                        <td>操作</td>
-                    </tr>
-                    <tr>
-                        <td>100</td>
-                        <td>铝木抠像系统</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0"
-                                     aria-valuemax="100" style="width: 60%;min-width: 2%;">
-                                    60%
-                                </div>
-                            </div>
-                        </td>
-                        <td>操作</td>
-                    </tr>
-                    <tr>
-                        <td>100</td>
-                        <td>铝木抠像系统</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0"
-                                     aria-valuemax="100" style="width: 60%;min-width: 2%;">
-                                    60%
-                                </div>
-                            </div>
-                        </td>
-                        <td>操作</td>
-                    </tr>
-                    <tr>
-                        <td>100</td>
-                        <td>铝木抠像系统</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0"
-                                     aria-valuemax="100" style="width: 60%;min-width: 2%;">
-                                    60%
-                                </div>
-                            </div>
-                        </td>
-                        <td>操作</td>
-                    </tr>
-                    <tr>
-                        <td>100</td>
-                        <td>铝木抠像系统</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0"
-                                     aria-valuemax="100" style="width: 60%;min-width: 2%;">
-                                    60%
-                                </div>
-                            </div>
-                        </td>
-                        <td>操作</td>
-                    </tr>
-                    <tr>
-                        <td>100</td>
-                        <td>铝木抠像系统</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0"
-                                     aria-valuemax="100" style="width: 60%;min-width: 2%;">
-                                    60%
-                                </div>
-                            </div>
-                        </td>
-                        <td>操作</td>
-                    </tr>
-                    <tr>
-                        <td>100</td>
-                        <td>铝木抠像系统</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0"
-                                     aria-valuemax="100" style="width: 10%;min-width: 2em;">
-                                    10%
-                                </div>
-                            </div>
-                        </td>
-                        <td>操作</td>
-                    </tr>
-                    <tr>
-                        <td>100</td>
-                        <td>铝木抠像系统</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0"
-                                     aria-valuemax="100" style="width: 5%;min-width: 1em;">
-                                    5%
-                                </div>
-                            </div>
-                        </td>
-                        <td>操作</td>
-                    </tr>
-                    <tr>
-                        <td>100</td>
-                        <td>铝木抠像系统</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0"
-                                     aria-valuemax="100" style="width: 2%;min-width: 1.5em;">
-                                    2%
-                                </div>
-                            </div>
-                        </td>
-                        <td>操作</td>
-                    </tr>
-                    <tr>
-                        <td>100</td>
-                        <td>铝木抠像系统</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0"
-                                     aria-valuemax="100" style="width: 0%;min-width: 2%;">
-                                    0%
-                                </div>
-                            </div>
-                        </td>
-                        <td>操作</td>
-                    </tr>
+                    <c:forEach items="${userCategoryList}" var="uc">
+                        <tr>
+                            <td>${uc.userCategoryId}</td>
+                            <td>
+                                <c:forEach items="${category}" var="c">
+                                    <c:if test="${uc.categoryId==c.categoryId}">
+                                        ${c.categoryName}
+                                    </c:if>
+                                </c:forEach>
+                            </td>
+                            <td><fmt:formatDate value="${uc.payTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                            <td><fmt:formatDate value="${uc.beginTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                            <td><fmt:formatDate value="${uc.endTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${uc.userCategoryState==0}">
+                                        <c:forEach items="${tempMap}" var="t">
+                                            <c:if test="${uc.userCategoryId==t.key}">
+                                                <div class="progress">
+                                                    <div class="progress-bar" role="progressbar"
+                                                         aria-valuenow="${t.value}"
+                                                         aria-valuemin="0"
+                                                         aria-valuemax="100"
+                                                         style="width: ${t.value}%;min-width: 1.5em;">
+                                                            ${t.value}%
+                                                    </div>
+                                                </div>
+                                            </c:if>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:when test="${uc.userCategoryState==2}">
+                                        未生效
+                                    </c:when>
+                                    <c:otherwise>
+                                        已过期
+                                    </c:otherwise>
+                                </c:choose>
+
+                            </td>
+                            <td>操作</td>
+                        </tr>
+                    </c:forEach>
                     </tbody>
                     <tfoot>
                     <tr>

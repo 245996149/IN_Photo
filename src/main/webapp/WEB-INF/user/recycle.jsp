@@ -151,7 +151,7 @@
                                         </c:when>
                                         <c:otherwise>
                                             <li>
-                                                <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${tablePage.currentPage-1}"
+                                                <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${tablePage.currentPage-1}"
                                                    aria-label="Previous">
                                                     <span aria-hidden="true">&laquo;</span>
                                                 </a>
@@ -167,7 +167,7 @@
                                                     </c:when>
                                                     <c:otherwise>
                                                         <li>
-                                                            <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
+                                                            <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${i}">${i}</a>
                                                         </li>
                                                     </c:otherwise>
                                                 </c:choose>
@@ -181,7 +181,7 @@
                                                     </c:when>
                                                     <c:otherwise>
                                                         <li>
-                                                            <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
+                                                            <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${i}">${i}</a>
                                                         </li>
                                                     </c:otherwise>
                                                 </c:choose>
@@ -196,7 +196,7 @@
                                                     </c:when>
                                                     <c:otherwise>
                                                         <li>
-                                                            <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
+                                                            <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${i}">${i}</a>
                                                         </li>
                                                     </c:otherwise>
                                                 </c:choose>
@@ -211,7 +211,7 @@
                                                     </c:when>
                                                     <c:otherwise>
                                                         <li>
-                                                            <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
+                                                            <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${i}">${i}</a>
                                                         </li>
                                                     </c:otherwise>
                                                 </c:choose>
@@ -228,7 +228,7 @@
                                         </c:when>
                                         <c:otherwise>
                                             <li>
-                                                <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${tablePage.currentPage+1}"
+                                                <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${tablePage.currentPage+1}"
                                                    aria-label="Next">
                                                     <span aria-hidden="true">&raquo;</span>
                                                 </a>

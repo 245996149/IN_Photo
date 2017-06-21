@@ -51,4 +51,18 @@ public class UserCategoryDaoImpl extends SuperDao implements UserCategoryDao {
         }
 
     }
+
+    @Override
+    public List<UserCategoryEntity> findByUser_id(Long user_id) {
+
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery(" from UserCategoryEntity where userId = :user_id order by endTime");
+
+            query.setParameter("user_id", user_id);
+
+            return query.list();
+        }
+
+    }
 }

@@ -45,9 +45,13 @@
 <div class="row">
     <div class="col-md-12">
         <div class="page-header">
-            <h1>A系统
-                <small>绿幕抠像系统</small>
-            </h1>
+            <c:forEach items="${category}" var="c">
+                <c:if test="${tablePage.category_id==c.categoryId}">
+                    <h1> ${c.categoryName}
+                        <small>${c.categoryNote}</small>
+                    </h1>
+                </c:if>
+            </c:forEach>
         </div>
     </div>
 

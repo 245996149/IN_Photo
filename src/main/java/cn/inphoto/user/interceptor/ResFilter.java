@@ -26,8 +26,6 @@ public class ResFilter implements Filter {
         MDC.put("user_id", 0);
         MDC.put("category_id", 0);
 
-
-
         try {
             filterChain.doFilter(servletRequest, servletResponse);
         } finally {

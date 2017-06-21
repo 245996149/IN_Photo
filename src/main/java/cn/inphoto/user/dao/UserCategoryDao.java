@@ -28,4 +28,13 @@ public interface UserCategoryDao {
      */
     List<UserCategoryEntity> findByUser_idAndState(Long user_id,  String user_category_state);
 
+    /**
+     * 根据user_id查询该用户所有套餐系统对象
+     *
+     * @param user_id             用户id
+     * @return 用户套餐系统对象
+     */
+    List<UserCategoryEntity> findByUser_id(Long user_id);
+
+
 }
