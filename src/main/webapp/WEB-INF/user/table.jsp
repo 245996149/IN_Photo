@@ -168,7 +168,9 @@
                             </td>
                             <td>
                                 <div class="btn-group-sm" role="group" aria-label="...">
-                                    <button type="button" class="btn btn-danger" onclick="delete_media(${m.mediaId});">删除</button>
+                                    <button type="button" class="btn btn-danger" onclick="delete_media(${m.mediaId});">
+                                        删除
+                                    </button>
                                     <button type="button" class="btn btn-primary" onclick="open_modal(${m.mediaName});">
                                         查看
                                     </button>
@@ -272,8 +274,8 @@
                                         <c:otherwise>
                                             <li>
                                                 <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${tablePage.currentPage+1}"
-                                                aria-label="Next">
-                                                <span aria-hidden="true">&raquo;</span>
+                                                   aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
                                                 </a>
                                             </li>
                                         </c:otherwise>
@@ -334,6 +336,8 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <a tabindex="0" class="btn btn-success" role="button" data-toggle="popover" id="share_button"
+                   data-trigger="focus" title="扫描二维码分享图片">分享</a>
                 <button type="button" class="btn btn-danger" onclick="modal_delete();">删除</button>
                 <button type="button" class="btn btn-primary" onclick="modal_download();">下载</button>
             </div>
@@ -351,11 +355,47 @@
         getShare_7();
         getSystemInfo();
         getRecycleInfo();
+        $('#share_button').popover({
+            container: 'body',
+            html: true,
+            content: aaa,
+            placement: 'left'
+        });
+        //$("[data-toggle='popover']").popover();
+
     });
 
     $('.carousel').carousel({
         interval: false
     });
+
+    function aaa() {
+
+        var carousel_obj = $("#carousel-object .active img");
+
+        var s = "http://192.168.0.222/IN_Photo/mobile/toPage.do?user_id=1&category_id=3&media_id=" + carousel_obj.attr("alt");
+
+        // alert(s);
+
+        //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+        var pathName = window.document.location.pathname;
+        //获取带"/"的项目名，如：/uimcardprj
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+
+        var aa = projectName + "/get/getQR.do?url=" + encodeURIComponent(s);
+
+        var a = '<img src="' + aa + '" alt="${m.mediaId}" width="200px">';
+
+        return a;
+//            $(this).popover({
+//                container: 'body',
+//                html: true,
+//                content: a,
+//                placement: 'left'
+//            });
+
+    }
+
 
 </script>
 

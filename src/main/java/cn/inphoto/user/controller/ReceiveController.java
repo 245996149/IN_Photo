@@ -58,19 +58,19 @@ public class ReceiveController {
     /**
      * @param request
      * @param response
-     * @param names         文件的唯一编码
-     * @param category_code 套餐的类型
-     * @param media_code    文件的提取码
-     * @param second        gif的间隔时间
-     * @param number        gif的张数
-     * @param user_id       用户的id号
+     * @param names       文件的唯一编码
+     * @param category_id 套餐的唯一码
+     * @param media_code  文件的提取码
+     * @param second      gif的间隔时间
+     * @param number      gif的张数
+     * @param user_id     用户的id号
      * @return 返回是否提交成功
      * @throws IOException
      */
     @RequestMapping("/receiveMedia.do")
     @ResponseBody
     public Map<String, Object> receiveMedia(HttpServletRequest request, HttpServletResponse response,
-                                            String names, String category_code, String media_code, Integer second,
+                                            String names, Integer category_id, String media_code, Integer second,
                                             Integer number, Long user_id) throws IOException {
 
         // 设置请求、返回的字符编码
@@ -81,13 +81,13 @@ public class ReceiveController {
         Map<String, Object> result = new HashMap<>();
 
         // 判断必填参数是否为空，为空直接反馈给客户端
-        if (names == null || category_code == null || user_id == null) {
+        if (names == null || category_id == null || user_id == null) {
 
             result.put("success", false);
             result.put("code", 100);
             result.put("message", "userId、names、type三者为必填参数，不能为空");
-            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code="
-                    + category_code + "，返回的信息为：" + result.toString());
+            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id="
+                    + category_id + "，返回的信息为：" + result.toString());
             return result;
 
         }
@@ -100,43 +100,31 @@ public class ReceiveController {
             result.put("success", false);
             result.put("code", 101);
             result.put("message", "未找到user_id=" + user_id + "对应的用户");
-            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code="
-                    + category_code + "，返回的信息为：" + result.toString());
+            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id="
+                    + category_id + "，返回的信息为：" + result.toString());
             return result;
 
         }
 
-        //根据category_code查询对应的系统
-        CategoryEntity category = categoryDao.findByCategory_code(category_code);
-
-        if (category == null) {
-
-            result.put("success", false);
-            result.put("code", 102);
-            result.put("message", "未找到category_code=" + category_code + "对应的系统");
-            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code="
-                    + category_code + "，返回的信息为：" + result.toString());
-            return result;
-
-        }
+        CategoryEntity category = categoryDao.findByCategory_id(category_id);
 
         // 设置日志信息
         MDC.put("user_id", user.getUserId());
-        MDC.put("category_id", category.getCategoryId());
+        MDC.put("category_id",category_id);
 
         // 根据category_code、user_id查询用户有效期内的系统
         UserCategoryEntity userCategory =
                 userCategoryDao.findByUser_idAndCategory_id(
-                        user.getUserId(), category.getCategoryId(),
+                        user.getUserId(), category_id,
                         UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
 
         if (userCategory == null) {
 
             result.put("success", false);
             result.put("code", 103);
-            result.put("message", "user_id=" + user_id + "的用户没有category_code=" + category_code + "状态正常的系统");
-            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code="
-                    + category_code + "，返回的信息为：" + result.toString());
+            result.put("message", "user_id=" + user_id + "的用户没有category_id=" + category_id + "状态正常的系统");
+            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id="
+                    + category_id + "，返回的信息为：" + result.toString());
             return result;
 
         }
@@ -161,8 +149,8 @@ public class ReceiveController {
                 result.put("success", false);
                 result.put("code", 104);
                 result.put("message", "请求中未包含文件");
-                logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code="
-                        + category_code + "，返回的信息为：" + result.toString());
+                logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id="
+                        + category_id + "，返回的信息为：" + result.toString());
                 return result;
 
             }
@@ -243,8 +231,8 @@ public class ReceiveController {
                     result.put("success", false);
                     result.put("code", 105);
                     result.put("message", "文件接收未完整！");
-                    logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code="
-                            + category_code + "，返回的信息为：" + result.toString());
+                    logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id="
+                            + category_id + "，返回的信息为：" + result.toString());
                     return result;
 
                 }
@@ -282,7 +270,7 @@ public class ReceiveController {
                     result.put("success", false);
                     result.put("code", 106);
                     result.put("message", "Gif文件转换失败");
-                    logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code=" + category_code
+                    logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id=" + category_id
                             + "，number=" + number + "，second=" + second + "返回的信息为：" + result.toString());
                     return result;
 
@@ -304,7 +292,7 @@ public class ReceiveController {
                 result.put("success", false);
                 result.put("code", 107);
                 result.put("message", "文件写入数据库时发生了错误，请稍后再试");
-                logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code=" + category_code +
+                logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id=" + category_id +
                         "，返回的信息为：" + result.toString());
                 return result;
 
@@ -327,8 +315,8 @@ public class ReceiveController {
                 result.put("success", false);
                 result.put("code", 108);
                 result.put("message", "验证码写入数据库中发生错误");
-                logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code="
-                        + category_code + "，返回的信息为：" + result.toString());
+                logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id="
+                        + category_id + "，返回的信息为：" + result.toString());
                 return result;
 
             }
@@ -351,8 +339,8 @@ public class ReceiveController {
             result.put("success", true);
             result.put("code", 200);
             result.put("message", "数据写入系统成功");
-            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code="
-                    + category_code + "，返回的信息为：" + result.toString());
+            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id="
+                    + category_id + "，返回的信息为：" + result.toString());
             return result;
 
         } catch (Exception e) {
@@ -360,8 +348,8 @@ public class ReceiveController {
             result.put("success", false);
             result.put("code", 99);
             result.put("message", "发生未知错误，错误信息为：" + getErrorInfoFromException(e));
-            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_code="
-                    + category_code + "，返回的信息为：" + result.toString());
+            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id="
+                    + category_id + "，返回的信息为：" + result.toString());
             return result;
 
         }

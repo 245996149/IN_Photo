@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -41,9 +42,13 @@
 <div class="row">
     <div class="col-md-12">
         <div class="page-header">
-            <h1>页面设置
-                <small>。。。。。</small>
-            </h1>
+            <c:forEach items="${category}" var="c">
+                <c:if test="${category_id==c.categoryId}">
+                    <h1>页面设置
+                        <small>${c.categoryName}</small>
+                    </h1>
+                </c:if>
+            </c:forEach>
         </div>
     </div>
 </div>
@@ -123,12 +128,7 @@
                                         <div class="row">
                                             <div class="col-md-12" style="text-align: center;">
                                                 <div class="btn-group" role="group">
-                                                    <button type="button" class="btn btn-success"
-                                                            style="display: none;">
-                                                        确认
-                                                    </button>
-                                                    <button type="button" id="aaaaa" class="btn btn-primary"
-                                                            data-toggle="popover" data-placement="top"
+                                                    <button type="button" class="btn btn-primary"
                                                             onclick="show_click()">
                                                         预览
                                                     </button>
@@ -184,121 +184,141 @@
                         <div class="col-md-6">
                             <div class="panel panel-default">
                                 <div class="panel-body">
-                                    <div class="input-group">
-                                        <span class="input-group-addon" id="code_page_title_span">页面标题</span>
-                                        <input type="text" class="form-control" id="code_page_title"
-                                               aria-describedby="code_page_title_span">
-                                    </div>
-                                    <br>
-                                    <div class="form-group">
-                                        <label for="code_bg">页面背景图片</label>
-                                        <input type="file" id="code_bg">
-                                        <p class="help-block">
-                                            仅支持大小为200kb以内的jpg、png格式的图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
-                                    </div>
-                                    <br>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <label for="code_input_top">输入框上边距离版面顶部的百分比</label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" id="code_input_top"
-                                                       aria-describedby="basic-addon3">
-                                                <span class="input-group-addon">%</span>
-                                            </div>
-                                            <br>
-                                            <label for="code_pic_bottom">输入框下边距离版面底部的百分比</label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" id="code_pic_bottom"
-                                                       aria-describedby="basic-addon3">
-                                                <span class="input-group-addon">%</span>
-                                            </div>
-                                            <br>
-                                            <label for="code_pic_left">输入框左边距离版面左边的百分比</label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" id="code_pic_left"
-                                                       aria-describedby="basic-addon3">
-                                                <span class="input-group-addon">%</span>
-                                            </div>
-                                            <br>
-                                            <label for="code_pic_right">输入框右边距离版面右边的百分比</label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" id="code_pic_right"
-                                                       aria-describedby="basic-addon3">
-                                                <span class="input-group-addon">%</span>
-                                            </div>
-                                            <br>
+
+                                    <form id="code_form" name="code_form" enctype="multipart/form-data">
+                                        <div style="display: none;">
+                                            <input type="text" name="categoryId" value="${category_id}">
                                         </div>
-                                        <div class="col-lg-6">
-                                            <label for="code_input_bg_color">输入框背景色</label>
-                                            <div class="input-group">
-                                                <span class="input-group-addon" id="code_input_bg_color_span">#</span>
-                                                <input type="text" class="form-control"
-                                                       aria-describedby="basic-addon1" id="code_input_bg_color">
+
+                                        <div class="input-group">
+                                            <span class="input-group-addon" id="code_page_title_span">页面标题</span>
+                                            <input type="text" class="form-control" id="code_page_title"
+                                                   name="pageTitle"
+                                                   aria-describedby="code_page_title_span">
+                                        </div>
+                                        <br>
+                                        <div class="form-group">
+                                            <label for="code_bg">页面背景图片</label>
+                                            <input type="file" id="code_bg" name="code_bg" onchange="fileChange(this);">
+                                            <p class="help-block">
+                                                仅支持大小为200kb以内的jpg、png格式的图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <label for="code_input_top">输入框上边距离版面顶部的百分比</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="code_input_top"
+                                                           name="inputTop"
+                                                           aria-describedby="basic-addon3">
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+                                                <br>
+                                                <label for="code_input_bottom">输入框下边距离版面底部的百分比</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="code_input_bottom"
+                                                           name="inputBottom"
+                                                           aria-describedby="basic-addon3">
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+                                                <br>
+                                                <label for="code_input_left">输入框左边距离版面左边的百分比</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="code_input_left"
+                                                           name="inputLeft"
+                                                           aria-describedby="basic-addon3">
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+                                                <br>
+                                                <label for="code_input_right">输入框右边距离版面右边的百分比</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="code_input_right"
+                                                           name="inputRight"
+                                                           aria-describedby="basic-addon3">
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+                                                <br>
                                             </div>
-                                            <br>
-                                            <label for="code_input_border_color">输入框边框色</label>
-                                            <div class="input-group">
+                                            <div class="col-lg-6">
+                                                <label for="code_input_bg_color">输入框背景色</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"
+                                                          id="code_input_bg_color_span">#</span>
+                                                    <input type="text" class="form-control" name="inputBgColor"
+                                                           aria-describedby="basic-addon1" id="code_input_bg_color">
+                                                </div>
+                                                <br>
+                                                <label for="code_input_border_color">输入框边框色</label>
+                                                <div class="input-group">
                                                 <span class="input-group-addon"
                                                       id="code_input_border_color_span">#</span>
-                                                <input type="text" class="form-control"
-                                                       aria-describedby="basic-addon1" id="code_input_border_color">
-                                            </div>
-                                            <br>
-                                            <label for="code_input_text_color">输入框文本色</label>
-                                            <div class="input-group">
+                                                    <input type="text" class="form-control" name="inputBorderColor"
+                                                           aria-describedby="basic-addon1" id="code_input_border_color">
+                                                </div>
+                                                <br>
+                                                <label for="code_input_text_color">输入框文本色</label>
+                                                <div class="input-group">
                                                 <span class="input-group-addon"
                                                       id="code_input_text_color_span">#</span>
-                                                <input type="text" class="form-control"
-                                                       aria-describedby="basic-addon1" id="code_input_text_color">
-                                            </div>
-                                            <br>
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <div class="form-group">
-                                        <label for="button_pic">按钮图片</label>
-                                        <input type="file" id="button_pic">
-                                        <p class="help-block">
-                                            仅支持大小为200kb以内的jpg、png格式的图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
-                                    </div>
-                                    <br>
-                                    <label for="code_button_top">按钮上边距离版面顶部的百分比</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="code_button_top"
-                                               aria-describedby="basic-addon3">
-                                        <span class="input-group-addon">%</span>
-                                    </div>
-                                    <br>
-                                    <label for="code_button_bottom">按钮下边距离版面底部的百分比</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="code_button_bottom"
-                                               aria-describedby="basic-addon3">
-                                        <span class="input-group-addon">%</span>
-                                    </div>
-                                    <br>
-                                    <label for="code_button_left">按钮左边距离版面左边的百分比</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="code_button_left"
-                                               aria-describedby="basic-addon3">
-                                        <span class="input-group-addon">%</span>
-                                    </div>
-                                    <br>
-                                    <label for="code_button_right">按钮右边距离版面右边的百分比</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="code_button_right"
-                                               aria-describedby="basic-addon3">
-                                        <span class="input-group-addon">%</span>
-                                    </div>
-                                    <br>
-                                    <div class="row">
-                                        <div class="col-md-12" style="text-align: center;">
-                                            <div class="btn-group" role="group" aria-label="...">
-                                                <button type="button" class="btn btn-success">确认</button>
-                                                <button type="button" class="btn btn-primary">预览</button>
-                                                <button type="button" class="btn btn-danger">恢复默认</button>
+                                                    <input type="text" class="form-control" name="inputTextColor"
+                                                           aria-describedby="basic-addon1" id="code_input_text_color">
+                                                </div>
+                                                <br>
                                             </div>
                                         </div>
-                                    </div>
+                                        <br>
+                                        <div class="form-group">
+                                            <label for="button_pic">按钮图片</label>
+                                            <input type="file" id="button_pic" name="button_pic"
+                                                   onchange="fileChange(this);">
+                                            <p class="help-block">
+                                                仅支持大小为200kb以内的jpg、png格式的图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
+                                        </div>
+                                        <br>
+                                        <label for="code_button_top">按钮上边距离版面顶部的百分比</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="code_button_top"
+                                                   name="buttonTop"
+                                                   aria-describedby="basic-addon3">
+                                            <span class="input-group-addon">%</span>
+                                        </div>
+                                        <br>
+                                        <label for="code_button_bottom">按钮下边距离版面底部的百分比</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="code_button_bottom"
+                                                   name="buttonBottom"
+                                                   aria-describedby="basic-addon3">
+                                            <span class="input-group-addon">%</span>
+                                        </div>
+                                        <br>
+                                        <label for="code_button_left">按钮左边距离版面左边的百分比</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="code_button_left"
+                                                   name="buttonLeft"
+                                                   aria-describedby="basic-addon3">
+                                            <span class="input-group-addon">%</span>
+                                        </div>
+                                        <br>
+                                        <label for="code_button_right">按钮右边距离版面右边的百分比</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="code_button_right"
+                                                   name="buttonRight"
+                                                   aria-describedby="basic-addon3">
+                                            <span class="input-group-addon">%</span>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-12" style="text-align: center;">
+                                                <div class="btn-group" role="group" aria-label="...">
+                                                    <button type="button" class="btn btn-primary"
+                                                            onclick="code_click()">
+                                                        预览
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger">恢复默认</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -356,60 +376,74 @@
                         <div class="col-md-6">
                             <div class="panel panel-default">
                                 <div class="panel-body">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading">
-                                            <h3 class="panel-title">朋友圈分享设置</h3>
+                                    <form id="share_form" name="share_form" enctype="multipart/form-data">
+                                        <div style="display: none;">
+                                            <input type="text" name="categoryId" value="${category_id}">
                                         </div>
-                                        <div class="panel-body">
-                                            <div class="input-group">
+
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title">朋友圈分享设置</h3>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="input-group">
                                                 <span class="input-group-addon"
                                                       id="share_moments_title_span">分享标题</span>
-                                                <input type="text" class="form-control" id="share_moments_title"
-                                                       aria-describedby="share_moments_title_span">
-                                            </div>
-                                            <br>
-                                            <div class="form-group">
-                                                <label for="share_moments_icon">分享图标</label>
-                                                <input type="file" id="share_moments_icon">
-                                                <p class="help-block">
-                                                    仅支持大小为200kb以内的jpg、png格式，分辨率300*300以内的正方形图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading">
-                                            <h3 class="panel-title">分享给好友设置</h3>
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="input-group">
-                                                <span class="input-group-addon" id="share_chats_title_span">分享标题</span>
-                                                <input type="text" class="form-control" id="share_chats_title"
-                                                       aria-describedby="share_moments_title_span">
-                                            </div>
-                                            <br>
-                                            <div class="input-group">
-                                                <span class="input-group-addon" id="share_chats_text_span">分享内容</span>
-                                                <input type="text" class="form-control" id="share_chats_text"
-                                                       aria-describedby="share_moments_title_span">
-                                            </div>
-                                            <br>
-                                            <div class="form-group">
-                                                <label for="share_chats_icon">分享图标</label>
-                                                <input type="file" id="share_chats_icon">
-                                                <p class="help-block">
-                                                    仅支持大小为200kb以内的jpg、png格式，分辨率300*300以内的正方形图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
+                                                    <input type="text" class="form-control" id="share_moments_title"
+                                                           name="shareMomentsTitle"
+                                                           aria-describedby="share_moments_title_span">
+                                                </div>
+                                                <br>
+                                                <div class="form-group">
+                                                    <label for="share_moments_icon">分享图标</label>
+                                                    <input type="file" id="share_moments_icon" name="moments_icon"
+                                                           onchange="fileChange(this);">
+                                                    <p class="help-block">
+                                                        仅支持大小为200kb以内的jpg、png格式，分辨率300*300以内的正方形图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12" style="text-align: center;">
-                                            <div class="btn-group" role="group" aria-label="...">
-                                                <button type="button" class="btn btn-success">确认</button>
-                                                <button type="button" class="btn btn-primary">预览</button>
-                                                <button type="button" class="btn btn-danger">恢复默认</button>
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title">分享给好友设置</h3>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"
+                                                          id="share_chats_title_span">分享标题</span>
+                                                    <input type="text" class="form-control" id="share_chats_title"
+                                                           name="shareChatsTitle"
+                                                           aria-describedby="share_moments_title_span">
+                                                </div>
+                                                <br>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"
+                                                          id="share_chats_text_span">分享内容</span>
+                                                    <input type="text" class="form-control" id="share_chats_text"
+                                                           name="shareChatsText"
+                                                           aria-describedby="share_moments_title_span">
+                                                </div>
+                                                <br>
+                                                <div class="form-group">
+                                                    <label for="share_chats_icon">分享图标</label>
+                                                    <input type="file" id="share_chats_icon" name="chats_icon"
+                                                           onchange="fileChange(this);">
+                                                    <p class="help-block">
+                                                        仅支持大小为200kb以内的jpg、png格式，分辨率300*300以内的正方形图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                        <div class="row">
+                                            <div class="col-md-12" style="text-align: center;">
+                                                <div class="btn-group" role="group" aria-label="...">
+                                                    <button type="button" class="btn btn-success"
+                                                            onclick="validate_share();">确认
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger">恢复默认</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -458,7 +492,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -467,16 +500,29 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">页面预览</h4>
+            </div>
+            <div class="modal-body" style="text-align: center">
+                <img src="${pageContext.request.contextPath}/images/QRcode_test.png" id="modal_img"><br>
+                <span>微信扫描二维码预览页面</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回修改</button>
+                <button type="button" class="btn btn-primary" onclick="validate_request();">保存修改</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
 
-    $('#aaaaa').popover(
-        {
-            content: "<img src='../images/QRcode_test.png' width='200px' height='auto'>",
-            html: true,
-            container: false
-
-        }
-    )
 
 </script>
 

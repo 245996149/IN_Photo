@@ -39,18 +39,15 @@ public class DirUtil {
      * @param str 传入的key
      * @return 返回的value
      */
-    public static String getConfigInfo(String str) throws IOException {
+    public static String getConfigInfo(String str) {
 
         // 创建配置文件对象
         Properties p = new Properties();
         // 创建返回字符串对象
         String reStr = null;
-        // 创建文件输入流对象
-        InputStream in = null;
 
-        try {
-            // 将文件通过文件输入流打开
-            in = DirUtil.class.getResourceAsStream("/IN_Photo_config.properties");
+        // 将文件通过文件输入流打开
+        try(InputStream in = DirUtil.class.getResourceAsStream("/IN_Photo_config.properties");) {
             // 配置文件对象读取文件输入流
             p.load(in);
             // 关闭文件输入流
@@ -59,10 +56,6 @@ public class DirUtil {
             reStr = p.getProperty(str);
         } catch (Exception e) {
             logger.info("读取文件错误：" + getErrorInfoFromException(e));
-        } finally {
-            if (in != null) {
-                in.close();
-            }
         }
         return reStr;
     }
@@ -84,6 +77,14 @@ public class DirUtil {
         }
     }
 
+    /**
+     * 接受设置图片上传，并将其随机命名放置到设置文件夹下
+     *
+     * @param file 接收的文件
+     * @param user 隶属于的用户
+     * @return
+     * @throws IOException
+     */
     public static String createSettingsPic(MultipartFile file, UsersEntity user) throws IOException {
         // 获取上传文件名
         String fileName = file.getOriginalFilename();

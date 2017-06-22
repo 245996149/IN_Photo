@@ -1,6 +1,9 @@
 package cn.inphoto.user.dbentity;
 
+import org.junit.Test;
+
 import javax.persistence.*;
+import java.util.regex.Pattern;
 
 /**
  * Created by kaxia on 2017/6/5.
@@ -134,7 +137,7 @@ public class CodeWebinfoEntity {
     }
 
     public void setInputBgColor(String inputBgColor) {
-        this.inputBgColor = inputBgColor;
+        this.inputBgColor = colorPattern(inputBgColor);
     }
 
     @Basic
@@ -144,7 +147,7 @@ public class CodeWebinfoEntity {
     }
 
     public void setInputBorderColor(String inputBorderColor) {
-        this.inputBorderColor = inputBorderColor;
+        this.inputBorderColor = colorPattern(inputBorderColor);
     }
 
     @Basic
@@ -154,7 +157,7 @@ public class CodeWebinfoEntity {
     }
 
     public void setInputTextColor(String inputTextColor) {
-        this.inputTextColor = inputTextColor;
+        this.inputTextColor = colorPattern(inputTextColor);
     }
 
     @Basic
@@ -270,5 +273,34 @@ public class CodeWebinfoEntity {
         result = 31 * result + (buttonPic != null ? buttonPic.hashCode() : 0);
         result = 31 * result + (codeWebinfoState != null ? codeWebinfoState.hashCode() : 0);
         return result;
+    }
+
+    /**
+     * 判断传入的颜色是否符合规定，符合规定原值传出，缺少#补上，不符合规定返回null
+     *
+     * @param color 传入的颜色
+     * @return
+     */
+    private String colorPattern(String color) {
+
+        String pattern = "^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$";
+        String pattern2 = "([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$";
+
+        if (Pattern.matches(pattern, color)) {
+            return color;
+        } else if (Pattern.matches(pattern2, color)) {
+            return "#" + color;
+        } else {
+            return null;
+        }
+
+    }
+
+
+    @Test
+    public void testS() {
+        String s = "a234f0";
+        System.out.println(colorPattern(s));
+
     }
 }

@@ -5,11 +5,8 @@ import cn.inphoto.user.dao.UserDao;
 import cn.inphoto.user.dbentity.UsersEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
-
-import static cn.inphoto.user.util.DirUtil.getErrorInfoFromException;
 
 /**
  * Created by kaxia on 2017/6/5.

@@ -50,4 +50,11 @@ public interface WebinfoDao {
      */
     ShareInfoEntity findShareByShare_id(Long share_info_id);
 
+    /**
+     * 根据User_id查询分享设置
+     * @param user_id 分享设置id
+     * @return 分享设置
+     */
+    ShareInfoEntity findShareByUser_idAndCategory(Long user_id, Integer category_id);
+
 }

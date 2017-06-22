@@ -1,6 +1,5 @@
 package cn.inphoto.user.test.dbTest;
 
-import cn.inphoto.user.dao.UserDao;
 import cn.inphoto.user.dao.UtilDao;
 import cn.inphoto.user.dbentity.UsersEntity;
 import org.junit.Test;

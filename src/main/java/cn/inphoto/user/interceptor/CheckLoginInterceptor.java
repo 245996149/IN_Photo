@@ -1,18 +1,11 @@
 package cn.inphoto.user.interceptor;
 
-import cn.inphoto.user.dao.ShareDataDao;
-import cn.inphoto.user.dao.UtilDao;
-import cn.inphoto.user.dbentity.ShareDataEntity;
 import cn.inphoto.user.dbentity.UsersEntity;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Calendar;
-import java.util.Date;
 
 
 /**

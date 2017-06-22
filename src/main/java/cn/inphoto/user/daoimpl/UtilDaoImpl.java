@@ -7,8 +7,6 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 import static cn.inphoto.user.util.DirUtil.getErrorInfoFromException;
 
 /**

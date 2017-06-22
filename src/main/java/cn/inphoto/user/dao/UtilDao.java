@@ -1,7 +1,5 @@
 package cn.inphoto.user.dao;
 
-import java.util.List;
-
 /**
  * 数据库通用操作Dao接口
  * Created by kaxia on 2017/6/13.

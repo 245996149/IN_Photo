@@ -1,7 +1,9 @@
 package cn.inphoto.user.controller;
 
+import cn.inphoto.user.dao.CategoryDao;
 import cn.inphoto.user.dao.UserCategoryDao;
 import cn.inphoto.user.dao.UserDao;
+import cn.inphoto.user.dbentity.CategoryEntity;
 import cn.inphoto.user.dbentity.UserCategoryEntity;
 import cn.inphoto.user.dbentity.UsersEntity;
 import cn.inphoto.user.log.UserLog;
@@ -13,7 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +40,9 @@ public class LoginController {
 
     @Resource
     UserCategoryDao userCategoryDao;
+
+    @Resource
+    CategoryDao categoryDao;
 
     @RequestMapping("/toLogin.do")
     public String toLogin() {
@@ -85,6 +92,105 @@ public class LoginController {
         session.setAttribute("loginUser", usersEntity);
 
         return result;
+
+    }
+
+    @RequestMapping("/signOut.do")
+    public String signOut(HttpSession session) {
+
+        UsersEntity usersEntity = (UsersEntity) session.getAttribute("loginUser");
+
+        MDC.put("user_id", usersEntity.getUserId());
+
+        // 查找到所有session中的参数
+        Enumeration em = session.getAttributeNames();
+
+        // 循环移除所有参数
+        while (em.hasMoreElements()) {
+
+            session.removeAttribute(em.nextElement().toString());
+
+        }
+
+        logger.log(UserLog.USER, "用户user_name=" + usersEntity.getUserName() + " 的用户退出登陆");
+
+        return "redirect:toLogin.do";
+
+    }
+
+
+    @RequestMapping("/checkClientUser.do")
+    @ResponseBody
+    public Map<String, Object> checkClientUser(HttpServletResponse response, String user_name, String password, String type) {
+
+        response.setCharacterEncoding("utf-8");
+
+        logger.info("接收到的参数为：userName=" + user_name + ";password=" + password + ";type=" + type);
+
+        // 设置返回的Map
+        Map<String, Object> result = new HashMap<>();
+
+        // 如果用户名或者密码为空，返回错误信息
+        if (user_name == null || password == null || type == null) {
+
+            result.put("code", "error");
+            result.put("message", "用户名、密码、类型不能为空");
+            logger.info(result);
+            return result;
+
+        }
+
+        UsersEntity user = userDao.findByUser_name(user_name);
+
+        if (user == null) {
+
+            result.put("success", false);
+            result.put("message", "未找到该用户名所对应的用户!");
+            logger.info(result);
+            return result;
+
+        }
+
+        // 比较查询到的用户的password与传入的password，正确判断用户是否有有效的类别，错误返回错误信息
+        if (password.equals(user.getPassword())) {
+
+            CategoryEntity category = categoryDao.findByCategory_code(type);
+
+            if (category == null) {
+
+                result.put("success", false);
+                result.put("message", "未找到type对应的套餐系统");
+                logger.info(result);
+                return result;
+
+            }
+
+            UserCategoryEntity userCategory = userCategoryDao.findByUser_idAndCategory_id(
+                    user.getUserId(), category.getCategoryId(), UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
+
+            if (userCategory == null) {
+
+                result.put("success", false);
+                result.put("message", "该userName对应的用户没有有效的套餐。请联系我们购买套餐噢！");
+                logger.info(result);
+                return result;
+
+            }
+
+            result.put("success", true);
+            result.put("user_id", user.getUserId());
+            result.put("category_id", category.getCategoryId());
+            logger.info(result);
+            return result;
+
+        } else {
+
+            result.put("success", false);
+            result.put("message", "密码错误！");
+            logger.info(result);
+            return result;
+
+        }
 
     }
 

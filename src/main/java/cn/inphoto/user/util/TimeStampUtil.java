@@ -3,9 +3,7 @@ package cn.inphoto.user.util;
 import org.junit.Test;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 /**
  * Created by kaxia on 2017/6/12.

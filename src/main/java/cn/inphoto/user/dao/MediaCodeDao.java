@@ -1,7 +1,6 @@
 package cn.inphoto.user.dao;
 
 import cn.inphoto.user.dbentity.MediaCodeEntity;
-import cn.inphoto.user.dbentity.UsersEntity;
 
 import java.util.List;
 

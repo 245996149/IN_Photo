@@ -13,8 +13,6 @@ import java.io.IOException;
  */
 public class ResFilter implements Filter {
 
-    private Logger logger = Logger.getLogger(ResFilter.class);
-
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         System.out.println("过滤器开始初始化了");

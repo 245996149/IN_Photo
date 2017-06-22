@@ -3,6 +3,11 @@ package cn.inphoto.user.controller;
 import cn.inphoto.user.dao.MediaDataDao;
 import cn.inphoto.user.dao.WebinfoDao;
 import cn.inphoto.user.dbentity.*;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 import net.coobird.thumbnailator.Thumbnails;
 import net.sf.json.JSONArray;
 import org.apache.log4j.Logger;
@@ -18,11 +23,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static cn.inphoto.user.util.DirUtil.getErrorInfoFromException;
 import static cn.inphoto.user.util.ZIPUtil.createZIP;
+import static cn.inphoto.user.util.picUtil.QRUtil.writeToStream;
 
 /**
  * Created by kaxia on 2017/6/19.
@@ -39,7 +48,6 @@ public class DownloadController {
     @Resource
     MediaDataDao mediaDataDao;
 
-
     /**
      * 输出媒体、套餐系统图片数据
      *
@@ -51,8 +59,7 @@ public class DownloadController {
      * @throws IOException
      */
     @RequestMapping("getMedia.do")
-    public void openMedia(HttpServletResponse response, HttpServletRequest request, Long id, int type, boolean thumbnail, boolean download) throws IOException {
-
+    public void getMedia(HttpServletResponse response, HttpServletRequest request, Long id, int type, boolean thumbnail, boolean download) throws IOException {
 
         String file_path = null;
 
@@ -107,12 +114,16 @@ public class DownloadController {
                         file_path = shareInfo2.getShareChatsIcon();
                     }
                     break;
+
+                case 7://type=7 测试用数据
+                    file_path = request.getSession().getServletContext().getRealPath("/images/test.jpg");
+                    break;
                 default:
                     break;
             }
 
             if (file_path == null || "".equals(file_path)) {
-                file_path = request.getSession().getServletContext().getRealPath("/images/21bg.png");
+                file_path = request.getSession().getServletContext().getRealPath("/images/error.png");
             }
 
             logger.info("接收到读取图片文件请求，请求id为：" + id + "，type为：" + type + "，thumbnail为：" + thumbnail + "的图片文件路径为：" + file_path);
@@ -172,8 +183,8 @@ public class DownloadController {
      */
     @RequestMapping("/getMedias.do")
     @ResponseBody
-    public void getMedia(HttpServletResponse response, HttpSession session,
-                         String media_id_list) throws IOException {
+    public void getMedias(HttpServletResponse response, HttpSession session,
+                          String media_id_list) throws IOException {
         // 获取session中的user
         UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
 
@@ -218,4 +229,30 @@ public class DownloadController {
         }
     }
 
+    @RequestMapping("/getQR.do")
+    @ResponseBody
+    public void getQR(HttpServletResponse response, String url,boolean encode) throws IOException {
+
+        if (encode) {
+            url = URLDecoder.decode(url, "UTF-8");
+        }
+
+        System.out.println(url);
+
+        try (OutputStream outputStream = response.getOutputStream()) {
+
+            MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+            Map hints = new HashMap();
+            //内容所使用编码
+            hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
+            BitMatrix bitMatrix = multiFormatWriter.encode(url, BarcodeFormat.QR_CODE, 200, 200, hints);
+
+            //生成二维码
+            writeToStream(bitMatrix, "jpg", outputStream);
+
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
