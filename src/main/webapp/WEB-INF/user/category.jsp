@@ -57,27 +57,28 @@
                         <td>支付时间</td>
                         <td>生效时间</td>
                         <td>截至时间</td>
+                        <td>套餐容量</td>
                         <td>套餐使用情况</td>
                         <td>操作</td>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>100</td>
-                        <td>铝木抠像系统</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>2017-01-01 12:00:00</td>
-                        <td>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0"
-                                     aria-valuemax="100" style="width: 60%;min-width: 2%;">
-                                    60%
-                                </div>
-                            </div>
-                        </td>
-                        <td>操作</td>
-                    </tr>
+                    <%--<tr>--%>
+                    <%--<td>100</td>--%>
+                    <%--<td>铝木抠像系统</td>--%>
+                    <%--<td>2017-01-01 12:00:00</td>--%>
+                    <%--<td>2017-01-01 12:00:00</td>--%>
+                    <%--<td>2017-01-01 12:00:00</td>--%>
+                    <%--<td>--%>
+                    <%--<div class="progress">--%>
+                    <%--<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0"--%>
+                    <%--aria-valuemax="100" style="width: 60%;min-width: 2%;">--%>
+                    <%--60%--%>
+                    <%--</div>--%>
+                    <%--</div>--%>
+                    <%--</td>--%>
+                    <%--<td>操作</td>--%>
+                    <%--</tr>--%>
                     <c:forEach items="${userCategoryList}" var="uc">
                         <tr>
                             <td>${uc.userCategoryId}</td>
@@ -91,6 +92,7 @@
                             <td><fmt:formatDate value="${uc.payTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                             <td><fmt:formatDate value="${uc.beginTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                             <td><fmt:formatDate value="${uc.endTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                            <td>${uc.mediaNumber}</td>
                             <td>
                                 <c:choose>
                                     <c:when test="${uc.userCategoryState==0}">
@@ -115,7 +117,6 @@
                                         已过期
                                     </c:otherwise>
                                 </c:choose>
-
                             </td>
                             <td>操作</td>
                         </tr>

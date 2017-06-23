@@ -37,12 +37,12 @@
 <body>
 <div class="container">
     <div class="alert alert-danger" role="alert" style="display: none" id="error_message">...</div>
-    <form class="form-signin">
+    <form class="form-signin" id="signin_form" action="login.do" method="post">
         <h2 class="form-signin-heading">IN Photo管理系统</h2>
         <label for="inputUsername" class="sr-only">User name</label>
-        <input type="email" id="inputUsername" class="form-control" placeholder="User name" required autofocus>
+        <input type="email" id="inputUsername" class="form-control" placeholder="User name" required autofocus name="user_name">
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
         <div class="checkbox">
             <label>
                 <input type="checkbox" value="remember-me" checked="checked">
@@ -64,6 +64,7 @@
         var user_name = $("#inputUsername").val();
         var password = $("#inputPassword").val();
         var error_message = $("#error_message");
+        var signin_form = $("#signin_form");
 
         $.post(
             "checkUser.do",
@@ -78,7 +79,15 @@
                     setTimeout(function () {
                         $("#error_message").hide();
                     }, 2000);
-                    window.location.href = "/IN_Photo/user/index.do";
+
+                    //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+                    var pathName = window.document.location.pathname;
+                    //获取带"/"的项目名，如：/uimcardprj
+                    var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+
+                    signin_form.src = "login.do";
+                    signin_form.submit();
+
                 } else {
                     error_message.text("user_name = " + user_name + " password = " + password + res.message);
                     error_message.show();

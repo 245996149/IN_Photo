@@ -1,16 +1,14 @@
 package cn.inphoto.user.util;
 
 import cn.inphoto.user.dao.*;
-import cn.inphoto.user.dbentity.CategoryEntity;
-import cn.inphoto.user.dbentity.MediaCodeEntity;
-import cn.inphoto.user.dbentity.ShareDataEntity;
-import cn.inphoto.user.dbentity.UsersEntity;
+import cn.inphoto.user.dbentity.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -20,8 +18,6 @@ import java.util.List;
  */
 public class DBUtil {
 
-    // 读取配置
-    static ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
 
     /**
      * 判断媒体验证码是否存在，存在则更新，不存在则创建
@@ -29,10 +25,7 @@ public class DBUtil {
      * @param mediaCodeEntity 媒体验证码
      * @return 更新、创建是否成功
      */
-    public static boolean judgeMediaCode(MediaCodeEntity mediaCodeEntity) {
-
-        MediaCodeDao mediaCodeDao = ctx.getBean(MediaCodeDao.class);
-        UtilDao utilDao = ctx.getBean(UtilDao.class);
+    public static boolean judgeMediaCode(MediaCodeDao mediaCodeDao, UtilDao utilDao, MediaCodeEntity mediaCodeEntity) {
 
         // 查询媒体验证码对象
         MediaCodeEntity mediaCode = mediaCodeDao.findByUser_idAndCategory_idAndMedia_code(
@@ -56,9 +49,8 @@ public class DBUtil {
      * @param session session
      * @param user    用户对象
      */
-    public static void selectTodayData(HttpSession session, UsersEntity user) {
+    public static void selectTodayData(ShareDataDao shareDataDao, HttpSession session, UsersEntity user) {
 
-        ShareDataDao shareDataDao = ctx.getBean(ShareDataDao.class);
 
         // 创建日历对象
         Calendar calendar = Calendar.getInstance();
@@ -91,7 +83,7 @@ public class DBUtil {
      *
      * @return 套餐系统信息
      */
-    public static List<CategoryEntity> judgeCategory(HttpServletRequest request) {
+    public static List<CategoryEntity> judgeCategory(CategoryDao categoryDao, HttpServletRequest request) {
 
         // 获取application对象
         ServletContext application = request.getSession().getServletContext();
@@ -102,18 +94,34 @@ public class DBUtil {
         // 判断套餐系统信息是否有效，无效获取新的套餐系统信息
         if (categoryList == null) {
 
-            // 查询所有套餐系统信息
-            CategoryDao categoryDao = ctx.getBean(CategoryDao.class);
-
             // 将套餐系统信息赋给套餐系统信息队列对象
             categoryList = categoryDao.findAll();
 
-            application.setAttribute("category",categoryList);
+            application.setAttribute("category", categoryList);
 
         }
 
         return categoryList;
 
+    }
+
+    /**
+     * 将媒体数据移入回收站
+     *
+     * @param mediaDataEntity
+     */
+    public static void changeMediaDataToRecycle(MediaDataEntity mediaDataEntity) {
+
+        Date date = new Date();
+
+        mediaDataEntity.setMediaState(MediaDataEntity.MEDIA_STATE_RECYCLE);
+        mediaDataEntity.setDeleteTime(new Timestamp((date.getTime())));
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DATE, 30);
+
+        mediaDataEntity.setOverTime(new Timestamp(calendar.getTimeInMillis()));
     }
 
 }

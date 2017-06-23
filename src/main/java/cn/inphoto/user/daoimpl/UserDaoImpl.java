@@ -8,6 +8,8 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Created by kaxia on 2017/6/5.
  */
@@ -40,6 +42,18 @@ public class UserDaoImpl extends SuperDao implements UserDao {
 
             return (UsersEntity) query.uniqueResult();
         }
+    }
+
+    @Override
+    public List<UsersEntity> findAll() {
+
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery("from UsersEntity");
+
+            return query.list();
+        }
+
     }
 
 

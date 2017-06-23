@@ -31,4 +31,5 @@ public interface CategoryDao {
      */
     List<CategoryEntity> findAll();
 
+
 }

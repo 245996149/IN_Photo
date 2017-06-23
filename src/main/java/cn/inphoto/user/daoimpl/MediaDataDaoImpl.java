@@ -28,21 +28,22 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = null;
+            Query query;
 
             // 判断是否有category_id参数
             if (tablePage.getCategory_id() == 0) {
 
-                query = session.createQuery(" from MediaDataEntity where userId = ? and mediaState = ? order by deleteTime desc");
+                query = session.createQuery(" from MediaDataEntity where userId = :user_id and mediaState = :media_state order by deleteTime desc");
 
             } else {
 
-                query = session.createQuery(" from MediaDataEntity where userId = ? and mediaState = ? and categoryId = ? order by mediaId desc");
-                query.setParameter(2, tablePage.getCategory_id());
+                query = session.createQuery(" from MediaDataEntity where userId = :user_id and mediaState = :media_state and categoryId = :category_id order by mediaId desc");
+                query.setParameter("category_id", tablePage.getCategory_id());
+
             }
 
-            query.setParameter(0, tablePage.getUser_id());
-            query.setParameter(1, tablePage.getMedia_state());
+            query.setParameter("user_id", tablePage.getUser_id());
+            query.setParameter("media_state", tablePage.getMedia_state());
 
             query.setFirstResult(tablePage.getBegin());
             query.setMaxResults(tablePage.getPageSize());
@@ -60,15 +61,15 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
             // 判断是否有category_id参数
             if (category_id == null) {
                 query = session.createQuery(
-                        "select count(*) from MediaDataEntity where userId = ?  and mediaState = ?");
+                        "select count(*) from MediaDataEntity where userId = :user_id  and mediaState = :media_state");
             } else {
                 query = session.createQuery(
-                        "select count(*) from MediaDataEntity where userId = ? and mediaState = ? and categoryId = ?");
-                query.setParameter(2, category_id);
+                        "select count(*) from MediaDataEntity where userId = :user_id and mediaState = :media_state and categoryId = :category_id");
+                query.setParameter("category_id", category_id);
             }
 
-            query.setParameter(0, user_id);
-            query.setParameter(1, media_state);
+            query.setParameter("user_id", user_id);
+            query.setParameter("media_state", media_state);
 
             return ((Long) query.uniqueResult()).intValue();
         }
@@ -123,9 +124,9 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from MediaDataEntity where mediaId = ?");
+            Query query = session.createQuery("from MediaDataEntity where mediaId = :media_id");
 
-            query.setParameter(0, media_id);
+            query.setParameter("media_id", media_id);
 
             return (MediaDataEntity) query.uniqueResult();
         }
@@ -176,6 +177,35 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
         }
 
         return flag;
+
+    }
+
+    @Override
+    public List<MediaDataEntity> findByOver_timeAndState(Date over_time, String media_data_state) {
+
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery("from MediaDataEntity where overTime < :over_time and mediaState = :media_data_state");
+
+            query.setParameter("over_time", over_time);
+            query.setParameter("media_data_state", media_data_state);
+
+            return query.list();
+        }
+
+    }
+
+    @Override
+    public List<MediaDataEntity> findByUser_idAndState(Long user_id,String media_state){
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery("from MediaDataEntity where userId = :user_id and mediaState = :media_state");
+
+            query.setParameter("user_id", user_id);
+            query.setParameter("media_state", media_state);
+
+            return query.list();
+        }
 
     }
 

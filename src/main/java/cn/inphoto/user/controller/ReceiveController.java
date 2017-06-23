@@ -55,6 +55,9 @@ public class ReceiveController {
     @Resource
     MediaDataDao mediaDataDao;
 
+    @Resource
+    MediaCodeDao mediaCodeDao;
+
     /**
      * @param request
      * @param response
@@ -110,7 +113,7 @@ public class ReceiveController {
 
         // 设置日志信息
         MDC.put("user_id", user.getUserId());
-        MDC.put("category_id",category_id);
+        MDC.put("category_id", category_id);
 
         // 根据category_code、user_id查询用户有效期内的系统
         UserCategoryEntity userCategory =
@@ -310,7 +313,7 @@ public class ReceiveController {
             System.out.println(mediaCode.toString());
 
             // 更新、新增验证码表，并返回是否成功
-            if (!judgeMediaCode(mediaCode)) {
+            if (!judgeMediaCode(mediaCodeDao, utilDao, mediaCode)) {
 
                 result.put("success", false);
                 result.put("code", 108);

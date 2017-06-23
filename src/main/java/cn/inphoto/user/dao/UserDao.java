@@ -2,6 +2,8 @@ package cn.inphoto.user.dao;
 
 import cn.inphoto.user.dbentity.UsersEntity;
 
+import java.util.List;
+
 /**
  * Created by kaxia on 2017/6/5.
  */
@@ -23,5 +25,11 @@ public interface UserDao {
      */
     UsersEntity findByUser_id(Long user_id);
 
+    /**
+     * 查询所有用户对象
+     *
+     * @return 用户对象
+     */
+    List<UsersEntity> findAll();
 
 }

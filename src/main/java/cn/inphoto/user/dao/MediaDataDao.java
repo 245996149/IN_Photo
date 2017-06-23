@@ -72,4 +72,22 @@ public interface MediaDataDao {
      * @return 返回是否成功
      */
     boolean updateMediaList(List<MediaDataEntity> mediaDataList);
+
+    /**
+     * 找到回收站中所有时间过期的媒体数据
+     *
+     * @param over_time
+     * @param media_data_state
+     * @return
+     */
+    List<MediaDataEntity> findByOver_timeAndState(Date over_time, String media_data_state);
+
+    /**
+     * 根据用户及状态查询所有对应的媒体数据
+     *
+     * @param media_state
+     * @return
+     */
+    List<MediaDataEntity> findByUser_idAndState(Long user_id,String media_state);
+
 }

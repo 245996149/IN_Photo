@@ -1,6 +1,7 @@
 package cn.inphoto.user.controller;
 
 import cn.inphoto.user.dao.CategoryDao;
+import cn.inphoto.user.dao.ShareDataDao;
 import cn.inphoto.user.dao.UserCategoryDao;
 import cn.inphoto.user.dao.UserDao;
 import cn.inphoto.user.dbentity.CategoryEntity;
@@ -44,6 +45,9 @@ public class LoginController {
     @Resource
     CategoryDao categoryDao;
 
+    @Resource
+    ShareDataDao shareDataDao;
+
     @RequestMapping("/toLogin.do")
     public String toLogin() {
         return "user/sign_in";
@@ -51,7 +55,7 @@ public class LoginController {
 
     @RequestMapping("/checkUser.do")
     @ResponseBody
-    public Map checkUser(String user_name, String password, HttpSession session, HttpServletRequest request) {
+    public Map checkUser(String user_name, String password) {
 
         Map<String, Object> result = new HashMap<>();
 
@@ -72,15 +76,40 @@ public class LoginController {
 
         MDC.put("user_id", usersEntity.getUserId());
 
+        result.put("success", true);
+        result.put("message", "验证成功");
+        logger.log(UserLog.USER, "用户user_name=" + user_name + " 的用户尝试登陆，登陆结果为：" + result.toString());
+
+
+        return result;
+
+    }
+
+    @RequestMapping("/login.do")
+    public String login(String user_name, String password, HttpSession session, HttpServletRequest request) {
+
+        Map<String, Object> result = new HashMap<>();
+
+        UsersEntity usersEntity = userDao.findByUser_name(user_name);
+
+        if (!password.equals(usersEntity.getPassword())) {
+            result.put("success", false);
+            result.put("message", "密码错误，请重新输入密码!");
+            logger.log(UserLog.USER, "用户user_name=" + user_name + " 的用户尝试登陆，登陆结果为：" + result.toString());
+            return "redirect:toLogin.do";
+        }
+
+        MDC.put("user_id", usersEntity.getUserId());
+
         // 查询该用户所有的用户套餐系统
         List<UserCategoryEntity> userCategoryList = userCategoryDao.findByUser_idAndState(
                 usersEntity.getUserId(), UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
 
         //查询所有的套餐系统
-        judgeCategory(request);
+        judgeCategory(categoryDao,request);
 
         // 查询今日数据并写入session
-        selectTodayData(session, usersEntity);
+       selectTodayData(shareDataDao,session, usersEntity);
 
         // 将所有的用户套餐系统写入session
         session.setAttribute("allUserCategory", userCategoryList);
@@ -91,8 +120,7 @@ public class LoginController {
 
         session.setAttribute("loginUser", usersEntity);
 
-        return result;
-
+        return "redirect:/user/index.do";
     }
 
     @RequestMapping("/signOut.do")

@@ -28,25 +28,37 @@ public class CategoryController {
     @Resource
     MediaDataDao mediaDataDao;
 
+    /**
+     * 打开套餐管理页面
+     *
+     * @param session
+     * @param model
+     * @return
+     */
     @RequestMapping("/toCategory.do")
     public String toCategory(HttpSession session, Model model) {
 
+        // 获取用户信息
         UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
 
+        // 找到所有用户套餐
         List<UserCategoryEntity> userCategoryList = userCategoryDao.findByUser_id(user.getUserId());
 
+        // 从session中找到所有生效的用户套餐
         List<UserCategoryEntity> myUserCategoryList = (List<UserCategoryEntity>) session.getAttribute("allUserCategory");
 
         Map<Long, Integer> tempMap = new HashMap<>();
 
+        // 遍历生效的套餐
         for (UserCategoryEntity uc : myUserCategoryList
                 ) {
 
+            // 查询套餐对应的正常状态的媒体总数
             int a = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
                     user.getUserId(), uc.getCategoryId(), MediaDataEntity.MEDIA_STATE_NORMAL);
-            // System.out.println(a + "   " + uc.getMediaNumber());
+
+            // 将数据写入临时Map中以供页面调用
             tempMap.put(uc.getUserCategoryId(), (a * 100 / uc.getMediaNumber()));
-            //System.out.println(tempMap.get(uc.getUserCategoryId()));
 
         }
 

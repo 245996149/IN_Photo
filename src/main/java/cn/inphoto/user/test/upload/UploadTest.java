@@ -14,50 +14,53 @@ public class UploadTest {
     @Test
     public void uploadTest() throws Exception {
 
-        Random random = new Random();
+        for (int j = 0; j < 10; j++) {
 
-        StringBuffer sb = new StringBuffer();
 
-        for (int i = 0; i < 6; i++) {
-            int n = random.nextInt(10);
-            sb.append(n);
-        }
-        StringBuffer sb1 = new StringBuffer();
-        for (int i = 0; i < 4; i++) {
-            int n = random.nextInt(10);
-            sb1.append(n);
-        }
+            Random random = new Random();
 
-        sb1.append(sb);
+            StringBuffer sb = new StringBuffer();
 
-        // 设定服务地址
-        String serverUrl = "http://127.0.0.1" +
-                "/IN_Photo/receive/receiveMedia.do?names=" + sb1 + "&media_code=" + sb + "&category_code=slr&user_id=" + 1 + "&second=" + 150 + "&number=" + 8;
+            for (int i = 0; i < 6; i++) {
+                int n = random.nextInt(10);
+                sb.append(n);
+            }
+            StringBuffer sb1 = new StringBuffer();
+            for (int i = 0; i < 4; i++) {
+                int n = random.nextInt(10);
+                sb1.append(n);
+            }
 
-        // 设定要上传的普通Form Field及其对应的value
+            sb1.append(sb);
 
-        // 类FormFieldKeyValuePair的定义见后面的代码
+            // 设定服务地址
+            String serverUrl = "http://app.in-photo.cn" +
+                    "/IN_Photo/receive/receiveMedia.do?names=" + sb1 + "&media_code=" + sb + "&category_id=3&user_id=" + 2 + "&second=" + 150 + "&number=" + 8;
 
-        ArrayList<FormFieldKeyValuePair> formFieldKeyValuePairs = new ArrayList<>();
+            // 设定要上传的普通Form Field及其对应的value
 
-        formFieldKeyValuePairs.add(new FormFieldKeyValuePair("username", "Ming.C"));
+            // 类FormFieldKeyValuePair的定义见后面的代码
 
-        formFieldKeyValuePairs.add(new FormFieldKeyValuePair("password", "HELLO.MING"));
+            ArrayList<FormFieldKeyValuePair> formFieldKeyValuePairs = new ArrayList<>();
 
-        formFieldKeyValuePairs.add(new FormFieldKeyValuePair("hobby", "Computer programming"));
+            formFieldKeyValuePairs.add(new FormFieldKeyValuePair("username", "Ming.C"));
 
-        // 设定要上传的文件。UploadFileItem见后面的代码
+            formFieldKeyValuePairs.add(new FormFieldKeyValuePair("password", "HELLO.MING"));
 
-        ArrayList<UploadFileItem> ufi = new ArrayList<>();
+            formFieldKeyValuePairs.add(new FormFieldKeyValuePair("hobby", "Computer programming"));
+
+            // 设定要上传的文件。UploadFileItem见后面的代码
+
+            ArrayList<UploadFileItem> ufi = new ArrayList<>();
 
 //        for (int i = 0; i < 8; i++) {
 //            ufi.add(new UploadFileItem("upload" + (i + 1), "g:\\" + (i + 1) + ".png"));
 //        }
-        if (random.nextInt(10) % 2 == 1) {
-            ufi.add(new UploadFileItem("upload1", "g:\\2167.jpg"));
-        } else {
-            ufi.add(new UploadFileItem("upload1", "g:\\2756.jpg"));
-        }
+            if (random.nextInt(10) % 2 == 1) {
+                ufi.add(new UploadFileItem("upload1", "g:\\2167.jpg"));
+            } else {
+                ufi.add(new UploadFileItem("upload1", "g:\\2756.jpg"));
+            }
 //        ufi.add(new UploadFileItem("upload2", "/root/2.png"));
 //        ufi.add(new UploadFileItem("upload3", "/root/3.png"));
 //        ufi.add(new UploadFileItem("upload4", "/root/4.png"));
@@ -67,17 +70,18 @@ public class UploadTest {
 //        ufi.add(new UploadFileItem("upload8", "/root/8.png"));
 
 
-        // 类HttpPostEmulator的定义，见后面的代码
+            // 类HttpPostEmulator的定义，见后面的代码
 
-        HttpPostEmulator hpe = new HttpPostEmulator();
+            HttpPostEmulator hpe = new HttpPostEmulator();
 
-        Long begin = System.currentTimeMillis();
+            Long begin = System.currentTimeMillis();
 
-        String response = hpe.sendHttpPostRequest(serverUrl, formFieldKeyValuePairs, ufi);
+            String response = hpe.sendHttpPostRequest(serverUrl, formFieldKeyValuePairs, ufi);
 
-        Long end = System.currentTimeMillis();
-        System.out.println("Response from server is: " + response);
-        System.out.println("用时:" + (end - begin));
+            Long end = System.currentTimeMillis();
+            System.out.println("Response from server is: " + response);
+            System.out.println("用时:" + (end - begin));
+        }
     }
 
     @Test

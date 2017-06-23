@@ -20,6 +20,8 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static cn.inphoto.user.util.DBUtil.changeMediaDataToRecycle;
+
 /**
  * Created by kaxia on 2017/6/12.
  */
@@ -372,16 +374,7 @@ public class TableController {
         // 查找media_id对应的mediaData
         MediaDataEntity mediaData = mediaDataDao.findByMedia_id(media_id);
 
-        Date date = new Date();
-
-        mediaData.setMediaState(MediaDataEntity.MEDIA_STATE_RECYCLE);
-        mediaData.setDeleteTime(new Timestamp((date.getTime())));
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DATE, 30);
-
-        mediaData.setOverTime(new Timestamp(calendar.getTimeInMillis()));
+        changeMediaDataToRecycle(mediaData);
 
         MDC.put("user_id", user.getUserId());
         MDC.put("category_id", mediaData.getCategoryId());
@@ -433,17 +426,9 @@ public class TableController {
         // 加载数据库中的对象
         List<MediaDataEntity> mediaDataList = mediaDataDao.findByMedia_ids(media_ids);
 
-        Date date = new Date();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DATE, 30);
-
         for (MediaDataEntity m : mediaDataList
                 ) {
-            m.setMediaState(MediaDataEntity.MEDIA_STATE_RECYCLE);
-            m.setDeleteTime(new Timestamp(date.getTime()));
-            m.setOverTime(new Timestamp(calendar.getTimeInMillis()));
+            changeMediaDataToRecycle(m);
         }
 
         MDC.put("user_id", user.getUserId());
