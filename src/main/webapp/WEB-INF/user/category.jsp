@@ -118,13 +118,15 @@
                                     </c:otherwise>
                                 </c:choose>
                             </td>
-                            <td>操作</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm" onclick="a(${uc.categoryId})">显示提取地址</button>
+                            </td>
                         </tr>
                     </c:forEach>
                     </tbody>
                     <tfoot>
                     <tr>
-                        <td colspan="7" style="text-align: center;">
+                        <td colspan="8" style="text-align: center;">
                             <nav aria-label="Page navigation">
                                 <ul class="pagination">
                                     <li class="disabled">
@@ -153,6 +155,52 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">提取地址</h4>
+            </div>
+            <div class="modal-body" style="text-align: center">
+                <img src="${pageContext.request.contextPath}/images/QRcode_test.png" id="modal_img"><br>
+                <span id="modal_span">微信扫描二维码预览页面</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function a(category_id) {
+
+        //获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
+        var curWwwPath = window.document.location.href;
+        //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+        var pathName = window.document.location.pathname;
+        var pos = curWwwPath.indexOf(pathName);
+        //获取主机地址，如： http://localhost:8083
+        var localhostPaht = curWwwPath.substring(0, pos);
+        //获取带"/"的项目名，如：/uimcardprj
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+
+        var s = localhostPaht + projectName + "/mobile/toCode.do?user_id=${sessionScope.loginUser.userId}&category_id=" + category_id;
+
+        var aa = projectName + "/get/getQR.do?url=" + encodeURIComponent(s);
+
+        $("#modal_img").attr("src", aa);
+        $("#modal_span").html(s);
+        $("#myModal").modal(
+            {backdrop: 'static'}
+        );
+    }
+
+</script>
 
 </body>
 </html>

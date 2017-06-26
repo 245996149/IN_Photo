@@ -49,6 +49,9 @@ public class MobileController {
     @Resource
     MediaDataDao mediaDataDao;
 
+    @Resource
+    UtilDao utilDao;
+
     /*定义404页面*/
     private static final String MOBILE_404 = "mobile/404";
     /*定义默认提取页面*/
@@ -108,7 +111,7 @@ public class MobileController {
 
     @RequestMapping("checkCode.do")
     @ResponseBody
-    public Map<String, Object> checkCode(Long user_id, Integer category_id, String code) {
+    public Map<String, Object> checkCode(Long user_id, Integer category_id, String code, HttpServletRequest request) {
 
         Map<String, Object> result = new HashMap<>();
 
@@ -124,8 +127,14 @@ public class MobileController {
 
         } else {
 
+            StringBuffer url = request.getRequestURL();
+
+            String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length())
+                    .append(request.getContextPath())
+                    .append("/mobile/toPage.do?user_id=" + user_id + "&category_id=" + category_id + "&media_id=" + mediaCode.getMediaId()).toString();
+
             result.put("success", true);
-            result.put("media_id", mediaCode.getMediaId());
+            result.put("url", tempContextUrl);
 
         }
 
@@ -283,5 +292,41 @@ public class MobileController {
 
     }
 
+
+    @RequestMapping("/collectingData.do")
+    @ResponseBody
+    public Map collectingData(Long user_id, Integer category_id, Long media_id, String share_type) {
+
+        Map<String, Object> result = new HashMap<>();
+
+        if (user_id == null || category_id == null || media_id == null || share_type == null) {
+
+            result.put("success", false);
+            result.put("message", "有必填项为空");
+            return result;
+        }
+
+        ShareDataEntity shareDataEntity = new ShareDataEntity();
+
+        shareDataEntity.setCategoryId(category_id);
+        shareDataEntity.setMediaId(media_id);
+        shareDataEntity.setUserId(user_id);
+        shareDataEntity.setShareType(share_type);
+
+        if (!utilDao.save(shareDataEntity)) {
+
+            result.put("success", false);
+            result.put("message", "将数据保存到数据库时发生了错误");
+
+        } else {
+
+            result.put("success", true);
+            result.put("message", "保存成功");
+
+        }
+
+        return result;
+
+    }
 
 }

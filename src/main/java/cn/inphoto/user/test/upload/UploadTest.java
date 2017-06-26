@@ -16,7 +16,6 @@ public class UploadTest {
 
         for (int j = 0; j < 10; j++) {
 
-
             Random random = new Random();
 
             StringBuffer sb = new StringBuffer();
@@ -34,8 +33,8 @@ public class UploadTest {
             sb1.append(sb);
 
             // 设定服务地址
-            String serverUrl = "http://app.in-photo.cn" +
-                    "/IN_Photo/receive/receiveMedia.do?names=" + sb1 + "&media_code=" + sb + "&category_id=3&user_id=" + 2 + "&second=" + 150 + "&number=" + 8;
+            String serverUrl = "http://192.168.0.222" +
+                    "/IN_Photo/receive/receiveMedia.do?names=" + sb1 + "&media_code=" + sb + "&category_id=3&user_id=" + 1 + "&second=" + 150 + "&number=" + 8;
 
             // 设定要上传的普通Form Field及其对应的value
 

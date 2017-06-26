@@ -36,7 +36,7 @@ public class TaskJob {
     @Resource
     MediaDataDao mediaDataDao;
 
-    @Scheduled(cron = "0 0/1 * * * ?")
+   // @Scheduled(cron = "0 0/1 * * * ?")
     public void cleanTemp() {
         System.out.println("任务运行中。。。。。。。" + System.currentTimeMillis());
     }

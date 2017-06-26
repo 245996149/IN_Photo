@@ -163,6 +163,12 @@ function getRecycleInfo() {
 /*打开model*/
 function open_modal(mediaName) {
 
+    var lazy = $("img[name='lazy']");
+
+    lazy.each(function () {
+        $(this).attr('src', $(this).attr('lz-src'));
+    });
+
     var ol = $("#myCarousel ol li");
     var carousel = $("#carousel-object div");
 

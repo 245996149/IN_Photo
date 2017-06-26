@@ -318,8 +318,8 @@
                         <%--</div>--%>
                         <c:forEach items="${mediaDataList}" var="m">
                             <div class="item" data-media-name="${m.mediaName}">
-                                <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1"
-                                     alt="${m.mediaId}">
+                                <img src="${pageContext.request.contextPath}/images/loading.gif" name="lazy"
+                                     alt="${m.mediaId}" lz-src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1">
                                 <div class="carousel-caption">${m.mediaName}</div>
                             </div>
                         </c:forEach>
@@ -361,7 +361,6 @@
             content: aaa,
             placement: 'left'
         });
-        //$("[data-toggle='popover']").popover();
 
     });
 

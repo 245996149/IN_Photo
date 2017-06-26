@@ -8,6 +8,139 @@
 
     <script type="text/javascript"
             src="${pageContext.request.contextPath}/js/jquery-3.2.1.js"></script>
+
+
+    <script language="javascript" type="text/javascript"
+            src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+
+    <script type="text/javascript">
+
+        //网页加载后执行函数
+        window.onload = function () {
+
+            var user_id = $("#user_id").val();
+            var category_id = $("#category_id").val();
+            var media_id = $("#media_id").val();
+
+            $.post(
+                "collectingData.do",
+                {
+                    "user_id": user_id,
+                    "category_id": category_id,
+                    "media_id": media_id,
+                    "share_type": "0"
+                },
+                function (res) {
+                }
+            );
+
+            //判断是否为微信内核
+            if (isWeixin()) {
+                //是微信打开
+
+                var url = location.href;
+
+                var share_moments_title = $("#share_moments_title").val();
+                var share_moments_icon = $("#share_moments_icon").val();
+                var share_chats_title = $("#share_chats_title").val();
+                var share_chats_text = $("#share_chats_text").val();
+                var share_chats_icon = $("#share_chats_icon").val();
+
+                $.post(
+                    "getWeChatInfo.do",
+                    {
+                        "url": url
+                    },
+                    function (res) {
+
+                        wx.config({
+                            debug: false,
+                            appId: res.appid,
+                            timestamp: res.timestamp,
+                            nonceStr: res.nonceStr,
+                            signature: res.signature,
+                            jsApiList: ['checkJsApi', 'onMenuShareTimeline',
+                                'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo',
+                                'hideMenuItems', 'showMenuItems', 'hideAllNonBaseMenuItem',
+                                'showAllNonBaseMenuItem', 'translateVoice', 'startRecord',
+                                'stopRecord', 'onRecordEnd', 'playVoice', 'pauseVoice',
+                                'stopVoice', 'uploadVoice', 'downloadVoice', 'chooseImage',
+                                'previewImage', 'uploadImage', 'downloadImage',
+                                'getNetworkType', 'openLocation', 'getLocation',
+                                'hideOptionMenu', 'showOptionMenu', 'closeWindow',
+                                'scanQRCode', 'chooseWXPay', 'openProductSpecificView',
+                                'addCard', 'chooseCard', 'openCard']
+                        });
+
+                        wx.ready(function () {
+
+                            wx.onMenuShareTimeline({
+                                title: share_moments_title, // 分享标题timg.jpeg
+                                link: url, // 分享链接
+                                imgUrl: share_moments_icon, // 分享图标
+                                success: function () {
+                                    // 用户确认分享后执行的回调函数
+                                    $.post(
+                                        "collectingData.do",
+                                        {
+                                            "user_id": user_id,
+                                            "category_id": category_id,
+                                            "media_id": media_id,
+                                            "share_type": "2"
+                                        },
+                                        function (res) {
+                                        })
+                                },
+                                cancel: function () {
+                                    // 用户取消分享后执行的回调函数
+                                }
+                            });
+
+                            wx.onMenuShareAppMessage({
+                                title: share_chats_title, // 分享标题
+                                desc: share_chats_text, // 分享描述
+                                link: url, // 分享链接
+                                imgUrl: share_chats_icon, // 分享图标
+                                type: '', // 分享类型,music、video或link，不填默认为link
+                                dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                                success: function () {
+                                    // 用户确认分享后执行的回调函数
+                                    $.post(
+                                        "collectingData.do",
+                                        {
+                                            "user_id": user_id,
+                                            "category_id": category_id,
+                                            "media_id": media_id,
+                                            "share_type": "1"
+                                        },
+                                        function (res) {
+                                        })
+                                },
+                                cancel: function () {
+                                    // 用户取消分享后执行的回调函数
+                                }
+                            });
+                        });
+                    })
+
+            }
+
+        }
+
+        //这个函数用来判断当前浏览器是否微信内置浏览器，是微信返回true，不是微信返回false
+        function isWeixin() {
+            var WxObj = window.navigator.userAgent.toLowerCase();
+            if (WxObj.match(/microMessenger/i) == 'micromessenger') {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+    </script>
+
 </head>
 <body style="margin: 0;">
 
@@ -16,7 +149,7 @@
     <c:choose>
         <c:when test="${test==false}">
             <%--<img src="${pageContext.request.contextPath}/get/getMedia.do?type=1&id=${media_id}"--%>
-                 <%--style="position:absolute;height: 100%;width: 100%;opacity: 0;z-index: 999">--%>
+            <%--style="position:absolute;height: 100%;width: 100%;opacity: 0;z-index: 999">--%>
 
             <img src="${pageContext.request.contextPath}/get/getMedia.do?type=2&id=${picWebinfo.picWebinfoId}"
                  style="height: auto;width: 100%;z-index: 0">
@@ -29,7 +162,7 @@
         </c:when>
         <c:otherwise>
             <%--<img src="${pageContext.request.contextPath}/get/getMedia.do?type=7"--%>
-                 <%--style="position:absolute;height: 100%;width: 100%;opacity: 0;z-index: 999">--%>
+            <%--style="position:absolute;height: 100%;width: 100%;opacity: 0;z-index: 999">--%>
 
             <img src="${pageContext.request.contextPath}/get/getMedia.do?type=2&id=${picWebinfo.picWebinfoId}"
                  style="height: auto;width: 100%;z-index: 0">
@@ -42,6 +175,11 @@
     </c:choose>
 
     <div style="display: none">
+
+        <input type="text" value="${shareInfoEntity.userId}" id="user_id">
+        <input type="text" value="${shareInfoEntity.categoryId}" id="category_id">
+        <input type="text" value="${media_id}" id="media_id">
+
         <c:choose>
             <c:when test="${shareInfoEntity!=null}">
                 <input type="text" value="${shareInfoEntity.shareMomentsTitle}" id="share_moments_title">
