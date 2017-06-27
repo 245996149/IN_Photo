@@ -42,8 +42,8 @@ public class WeChatUtil {
         requestUrl = requestUrl.replace("APPSECRET", appSecret);
         // 获取网页授权凭证
         JSONObject jsonObject = HttpRequest.httpsRequest(requestUrl, "GET", null);
-        logger.info("获取公众号Token授权凭证---------->"+ "拼接WeChatToken请求地址：" + requestUrl + "，接收到WeChatToken的json：" + jsonObject.toString());
         if (null != jsonObject) {
+            logger.info("获取公众号Token授权凭证---------->"+ "拼接WeChatToken请求地址：" + requestUrl + "，接收到WeChatToken的json：" + jsonObject.toString());
             try {
                 wat = new WeChatToken();
                 wat.setAccessToken(jsonObject.getString("access_token"));

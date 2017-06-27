@@ -122,7 +122,8 @@
             <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${codeWebinfo.codeWebinfoId}&type=3"
                  style="width: 100%;height: auto;z-index: 0;">
 
-            <div class="inputDiv" style="border-color: ${codeWebinfo.inputBorderColor};">
+            <div class="inputDiv" style="border-color: ${codeWebinfo.inputBorderColor};left: ${codeWebinfo.inputLeft}%;
+                    top: ${codeWebinfo.inputTop}%; right: ${codeWebinfo.inputRight}%; bottom: ${codeWebinfo.inputBottom}%;">
                 <input id="code" oninput="if(value.length>6)value=value.slice(0,6);"
                        style="color: ${codeWebinfo.inputTextColor};background-color: ${codeWebinfo.inputBgColor}"
                        type="number" pattern="[0-9]*" autofocus/>
@@ -139,7 +140,8 @@
             <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${codeWebinfo.codeWebinfoId}&type=3"
                  style="width: 100%;height: auto;z-index: 0;">
 
-            <div class="inputDiv" style="border-color: ${codeWebinfo.inputBorderColor};">
+            <div class="inputDiv" style="border-color: ${codeWebinfo.inputBorderColor};left: ${codeWebinfo.inputLeft}%;
+                    top: ${codeWebinfo.inputTop}%; right: ${codeWebinfo.inputRight}%; bottom: ${codeWebinfo.inputBottom}%;">
                 <input id="code2" oninput="if(value.length>6)value=value.slice(0,6);"
                        style="color: ${codeWebinfo.inputTextColor};background-color: ${codeWebinfo.inputBgColor}"
                        type="number" pattern="[0-9]*"/>
