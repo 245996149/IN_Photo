@@ -232,21 +232,21 @@
                                                 </c:choose>
                                             </c:forEach>
                                         </c:when>
-                                        <c:when test="${tablePage.totalPage>10 && tablePage.currentPage<(tablePage.totalPage-1)}">
-                                            <c:forEach begin="${tablePage.currentPage-4}"
-                                                       end="${tablePage.currentPage+5}" var="i">
-                                                <c:choose>
-                                                    <c:when test="${i==tablePage.currentPage}">
-                                                        <li class="active"><a href="javascript:void(0);">${i}</a></li>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <li>
-                                                            <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
-                                                        </li>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </c:forEach>
-                                        </c:when>
+                                        <%--<c:when test="${tablePage.totalPage>10 && tablePage.currentPage<(tablePage.totalPage-1)}">--%>
+                                            <%--<c:forEach begin="${tablePage.currentPage-4}"--%>
+                                                       <%--end="${tablePage.currentPage+5}" var="i">--%>
+                                                <%--<c:choose>--%>
+                                                    <%--<c:when test="${i==tablePage.currentPage}">--%>
+                                                        <%--<li class="active"><a href="javascript:void(0);">${i}</a></li>--%>
+                                                    <%--</c:when>--%>
+                                                    <%--<c:otherwise>--%>
+                                                        <%--<li>--%>
+                                                            <%--<a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>--%>
+                                                        <%--</li>--%>
+                                                    <%--</c:otherwise>--%>
+                                                <%--</c:choose>--%>
+                                            <%--</c:forEach>--%>
+                                        <%--</c:when>--%>
                                         <c:when test="${tablePage.totalPage>10 && tablePage.currentPage>(tablePage.totalPage-5)}">
                                             <c:forEach begin="${tablePage.totalPage-10}" end="${tablePage.totalPage}"
                                                        var="i">
