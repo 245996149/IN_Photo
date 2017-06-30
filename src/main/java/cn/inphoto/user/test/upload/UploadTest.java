@@ -14,7 +14,7 @@ public class UploadTest {
     @Test
     public void uploadTest() throws Exception {
 
-        for (int j = 0; j < 10; j++) {
+       // for (int j = 0; j < 10; j++) {
 
             Random random = new Random();
 
@@ -34,7 +34,7 @@ public class UploadTest {
 
             // 设定服务地址
             String serverUrl = "http://app.in-photo.cn" +
-                    "/IN_Photo/receive/receiveMedia.do?names=" + sb1 + "&media_code=" + sb + "&category_id=2&user_id=" + 2 + "&second=" + 150 + "&number=" + 8;
+                    "/IN_Photo/receive/receiveMedia.do?names=" + sb1 + "&media_code=" + sb + "&category_id=1&user_id=" + 2 + "&second=" + 150 + "&number=" + 8;
 
             // 设定要上传的普通Form Field及其对应的value
 
@@ -81,7 +81,7 @@ public class UploadTest {
             System.out.println("Response from server is: " + response);
             System.out.println("用时:" + (end - begin));
         }
-    }
+   // }
 
     @Test
     public void a() throws Exception {

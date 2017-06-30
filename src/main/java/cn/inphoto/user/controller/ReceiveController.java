@@ -84,7 +84,7 @@ public class ReceiveController {
         Map<String, Object> result = new HashMap<>();
 
         // 判断必填参数是否为空，为空直接反馈给客户端
-        if (names == null || category_id == null || user_id == null) {
+        if (names == null || category_id == null || user_id == null || "".equals(names)) {
 
             result.put("success", false);
             result.put("code", 100);
@@ -210,8 +210,12 @@ public class ReceiveController {
                     if (file != null) {
                         //取得当前上传文件的文件名称
                         String fileName = file.getOriginalFilename();
+
+//                        System.out.println(fileName);
                         //如果名称不为“”,说明该文件存在，否则说明该文件不存在
                         if (!"".equals(fileName.trim())) {
+
+//                            System.out.println(fileName);
 
                             InputStream in = file.getInputStream();
 
@@ -227,6 +231,8 @@ public class ReceiveController {
                         }
                     }
                 }
+
+//                System.out.println(temMap.size());
 
                 //判断Map中是否有BufferedImage，且BufferedImage数量等于上传参数的数量，
                 if (temMap.size() == 0 || temMap.size() != number) {

@@ -152,6 +152,11 @@
     </div>
 
     <div style="display: none">
+
+        <input type="text" value="${user_id}" id="user_id">
+        <input type="text" value="${category_id}" id="category_id">
+        <input type="text" value="${media_id}" id="media_id">
+
         <c:choose>
             <c:when test="${shareInfoEntity!=null}">
                 <input type="text" value="${shareInfoEntity.shareMomentsTitle}" id="share_moments_title">

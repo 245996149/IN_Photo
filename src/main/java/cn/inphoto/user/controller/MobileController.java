@@ -197,6 +197,8 @@ public class MobileController {
             model.addAttribute("shareInfoEntity", shareInfoEntity);
             model.addAttribute("url", getConfigInfo("url"));
             model.addAttribute("test", test);
+            model.addAttribute("category_id", userCategory.getCategoryId());
+            model.addAttribute("user_id", user.getUserId());
 
             // 输出日志
             MDC.put("user_id", user_id);
@@ -206,8 +208,6 @@ public class MobileController {
             // 判断展示页面设置是否有效，无效打开默认页面
             if (picWebinfo == null) return MOBILE_VIEW_DEFAULT;
 
-            model.addAttribute("category_id", userCategory.getCategoryId());
-            model.addAttribute("user_id", user.getUserId());
             model.addAttribute("picWebinfo", picWebinfo);
 
         } catch (Exception e) {
