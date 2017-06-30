@@ -158,52 +158,53 @@
                                             </li>
                                         </c:otherwise>
                                     </c:choose>
+
+                                    <c:if test="${tablePage.totalPage>5 && tablePage.currentPage>3}">
+                                        <li>
+                                            <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=1">1</a>
+                                        </li>
+                                        <li><a href="javascript:void(0);">...</a></li>
+                                    </c:if>
+
                                     <c:choose>
-                                        <c:when test="${tablePage.totalPage<11}">
-                                            <c:forEach begin="1" end="${tablePage.totalPage}" var="i">
-                                                <c:choose>
-                                                    <c:when test="${i==tablePage.currentPage}">
-                                                        <li class="active"><a href="javascript:void(0);">${i}</a></li>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <li>
-                                                            <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${i}">${i}</a>
-                                                        </li>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </c:forEach>
+
+                                        <%-- 总页数小于等于5张 --%>
+                                        <c:when test="${tablePage.currentPage<=3}">
+                                            <c:if test="${tablePage.totalPage<=5}">
+                                                <c:forEach begin="1" end="${tablePage.totalPage}" var="i">
+                                                    <c:choose>
+                                                        <c:when test="${i==tablePage.currentPage}">
+                                                            <li class="active"><a href="javascript:void(0);">${i}</a>
+                                                            </li>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <li>
+                                                                <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${i}">${i}</a>
+                                                            </li>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </c:forEach>
+                                            </c:if>
+                                            <c:if test="${tablePage.totalPage>5}">
+                                                <c:forEach begin="1" end="5" var="i">
+                                                    <c:choose>
+                                                        <c:when test="${i==tablePage.currentPage}">
+                                                            <li class="active"><a href="javascript:void(0);">${i}</a>
+                                                            </li>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <li>
+                                                                <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${i}">${i}</a>
+                                                            </li>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </c:forEach>
+                                            </c:if>
                                         </c:when>
-                                        <c:when test="${tablePage.totalPage>10 && tablePage.currentPage<6}">
-                                            <c:forEach begin="1" end="10" var="i">
-                                                <c:choose>
-                                                    <c:when test="${i==tablePage.currentPage}">
-                                                        <li class="active"><a href="javascript:void(0);">${i}</a></li>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <li>
-                                                            <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${i}">${i}</a>
-                                                        </li>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </c:forEach>
-                                        </c:when>
-                                        <c:when test="${tablePage.totalPage>10 && tablePage.currentPage<(tablePage.totalPage-1)}">
-                                            <c:forEach begin="${tablePage.currentPage-4}"
-                                                       end="${tablePage.currentPage+5}" var="i">
-                                                <c:choose>
-                                                    <c:when test="${i==tablePage.currentPage}">
-                                                        <li class="active"><a href="javascript:void(0);">${i}</a></li>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <li>
-                                                            <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${i}">${i}</a>
-                                                        </li>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </c:forEach>
-                                        </c:when>
-                                        <c:when test="${tablePage.totalPage>10 && tablePage.currentPage>(tablePage.totalPage-5)}">
-                                            <c:forEach begin="${tablePage.totalPage-10}" end="${tablePage.totalPage}"
+
+                                        <%-- 总页数小于等于5张 --%>
+                                        <c:when test="${tablePage.currentPage>=(tablePage.totalPage-2)}">
+                                            <c:forEach begin="${tablePage.totalPage-5}" end="${tablePage.totalPage}"
                                                        var="i">
                                                 <c:choose>
                                                     <c:when test="${i==tablePage.currentPage}">
@@ -217,7 +218,32 @@
                                                 </c:choose>
                                             </c:forEach>
                                         </c:when>
+
+                                        <c:otherwise>
+                                            <c:forEach begin="${tablePage.currentPage-2}"
+                                                       end="${tablePage.currentPage+2}" var="i">
+                                                <c:choose>
+                                                    <c:when test="${i==tablePage.currentPage}">
+                                                        <li class="active"><a href="javascript:void(0);">${i}</a></li>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <li>
+                                                            <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${i}">${i}</a>
+                                                        </li>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+                                        </c:otherwise>
+
                                     </c:choose>
+
+                                    <c:if test="${tablePage.totalPage>5 && tablePage.currentPage<(tablePage.totalPage-2)}">
+                                        <li><a href="javascript:void(0);">...</a></li>
+                                        <li>
+                                            <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${tablePage.totalPage}">${tablePage.totalPage}</a>
+                                        </li>
+                                    </c:if>
+
                                     <c:choose>
                                         <c:when test="${tablePage.currentPage==tablePage.totalPage}">
                                             <li class="disabled">
