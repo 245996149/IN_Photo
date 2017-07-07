@@ -8,7 +8,7 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../../favicon.ico">
+    <link rel="icon" href="${pageContext.request.contextPath}/images/logo.png">
     <title>Signin Template for Bootstrap</title>
 
     <script src="${pageContext.request.contextPath}/js/jquery-3.2.1.js"></script>
@@ -40,7 +40,8 @@
     <form class="form-signin" id="signin_form" action="login.do" method="post">
         <h2 class="form-signin-heading">IN Photo管理系统</h2>
         <label for="inputUsername" class="sr-only">User name</label>
-        <input type="email" id="inputUsername" class="form-control" placeholder="User name" required autofocus name="user_name">
+        <input type="email" id="inputUsername" class="form-control" placeholder="User name" required autofocus
+               name="user_name">
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
         <div class="checkbox">
@@ -89,7 +90,7 @@
                     signin_form.submit();
 
                 } else {
-                    error_message.text("user_name = " + user_name + " password = " + password + res.message);
+                    error_message.text("user_name = " + user_name + " " + res.message);
                     error_message.show();
                     setTimeout(function () {
                         $("#error_message").hide();

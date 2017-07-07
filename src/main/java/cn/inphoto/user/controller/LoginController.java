@@ -10,6 +10,7 @@ import cn.inphoto.user.dbentity.UsersEntity;
 import cn.inphoto.user.log.UserLog;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -36,6 +37,12 @@ public class LoginController {
 
     private static Logger logger = Logger.getLogger(LoginController.class);
 
+    @Value("#{properties['admin_user']}")
+    String admin_user;
+
+    @Value("#{properties['admin_password']}")
+    String admin_password;
+
     @Resource
     UserDao userDao;
 
@@ -51,6 +58,47 @@ public class LoginController {
     @RequestMapping("/toLogin.do")
     public String toLogin() {
         return "user/sign_in";
+    }
+
+    @RequestMapping("/toAdminLogin.do")
+    public String toAdminLogin() {
+        return "admin/sign_in";
+    }
+
+    /**
+     * 管理员登陆验证
+     *
+     * @param user_name 管理员用户名
+     * @param password  管理员密码
+     * @return 验证是否成功
+     */
+    @RequestMapping("/checkAdminUser.do")
+    @ResponseBody
+    public Map checkAdminUser(String user_name, String password, HttpServletRequest request, HttpSession session) {
+        Map<String, Object> result = new HashMap<>();
+        if (user_name == null || password == null || "".equals(user_name) || "".equals(password)) {
+            result.put("success", false);
+            result.put("message", "账号、密码不能为空");
+            return result;
+        }
+
+        if (!user_name.equals(admin_user) || !password.equals(admin_password)) {
+            result.put("success", false);
+            result.put("message", "账号、密码错误");
+            return result;
+        }
+
+        session.setAttribute("adminUser", 1);
+
+        result.put("success", true);
+        result.put("url", request.getContextPath() + "/admin/index.do");
+        return result;
+    }
+
+    @RequestMapping("/adminSignOut.do")
+    public String adminSignOut(HttpSession session) {
+        session.removeAttribute("adminUser");
+        return "redirect:toAdminLogin.do";
     }
 
     @RequestMapping("/checkUser.do")
@@ -80,7 +128,6 @@ public class LoginController {
         result.put("message", "验证成功");
         logger.log(UserLog.USER, "用户user_name=" + user_name + " 的用户尝试登陆，登陆结果为：" + result.toString());
 
-
         return result;
 
     }
@@ -106,10 +153,10 @@ public class LoginController {
                 usersEntity.getUserId(), UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
 
         //查询所有的套餐系统
-        judgeCategory(categoryDao,request);
+        judgeCategory(categoryDao, request);
 
         // 查询今日数据并写入session
-       selectTodayData(shareDataDao,session, usersEntity);
+        selectTodayData(shareDataDao, session, usersEntity);
 
         // 将所有的用户套餐系统写入session
         session.setAttribute("allUserCategory", userCategoryList);

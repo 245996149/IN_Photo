@@ -6,6 +6,7 @@ import cn.inphoto.user.dbentity.*;
 import cn.inphoto.user.log.UserLog;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static cn.inphoto.user.util.DirUtil.createSettingsPic;
-import static cn.inphoto.user.util.DirUtil.getConfigInfo;
 
 /**
  * Created by kaxia on 2017/6/14.
@@ -32,6 +32,9 @@ import static cn.inphoto.user.util.DirUtil.getConfigInfo;
 public class PageSettingsController {
 
     private Logger logger = Logger.getLogger(PageSettingsController.class);
+
+    @Value("#{properties['url']}")
+    String url;
 
     @Resource
     UtilDao utilDao;
@@ -126,9 +129,6 @@ public class PageSettingsController {
                 }
 
             }
-
-            // 获取配置文件中的url信息
-            String url = getConfigInfo("url");
 
             result.put("success", true);
             result.put("message", "更新成功");
@@ -296,9 +296,6 @@ public class PageSettingsController {
 
             }
 
-            // 获取配置文件中的url信息
-            String url = getConfigInfo("url");
-
             result.put("success", true);
             result.put("message", "更新成功");
             result.put("url", URLEncoder.encode(url + request.getContextPath() + "/mobile/toCode.do?user_id="
@@ -436,7 +433,7 @@ public class PageSettingsController {
                     return result;
                 }
 
-            }else {
+            } else {
 
                 //有效，设置id为数据库中对象的id
                 shareInfoEntity.setShareInfoId(shareInfoDB.getShareInfoId());

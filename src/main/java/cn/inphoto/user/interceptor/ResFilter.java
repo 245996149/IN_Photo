@@ -1,7 +1,6 @@
 package cn.inphoto.user.interceptor;
 
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
 import javax.servlet.*;

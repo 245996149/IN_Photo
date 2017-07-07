@@ -2,8 +2,10 @@ package cn.inphoto.user.controller;
 
 import cn.inphoto.user.dao.*;
 import cn.inphoto.user.dbentity.*;
+import cn.inphoto.user.util.DirUtil;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -39,6 +41,9 @@ import static cn.inphoto.user.util.picUtil.GifUtil.merageBufferedImageArray;
 public class ReceiveController {
 
     private Logger logger = Logger.getLogger(ReceiveController.class);
+
+    @Value("#{properties['data_path']}")
+    public String data_path;
 
     @Resource
     UtilDao utilDao;
@@ -133,7 +138,10 @@ public class ReceiveController {
         }
 
         // 获取配置文件中的存储数据的根目录
-        String path = getConfigInfo("data_path");
+        //String path = getConfigInfo("data_path");
+        String path = data_path;
+
+        System.out.println(data_path);
 
         //设置InPhoto媒体数据用户存储的目录，判断路径是否存在，不存在则创建
         String userPath = path + File.separator + user.getUserId();

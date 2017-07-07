@@ -7,6 +7,7 @@ import cn.inphoto.user.weChatUtil.Sha1;
 import cn.inphoto.user.weChatUtil.WeChatWebUtil;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static cn.inphoto.user.util.DirUtil.getConfigInfo;
 import static cn.inphoto.user.util.DirUtil.getErrorInfoFromException;
 
 /**
@@ -32,7 +32,11 @@ public class MobileController {
 
     private Logger logger = Logger.getLogger(MobileController.class);
 
-    String appid = getConfigInfo("appid");
+    @Value("#{properties['appid']}")
+    String appid;
+
+    @Value("#{properties['url']}")
+    String url;
 
     @Resource
     UserDao userDao;
@@ -195,7 +199,7 @@ public class MobileController {
             ShareInfoEntity shareInfoEntity = webinfoDao.findShareByUser_idAndCategory(user_id, category_id);
 
             model.addAttribute("shareInfoEntity", shareInfoEntity);
-            model.addAttribute("url", getConfigInfo("url"));
+            model.addAttribute("url", url);
             model.addAttribute("test", test);
             model.addAttribute("category_id", userCategory.getCategoryId());
             model.addAttribute("user_id", user.getUserId());

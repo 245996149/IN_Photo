@@ -5,6 +5,8 @@ import cn.inphoto.user.weChatEntity.WeChatToken;
 import cn.inphoto.user.weChatEntity.WeChatUserInfo;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -12,20 +14,30 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static cn.inphoto.user.util.DirUtil.getConfigInfo;
-
 /**
  * 获取公众号AccessToken
  *
  * @author Ming.c
  * @date 2016年7月5日下午4:24:59
  */
+@Component
 public class WeChatUtil {
 
     private static Logger logger = Logger.getLogger(WeChatUtil.class);
 
-    static String appid = getConfigInfo("appid");
-    static String appsecret = getConfigInfo("appsecret");
+    public static String appid;
+
+    public static String appsecret;
+
+    @Value("#{properties['appid']}")
+    public  void setAppid(String a) {
+        appid = a;
+    }
+
+    @Value("#{properties['appsecret']}")
+    public  void setAppsecret(String a) {
+        appsecret = a;
+    }
 
     /**
      * 获取公众号AccessToken授权凭证
@@ -43,7 +55,7 @@ public class WeChatUtil {
         // 获取网页授权凭证
         JSONObject jsonObject = HttpRequest.httpsRequest(requestUrl, "GET", null);
         if (null != jsonObject) {
-            logger.info("获取公众号Token授权凭证---------->"+ "拼接WeChatToken请求地址：" + requestUrl + "，接收到WeChatToken的json：" + jsonObject.toString());
+            logger.info("获取公众号Token授权凭证---------->" + "拼接WeChatToken请求地址：" + requestUrl + "，接收到WeChatToken的json：" + jsonObject.toString());
             try {
                 wat = new WeChatToken();
                 wat.setAccessToken(jsonObject.getString("access_token"));
@@ -107,7 +119,7 @@ public class WeChatUtil {
         requestUrl = requestUrl.replace("ACCESS_TOKEN", token);
         requestUrl = requestUrl.replace("OPENID", openid);
         JSONObject jsonObject = HttpRequest.httpsRequest(requestUrl, "GET", null);
-        logger.info("获取公众号的用户信息中--------->" + "拼接WeChatUserInfo请求地址：" + requestUrl+ "，接收到UserInfo的json：" + jsonObject.toString());
+        logger.info("获取公众号的用户信息中--------->" + "拼接WeChatUserInfo请求地址：" + requestUrl + "，接收到UserInfo的json：" + jsonObject.toString());
         if (jsonObject != null) {
             try {
                 wcUserInfo = new WeChatUserInfo();
