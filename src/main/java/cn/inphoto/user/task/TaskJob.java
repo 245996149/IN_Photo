@@ -1,22 +1,20 @@
 package cn.inphoto.user.task;
 
-import cn.inphoto.user.dao.MediaDataDao;
-import cn.inphoto.user.dao.UserCategoryDao;
-import cn.inphoto.user.dao.UserDao;
-import cn.inphoto.user.dao.UtilDao;
-import cn.inphoto.user.dbentity.MediaDataEntity;
-import cn.inphoto.user.dbentity.UserCategoryEntity;
-import cn.inphoto.user.dbentity.UsersEntity;
-import cn.inphoto.user.log.TaskLog;
+import cn.inphoto.dao.MediaDataDao;
+import cn.inphoto.dao.UserCategoryDao;
+import cn.inphoto.dao.UserDao;
+import cn.inphoto.dbentity.user.MediaDataEntity;
+import cn.inphoto.dbentity.user.UserCategoryEntity;
+import cn.inphoto.dbentity.user.UsersEntity;
+import cn.inphoto.log.TaskLog;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.*;
 
-import static cn.inphoto.user.util.DBUtil.changeMediaDataToRecycle;
+import static cn.inphoto.util.DBUtil.changeMediaDataToRecycle;
 
 /**
  * 自动化任务

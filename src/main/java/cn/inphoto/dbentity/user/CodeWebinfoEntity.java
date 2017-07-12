@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  * Created by kaxia on 2017/6/5.
  */
 @Entity
-@Table(name = "code_webinfo", schema = "in_photo", catalog = "")
+@Table(name = "code_webinfo", schema = "IN_Photo", catalog = "")
 public class CodeWebinfoEntity {
 
     /*正常生效*/

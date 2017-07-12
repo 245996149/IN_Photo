@@ -1,10 +1,10 @@
-package cn.inphoto.user.daoimpl;
+package cn.inphoto.daoimpl;
 
-import cn.inphoto.user.dao.SuperDao;
-import cn.inphoto.user.dao.WebinfoDao;
-import cn.inphoto.dbentity.CodeWebinfoEntity;
-import cn.inphoto.dbentity.PicWebinfoEntity;
-import cn.inphoto.dbentity.ShareInfoEntity;
+import cn.inphoto.dao.SuperDao;
+import cn.inphoto.dao.WebinfoDao;
+import cn.inphoto.dbentity.user.CodeWebinfoEntity;
+import cn.inphoto.dbentity.user.PicWebinfoEntity;
+import cn.inphoto.dbentity.user.ShareInfoEntity;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;

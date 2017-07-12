@@ -1,6 +1,6 @@
-package cn.inphoto.user.dao;
+package cn.inphoto.dao;
 
-import cn.inphoto.dbentity.MediaDataEntity;
+import cn.inphoto.dbentity.user.MediaDataEntity;
 import cn.inphoto.dbentity.page.TablePage;
 
 import java.util.Date;

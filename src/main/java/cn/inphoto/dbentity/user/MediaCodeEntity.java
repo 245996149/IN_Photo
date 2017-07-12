@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by kaxia on 2017/6/5.
  */
 @Entity
-@Table(name = "media_code", schema = "in_photo", catalog = "")
+@Table(name = "media_code", schema = "IN_Photo", catalog = "")
 public class MediaCodeEntity {
 
     private long mediaCodeId;

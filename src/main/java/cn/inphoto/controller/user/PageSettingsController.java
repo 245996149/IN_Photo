@@ -1,12 +1,14 @@
-package cn.inphoto.user.controller;
+package cn.inphoto.controller.user;
 
 import cn.inphoto.dao.UtilDao;
 import cn.inphoto.dao.WebinfoDao;
-import cn.inphoto.dbentity.*;
+import cn.inphoto.dbentity.user.CodeWebinfoEntity;
+import cn.inphoto.dbentity.user.PicWebinfoEntity;
+import cn.inphoto.dbentity.user.ShareInfoEntity;
+import cn.inphoto.dbentity.user.UsersEntity;
 import cn.inphoto.log.UserLog;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,9 +34,6 @@ import static cn.inphoto.util.DirUtil.createSettingsPic;
 public class PageSettingsController {
 
     private Logger logger = Logger.getLogger(PageSettingsController.class);
-
-    @Value("#{properties['url']}")
-    String url;
 
     @Resource
     UtilDao utilDao;
@@ -132,7 +131,7 @@ public class PageSettingsController {
 
             result.put("success", true);
             result.put("message", "更新成功");
-            result.put("url", URLEncoder.encode(url + request.getContextPath() + "/mobile/toPage.do?user_id="
+            result.put("url", URLEncoder.encode("http://" + request.getServerName() + "/" + request.getContextPath() + "/mobile/toPage.do?user_id="
                     + usersEntity.getUserId() + "&category_id=" + picWebinfoEntity.getCategoryId() + "&test=true", "utf-8"));
 
         } catch (IOException e) {
@@ -298,7 +297,7 @@ public class PageSettingsController {
 
             result.put("success", true);
             result.put("message", "更新成功");
-            result.put("url", URLEncoder.encode(url + request.getContextPath() + "/mobile/toCode.do?user_id="
+            result.put("url", URLEncoder.encode("http://" + request.getServerName() + "/" + request.getContextPath() + "/mobile/toCode.do?user_id="
                     + usersEntity.getUserId() + "&category_id=" + codeWebinfoEntity.getCategoryId() + "&test=true", "utf-8"));
 
         } catch (IOException e) {

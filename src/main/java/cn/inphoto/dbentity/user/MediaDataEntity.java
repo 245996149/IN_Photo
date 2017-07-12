@@ -9,7 +9,7 @@ import java.sql.Timestamp;
  * Created by kaxia on 2017/6/5.
  */
 @Entity
-@Table(name = "media_data", schema = "in_photo", catalog = "")
+@Table(name = "media_data", schema = "IN_Photo", catalog = "")
 public class MediaDataEntity {
 
     /*媒体数据正常*/

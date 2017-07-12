@@ -1,7 +1,7 @@
-package cn.inphoto.controller.user;
+package cn.inphoto.controller;
 
 import cn.inphoto.dao.*;
-import cn.inphoto.dbentity.*;
+import cn.inphoto.dbentity.user.*;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.springframework.beans.factory.annotation.Value;

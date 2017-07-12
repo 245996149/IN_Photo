@@ -1,8 +1,8 @@
-package cn.inphoto.user.daoimpl;
+package cn.inphoto.daoimpl;
 
-import cn.inphoto.user.dao.MediaCodeDao;
-import cn.inphoto.user.dao.SuperDao;
-import cn.inphoto.dbentity.MediaCodeEntity;
+import cn.inphoto.dao.MediaCodeDao;
+import cn.inphoto.dao.SuperDao;
+import cn.inphoto.dbentity.user.MediaCodeEntity;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;

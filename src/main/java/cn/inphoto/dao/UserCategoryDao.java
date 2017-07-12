@@ -1,6 +1,6 @@
-package cn.inphoto.user.dao;
+package cn.inphoto.dao;
 
-import cn.inphoto.dbentity.UserCategoryEntity;
+import cn.inphoto.dbentity.user.UserCategoryEntity;
 
 import java.util.Date;
 import java.util.List;

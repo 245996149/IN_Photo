@@ -17,7 +17,7 @@
  * along with Xuggle-Xuggler-Main.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 
-package cn.inphoto.user.util.picUtil;
+package cn.inphoto.util.picUtil;
 
 import com.xuggle.xuggler.*;
 

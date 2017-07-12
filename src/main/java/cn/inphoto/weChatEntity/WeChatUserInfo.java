@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cn.inphoto.user.weChatEntity;
+package cn.inphoto.weChatEntity;
 
 /**
  * 描述: 微信用户的基本信息

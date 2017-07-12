@@ -1,7 +1,7 @@
-package cn.inphoto.user.daoimpl;
+package cn.inphoto.daoimpl;
 
-import cn.inphoto.user.dao.ShareDataDao;
-import cn.inphoto.user.dao.SuperDao;
+import cn.inphoto.dao.ShareDataDao;
+import cn.inphoto.dao.SuperDao;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.query.Query;

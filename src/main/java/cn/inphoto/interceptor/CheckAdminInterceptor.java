@@ -1,5 +1,6 @@
-package cn.inphoto.user.interceptor;
+package cn.inphoto.interceptor;
 
+import cn.inphoto.dbentity.admin.AdminEntity;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,15 +19,12 @@ public class CheckAdminInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         HttpSession session = httpServletRequest.getSession();
-        Integer admin = (Integer) session.getAttribute("adminUser");
+        AdminEntity admin = (AdminEntity) session.getAttribute("adminUser");
         if (admin == null) {
-            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/login/toAdminLogin.do");
+            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/admin/login/toLogin.do");
             return false;
-        } else if (admin == 1){
+        } else {
             return true;
-        }else{
-            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/login/toAdminLogin.do");
-            return false;
         }
     }
 

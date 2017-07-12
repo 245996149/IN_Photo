@@ -1,7 +1,7 @@
 package cn.inphoto.user.test.dbTest;
 
-import cn.inphoto.user.dao.MediaDataDao;
-import cn.inphoto.user.dbentity.MediaDataEntity;
+import cn.inphoto.dao.MediaDataDao;
+import cn.inphoto.dbentity.user.MediaDataEntity;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

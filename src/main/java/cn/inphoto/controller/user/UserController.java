@@ -1,6 +1,6 @@
-package cn.inphoto.user.controller;
+package cn.inphoto.controller.user;
 
-import cn.inphoto.dbentity.UsersEntity;
+import cn.inphoto.dbentity.user.UsersEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;

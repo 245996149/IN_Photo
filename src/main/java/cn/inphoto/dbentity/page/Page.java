@@ -1,4 +1,4 @@
-package cn.inphoto.user.dbentity.page;
+package cn.inphoto.dbentity.page;
 
 /**
  * Created by root on 17-3-31.

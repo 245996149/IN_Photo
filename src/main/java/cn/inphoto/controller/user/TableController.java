@@ -1,8 +1,8 @@
-package cn.inphoto.user.controller;
+package cn.inphoto.controller.user;
 
 import cn.inphoto.dao.*;
-import cn.inphoto.dbentity.*;
 import cn.inphoto.dbentity.page.TablePage;
+import cn.inphoto.dbentity.user.*;
 import cn.inphoto.log.UserLog;
 import net.sf.json.JSONArray;
 import org.apache.log4j.Logger;

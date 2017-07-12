@@ -1,4 +1,4 @@
-package cn.inphoto.user.util;
+package cn.inphoto.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

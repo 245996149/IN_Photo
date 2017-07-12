@@ -1,7 +1,7 @@
 package cn.inphoto.user.test.dbTest;
 
-import cn.inphoto.user.dao.UtilDao;
-import cn.inphoto.user.dbentity.UsersEntity;
+import cn.inphoto.dao.UtilDao;
+import cn.inphoto.dbentity.user.UsersEntity;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

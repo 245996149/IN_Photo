@@ -1,8 +1,8 @@
-package cn.inphoto.user.weChatUtil;
+package cn.inphoto.weChatUtil;
 
 
-import cn.inphoto.user.weChatEntity.WeChatToken;
-import cn.inphoto.user.weChatEntity.WeChatUserInfo;
+import cn.inphoto.weChatEntity.WeChatToken;
+import cn.inphoto.weChatEntity.WeChatUserInfo;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;

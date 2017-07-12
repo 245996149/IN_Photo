@@ -1,4 +1,4 @@
-package cn.inphoto.user.weChatUtil;
+package cn.inphoto.weChatUtil;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;

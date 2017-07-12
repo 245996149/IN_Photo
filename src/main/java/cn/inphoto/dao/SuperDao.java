@@ -1,4 +1,4 @@
-package cn.inphoto.user.dao;
+package cn.inphoto.dao;
 
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;

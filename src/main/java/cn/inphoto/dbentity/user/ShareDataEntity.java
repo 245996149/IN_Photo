@@ -9,7 +9,7 @@ import java.sql.Timestamp;
  * Created by kaxia on 2017/6/5.
  */
 @Entity
-@Table(name = "share_data", schema = "in_photo", catalog = "")
+@Table(name = "share_data", schema = "IN_Photo", catalog = "")
 public class ShareDataEntity {
 
     /*页面点击*/

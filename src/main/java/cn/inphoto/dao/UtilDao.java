@@ -1,4 +1,4 @@
-package cn.inphoto.user.dao;
+package cn.inphoto.dao;
 
 /**
  * 数据库通用操作Dao接口

@@ -1,8 +1,8 @@
-package cn.inphoto.user.dao;
+package cn.inphoto.dao;
 
-import cn.inphoto.dbentity.CodeWebinfoEntity;
-import cn.inphoto.dbentity.PicWebinfoEntity;
-import cn.inphoto.dbentity.ShareInfoEntity;
+import cn.inphoto.dbentity.user.CodeWebinfoEntity;
+import cn.inphoto.dbentity.user.PicWebinfoEntity;
+import cn.inphoto.dbentity.user.ShareInfoEntity;
 
 /**
  * Created by kaxia on 2017/6/5.

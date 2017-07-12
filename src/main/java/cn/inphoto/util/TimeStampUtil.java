@@ -1,4 +1,4 @@
-package cn.inphoto.user.util;
+package cn.inphoto.util;
 
 import org.junit.Test;
 

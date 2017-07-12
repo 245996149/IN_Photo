@@ -1,6 +1,6 @@
-package cn.inphoto.user.util;
+package cn.inphoto.util;
 
-import cn.inphoto.dbentity.UsersEntity;
+import cn.inphoto.dbentity.user.UsersEntity;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -57,7 +57,7 @@ public class DirUtil {
         String reStr = null;
 
         // 将文件通过文件输入流打开
-        try (InputStream in = DirUtil.class.getResourceAsStream("/dev.properties");) {
+        try (InputStream in = DirUtil.class.getResourceAsStream("/config.properties");) {
             // 配置文件对象读取文件输入流
             p.load(in);
             // 关闭文件输入流

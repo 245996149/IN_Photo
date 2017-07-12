@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cn.inphoto.user.util.picUtil;
+package cn.inphoto.util.picUtil;
 
 /**
  * @author kaxia

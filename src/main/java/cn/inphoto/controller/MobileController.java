@@ -1,7 +1,7 @@
-package cn.inphoto.controller.user;
+package cn.inphoto.controller;
 
 import cn.inphoto.dao.*;
-import cn.inphoto.dbentity.*;
+import cn.inphoto.dbentity.user.*;
 import cn.inphoto.weChatEntity.JsapiTicket;
 import cn.inphoto.weChatUtil.Sha1;
 import cn.inphoto.weChatUtil.WeChatWebUtil;
@@ -23,7 +23,7 @@ import java.util.UUID;
 import static cn.inphoto.util.DirUtil.getErrorInfoFromException;
 
 /**
- * 移动端控制器
+ * 移动端h5页面控制器
  * Created by kaxia on 2017/6/13.
  */
 @Controller
@@ -34,9 +34,6 @@ public class MobileController {
 
     @Value("#{properties['appid']}")
     String appid;
-
-    @Value("#{properties['url']}")
-    String url;
 
     @Resource
     UserDao userDao;
@@ -67,6 +64,15 @@ public class MobileController {
     /*定义默认展示页面*/
     private static final String MOBILE_VIEW_DEFAULT = "mobile/view_default";
 
+    /**
+     * 前面提取页面
+     *
+     * @param user_id     用户id
+     * @param category_id 套餐id
+     * @param model       页面数据存储对象
+     * @param test        是否为测试状态
+     * @return 页面地址
+     */
     @RequestMapping("/toCode.do")
     public String toCode(Long user_id, Integer category_id, Model model, boolean test) {
 
@@ -113,6 +119,15 @@ public class MobileController {
 
     }
 
+    /**
+     * 校验提取码是否正确
+     *
+     * @param user_id     用户id
+     * @param category_id 套餐id
+     * @param code        验证码
+     * @param request     Request对象
+     * @return 校验结果
+     */
     @RequestMapping("checkCode.do")
     @ResponseBody
     public Map<String, Object> checkCode(Long user_id, Integer category_id, String code, HttpServletRequest request) {
@@ -151,8 +166,20 @@ public class MobileController {
 
     }
 
+    /**
+     * 前往展示页面
+     *
+     * @param user_id     用户id
+     * @param category_id 套餐id
+     * @param media_id    媒体数据id
+     * @param model       页面数据存储对象
+     * @param test        是否是测试状态
+     * @param request     Request对象
+     * @return 页面地址
+     */
     @RequestMapping("/toPage.do")
-    public String toPage(Long user_id, Integer category_id, Long media_id, Model model, boolean test) {
+    public String toPage(Long user_id, Integer category_id, Long media_id, Model model, boolean test
+            , HttpServletRequest request) {
 
         // 判断是否在测试模式
         if (test) {
@@ -199,7 +226,7 @@ public class MobileController {
             ShareInfoEntity shareInfoEntity = webinfoDao.findShareByUser_idAndCategory(user_id, category_id);
 
             model.addAttribute("shareInfoEntity", shareInfoEntity);
-            model.addAttribute("url", url);
+            model.addAttribute("url", "http://" + request.getServerName());
             model.addAttribute("test", test);
             model.addAttribute("category_id", userCategory.getCategoryId());
             model.addAttribute("user_id", user.getUserId());
@@ -296,7 +323,15 @@ public class MobileController {
 
     }
 
-
+    /**
+     * 接受分享数据
+     *
+     * @param user_id     用户id
+     * @param category_id 套餐id
+     * @param media_id    媒体数据
+     * @param share_type  分享数据所属类型
+     * @return 接受结果
+     */
     @RequestMapping("/collectingData.do")
     @ResponseBody
     public Map collectingData(Long user_id, Integer category_id, Long media_id, String share_type) {

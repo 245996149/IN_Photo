@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  * Created by kaxia on 2017/6/5.
  */
 @Entity
-@Table(name = "user_category", schema = "in_photo", catalog = "")
+@Table(name = "user_category", schema = "IN_Photo", catalog = "")
 public class UserCategoryEntity implements Serializable {
 
     /*系统正常*/

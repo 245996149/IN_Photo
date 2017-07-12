@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import static cn.inphoto.user.util.picUtil.QRUtil.writeToFile;
+import static cn.inphoto.util.picUtil.QRUtil.writeToFile;
 
 /**
  * Created by kaxia on 2017/6/22.

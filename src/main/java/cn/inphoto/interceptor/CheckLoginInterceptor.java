@@ -1,6 +1,6 @@
-package cn.inphoto.user.interceptor;
+package cn.inphoto.interceptor;
 
-import cn.inphoto.dbentity.UsersEntity;
+import cn.inphoto.dbentity.user.UsersEntity;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;

@@ -1,4 +1,4 @@
-package cn.inphoto.user.interceptor;
+package cn.inphoto.interceptor;
 
 
 import org.apache.log4j.MDC;

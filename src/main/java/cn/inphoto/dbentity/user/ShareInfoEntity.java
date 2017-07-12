@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by kaxia on 2017/6/5.
  */
 @Entity
-@Table(name = "share_info", schema = "in_photo", catalog = "")
+@Table(name = "share_info", schema = "IN_Photo", catalog = "")
 public class ShareInfoEntity {
     private long shareInfoId;
     private long userId;

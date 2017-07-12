@@ -1,8 +1,8 @@
-package cn.inphoto.user.daoimpl;
+package cn.inphoto.daoimpl;
 
-import cn.inphoto.user.dao.MediaDataDao;
-import cn.inphoto.user.dao.SuperDao;
-import cn.inphoto.dbentity.MediaDataEntity;
+import cn.inphoto.dao.MediaDataDao;
+import cn.inphoto.dao.SuperDao;
+import cn.inphoto.dbentity.user.MediaDataEntity;
 import cn.inphoto.dbentity.page.TablePage;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;

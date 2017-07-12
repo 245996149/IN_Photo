@@ -3,6 +3,10 @@
          xmlns="http://java.sun.com/xml/ns/javaee"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
+    
+    <welcome-file-list>
+        <welcome-file>/WEB-INF/index.jsp</welcome-file>
+    </welcome-file-list>
 
     <servlet>
         <servlet-name>dispatcher</servlet-name>
@@ -17,11 +21,7 @@
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>*.do</url-pattern>
     </servlet-mapping>
-    
-    <context-param>
-        <param-name>spring.profiles.active</param-name>
-        <param-value>dev</param-value>
-    </context-param>
+
 
     <!-- 字符编码过滤器 -->
     <filter>
@@ -38,14 +38,14 @@
     </filter-mapping>
 
     <!-- log4j过滤器 -->
-    <filter>
-        <filter-name>set log4j MDC for log</filter-name>
-        <filter-class>cn.inphoto.user.interceptor.ResFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>set log4j MDC for log</filter-name>
-        <url-pattern>*.do</url-pattern>
-    </filter-mapping>
+    <!--<filter>-->
+        <!--<filter-name>set log4j MDC for log</filter-name>-->
+        <!--<filter-class>cn.inphoto.interceptor.ResFilter</filter-class>-->
+    <!--</filter>-->
+    <!--<filter-mapping>-->
+        <!--<filter-name>set log4j MDC for log</filter-name>-->
+        <!--<url-pattern>*.do</url-pattern>-->
+    <!--</filter-mapping>-->
 
     <!--<filter>-->
         <!--<filter-name>hibernateFilter</filter-name>-->

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cn.inphoto.user.weChatEntity;
+package cn.inphoto.weChatEntity;
 
 /**
  * 描述: 网页授权信息

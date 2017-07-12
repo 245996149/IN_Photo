@@ -1,4 +1,4 @@
-package cn.inphoto.user.log;
+package cn.inphoto.log;
 
 import org.apache.log4j.jdbc.JDBCAppender;
 

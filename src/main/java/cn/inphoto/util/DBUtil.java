@@ -1,7 +1,7 @@
-package cn.inphoto.user.util;
+package cn.inphoto.util;
 
-import cn.inphoto.user.dao.*;
-import cn.inphoto.dbentity.*;
+import cn.inphoto.dao.*;
+import cn.inphoto.dbentity.user.*;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;

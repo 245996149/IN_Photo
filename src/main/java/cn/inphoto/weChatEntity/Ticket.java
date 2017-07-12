@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cn.inphoto.user.weChatEntity;
+package cn.inphoto.weChatEntity;
 
 /**
  * @author Ming.C

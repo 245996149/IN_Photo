@@ -1,10 +1,10 @@
-package cn.inphoto.user.controller;
+package cn.inphoto.controller.user;
 
 import cn.inphoto.dao.MediaDataDao;
 import cn.inphoto.dao.UserCategoryDao;
-import cn.inphoto.dbentity.MediaDataEntity;
-import cn.inphoto.dbentity.UserCategoryEntity;
-import cn.inphoto.dbentity.UsersEntity;
+import cn.inphoto.dbentity.user.MediaDataEntity;
+import cn.inphoto.dbentity.user.UserCategoryEntity;
+import cn.inphoto.dbentity.user.UsersEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cn.inphoto.user.weChatUtil;
+package cn.inphoto.weChatUtil;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

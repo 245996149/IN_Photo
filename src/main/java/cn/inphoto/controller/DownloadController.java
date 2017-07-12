@@ -1,8 +1,8 @@
-package cn.inphoto.controller.user;
+package cn.inphoto.controller;
 
 import cn.inphoto.dao.MediaDataDao;
 import cn.inphoto.dao.WebinfoDao;
-import cn.inphoto.dbentity.*;
+import cn.inphoto.dbentity.user.*;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -34,10 +34,11 @@ import static cn.inphoto.util.ZIPUtil.createZIP;
 import static cn.inphoto.util.picUtil.QRUtil.writeToStream;
 
 /**
+ * 文件获取控制器
  * Created by kaxia on 2017/6/19.
  */
 @Controller
-@RequestMapping("/user/get")
+@RequestMapping("/get")
 public class DownloadController {
 
     private Logger logger = Logger.getLogger(DownloadController.class);
@@ -51,12 +52,19 @@ public class DownloadController {
     /**
      * 输出媒体、套餐系统图片数据
      *
-     * @param response
-     * @param request
+     * @param response  Response对象
+     * @param request   Request对象
      * @param id        媒体、套餐系统id
      * @param type      具体类型
+     *                  type=1 media_data 媒体数据
+     *                  type=2 pic_bg 展示页面背景
+     *                  type=3 code_bg 提取液面背景
+     *                  type=4 code_con 提取液面确认按钮
+     *                  type=5 share_moments_icon 朋友圈小图标
+     *                  type=6 share_chats_icon 分享给好友小图标
+     *                  type=7 测试用数据
      * @param thumbnail 是否压缩
-     * @throws IOException
+     * @throws IOException 抛出IO错误
      */
     @RequestMapping("getMedia.do")
     public void getMedia(HttpServletResponse response, HttpServletRequest request, Long id, int type, boolean thumbnail, boolean download) throws IOException {
@@ -176,10 +184,10 @@ public class DownloadController {
     /**
      * 根据媒体数据ID队列，打包下载媒体数据
      *
-     * @param response
-     * @param session
+     * @param response Request对象
+     * @param session Session对象
      * @param media_id_list 媒体数据ID队列
-     * @throws IOException
+     * @throws IOException 抛出IO错误
      */
     @RequestMapping("/getMedias.do")
     @ResponseBody
@@ -229,15 +237,23 @@ public class DownloadController {
         }
     }
 
+    /**
+     * 根据传入的url判断是否解码，并生成该url对应的二维码
+     * @param response Response对象
+     * @param url 输入的URL
+     * @param encode 是否是编码的
+     * @throws IOException 抛出IO错误
+     */
     @RequestMapping("/getQR.do")
     @ResponseBody
-    public void getQR(HttpServletResponse response, String url,boolean encode) throws IOException {
+    public void getQR(HttpServletResponse response, String url, boolean encode) throws IOException {
 
+        // 判断url是否是编码的，编码的需要解码
         if (encode) {
             url = URLDecoder.decode(url, "UTF-8");
         }
 
-        System.out.println(url);
+        //System.out.println(url);
 
         try (OutputStream outputStream = response.getOutputStream()) {
 

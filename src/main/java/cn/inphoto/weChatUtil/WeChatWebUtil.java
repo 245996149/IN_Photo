@@ -1,14 +1,14 @@
 /**
  *
  */
-package cn.inphoto.user.weChatUtil;
+package cn.inphoto.weChatUtil;
 
 
 
-import cn.inphoto.user.weChatEntity.JsapiTicket;
-import cn.inphoto.user.weChatEntity.WeChatOauth2Token;
-import cn.inphoto.user.weChatEntity.WeChatToken;
-import cn.inphoto.user.weChatEntity.WeChatWebUserInfo;
+import cn.inphoto.weChatEntity.JsapiTicket;
+import cn.inphoto.weChatEntity.WeChatOauth2Token;
+import cn.inphoto.weChatEntity.WeChatToken;
+import cn.inphoto.weChatEntity.WeChatWebUserInfo;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;

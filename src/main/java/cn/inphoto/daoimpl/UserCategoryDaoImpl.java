@@ -1,8 +1,8 @@
-package cn.inphoto.user.daoimpl;
+package cn.inphoto.daoimpl;
 
-import cn.inphoto.user.dao.SuperDao;
-import cn.inphoto.user.dao.UserCategoryDao;
-import cn.inphoto.dbentity.UserCategoryEntity;
+import cn.inphoto.dao.SuperDao;
+import cn.inphoto.dao.UserCategoryDao;
+import cn.inphoto.dbentity.user.UserCategoryEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;

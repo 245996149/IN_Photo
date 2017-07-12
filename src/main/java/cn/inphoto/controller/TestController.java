@@ -1,12 +1,13 @@
-package cn.inphoto.controller.user;
+package cn.inphoto.controller;
 
 import cn.inphoto.dao.ShareDataDao;
-import cn.inphoto.dbentity.ShareDataEntity;
+import cn.inphoto.dbentity.user.ShareDataEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -84,6 +85,19 @@ public class TestController {
 
         return maps;
 
+    }
+
+    @RequestMapping("/getURL.do")
+    @ResponseBody
+    public String getURL(HttpServletRequest request) {
+
+        String url = request.getScheme()+"://"+ request.getServerName()+request.getRequestURI()+"?"+request.getQueryString();
+        System.out.println("获取全路径（协议类型：//域名/项目名/命名空间/action名称?其他参数）url="+url);
+        String url2=request.getScheme()+"://"+ request.getServerName();//+request.getRequestURI();
+        System.out.println("协议名：//域名="+url2);
+
+
+        return url2;
     }
 
 

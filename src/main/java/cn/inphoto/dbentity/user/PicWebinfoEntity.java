@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by kaxia on 2017/6/5.
  */
 @Entity
-@Table(name = "pic_webinfo", schema = "in_photo", catalog = "")
+@Table(name = "pic_webinfo", schema = "IN_Photo", catalog = "")
 public class PicWebinfoEntity {
 
     /*正常生效*/

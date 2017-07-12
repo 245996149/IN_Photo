@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cn.inphoto.user.weChatUtil;
+package cn.inphoto.weChatUtil;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package cn.inphoto.user.util.picUtil;
+package cn.inphoto.util.picUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

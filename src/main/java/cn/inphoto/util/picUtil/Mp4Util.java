@@ -1,11 +1,11 @@
-package cn.inphoto.user.util.picUtil;
+package cn.inphoto.util.picUtil;
 
 import com.xuggle.xuggler.*;
 
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
-import static cn.inphoto.user.util.picUtil.GifUtil.merageBufferedImageArray;
+import static cn.inphoto.util.picUtil.GifUtil.merageBufferedImageArray;
 
 /**
  * Created by root on 17-3-14.
