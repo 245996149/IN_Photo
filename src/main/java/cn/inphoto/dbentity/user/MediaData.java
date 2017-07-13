@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "media_data", schema = "IN_Photo", catalog = "")
-public class MediaDataEntity {
+public class MediaData {
 
     /*媒体数据正常*/
     public static final String MEDIA_STATE_NORMAL = "0";
@@ -130,7 +130,7 @@ public class MediaDataEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        MediaDataEntity that = (MediaDataEntity) o;
+        MediaData that = (MediaData) o;
 
         if (mediaId != that.mediaId) return false;
         if (userId != that.userId) return false;
@@ -162,7 +162,7 @@ public class MediaDataEntity {
 
     @Override
     public String toString() {
-        return "MediaDataEntity{" +
+        return "MediaData{" +
                 "mediaId=" + mediaId +
                 ", mediaName='" + mediaName + '\'' +
                 ", filePath='" + filePath + '\'' +

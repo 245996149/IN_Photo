@@ -1,6 +1,6 @@
 package cn.inphoto.dao;
 
-import cn.inphoto.dbentity.user.MediaDataEntity;
+import cn.inphoto.dbentity.user.MediaData;
 import cn.inphoto.dbentity.page.TablePage;
 
 import java.util.Date;
@@ -17,7 +17,7 @@ public interface MediaDataDao {
      * @param tablePage 表格分页对象
      * @return 媒体对象列表
      */
-    List<MediaDataEntity> findByPage(TablePage tablePage);
+    List<MediaData> findByPage(TablePage tablePage);
 
     /**
      * 根据user_id、category_id、media_state统计总数
@@ -47,7 +47,7 @@ public interface MediaDataDao {
      * @param media_state 媒体状态
      * @return
      */
-    MediaDataEntity findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(Long user_id, int category_id, String media_state);
+    MediaData findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(Long user_id, int category_id, String media_state);
 
     /**
      * 根据media_id查询媒体对象
@@ -55,7 +55,7 @@ public interface MediaDataDao {
      * @param media_id 媒体id
      * @return 媒体对象
      */
-    MediaDataEntity findByMedia_id(Long media_id);
+    MediaData findByMedia_id(Long media_id);
 
     /**
      * 根据media_id查询多个媒体对象
@@ -63,7 +63,7 @@ public interface MediaDataDao {
      * @param media_ids 媒体id队列
      * @return 媒体对象
      */
-    List<MediaDataEntity> findByMedia_ids(List<Long> media_ids);
+    List<MediaData> findByMedia_ids(List<Long> media_ids);
 
     /**
      * 向数据库中更新多个对象
@@ -71,7 +71,7 @@ public interface MediaDataDao {
      * @param mediaDataList 对象队列
      * @return 返回是否成功
      */
-    boolean updateMediaList(List<MediaDataEntity> mediaDataList);
+    boolean updateMediaList(List<MediaData> mediaDataList);
 
     /**
      * 找到回收站中所有时间过期的媒体数据
@@ -80,7 +80,7 @@ public interface MediaDataDao {
      * @param media_data_state
      * @return
      */
-    List<MediaDataEntity> findByOver_timeAndState(Date over_time, String media_data_state);
+    List<MediaData> findByOver_timeAndState(Date over_time, String media_data_state);
 
     /**
      * 根据用户及状态查询所有对应的媒体数据
@@ -88,6 +88,6 @@ public interface MediaDataDao {
      * @param media_state
      * @return
      */
-    List<MediaDataEntity> findByUser_idAndState(Long user_id,String media_state);
+    List<MediaData> findByUser_idAndState(Long user_id, String media_state);
 
 }

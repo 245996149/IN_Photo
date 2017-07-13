@@ -7,7 +7,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "share_info", schema = "IN_Photo", catalog = "")
-public class ShareInfoEntity {
+public class ShareInfo {
     private long shareInfoId;
     private long userId;
     private int categoryId;
@@ -106,7 +106,7 @@ public class ShareInfoEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ShareInfoEntity that = (ShareInfoEntity) o;
+        ShareInfo that = (ShareInfo) o;
 
         if (shareInfoId != that.shareInfoId) return false;
         if (userId != that.userId) return false;

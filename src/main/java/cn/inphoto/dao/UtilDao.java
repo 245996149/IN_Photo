@@ -14,7 +14,6 @@ public interface UtilDao {
      */
     boolean save(Object obj);
 
-
     /**
      * 向数据库中更新一个对象
      *
@@ -22,7 +21,5 @@ public interface UtilDao {
      * @return 返回是否成功
      */
     boolean update(Object obj);
-
-
 
 }

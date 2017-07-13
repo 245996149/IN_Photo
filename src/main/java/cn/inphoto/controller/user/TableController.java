@@ -54,17 +54,17 @@ public class TableController {
      */
     @RequestMapping("/toTable.do")
     public String toTable(Model model, HttpSession session, TablePage tablePage) {
-        UsersEntity usersEntity = (UsersEntity) session.getAttribute("loginUser");
+        User user = (User) session.getAttribute("loginUser");
 
-        tablePage.setUser_id(usersEntity.getUserId());
+        tablePage.setUser_id(user.getUserId());
 
-        tablePage.setRows(mediaDataDao.countByUser_idAndCategory_idAndMedia_state(usersEntity.getUserId(), tablePage.getCategory_id(), MediaDataEntity.MEDIA_STATE_NORMAL));
+        tablePage.setRows(mediaDataDao.countByUser_idAndCategory_idAndMedia_state(user.getUserId(), tablePage.getCategory_id(), MediaData.MEDIA_STATE_NORMAL));
 
-        tablePage.setMedia_state(MediaDataEntity.MEDIA_STATE_NORMAL);
+        tablePage.setMedia_state(MediaData.MEDIA_STATE_NORMAL);
 
-        List<MediaDataEntity> mediaDataList = mediaDataDao.findByPage(tablePage);
+        List<MediaData> mediaDataList = mediaDataDao.findByPage(tablePage);
 
-        List<MediaCodeEntity> mediaCodeList = mediaCodeDao.findByUser_idAndCategory_id(usersEntity.getUserId(), tablePage.getCategory_id());
+        List<MediaCode> mediaCodeList = mediaCodeDao.findByUser_idAndCategory_id(user.getUserId(), tablePage.getCategory_id());
 
         model.addAttribute("mediaDataList", mediaDataList);
         model.addAttribute("mediaCodeList", mediaCodeList);
@@ -78,16 +78,16 @@ public class TableController {
     @RequestMapping("/toRecycle.do")
     public String toRecycle(Model model, HttpSession session, TablePage tablePage) {
 
-        UsersEntity usersEntity = (UsersEntity) session.getAttribute("loginUser");
+        User user = (User) session.getAttribute("loginUser");
 
-        tablePage.setUser_id(usersEntity.getUserId());
+        tablePage.setUser_id(user.getUserId());
 
         tablePage.setRows(mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                usersEntity.getUserId(), null, MediaDataEntity.MEDIA_STATE_RECYCLE));
+                user.getUserId(), null, MediaData.MEDIA_STATE_RECYCLE));
 
-        tablePage.setMedia_state(MediaDataEntity.MEDIA_STATE_RECYCLE);
+        tablePage.setMedia_state(MediaData.MEDIA_STATE_RECYCLE);
 
-        List<MediaDataEntity> mediaDataList = mediaDataDao.findByPage(tablePage);
+        List<MediaData> mediaDataList = mediaDataDao.findByPage(tablePage);
 
         Map<Long, Long> tempMap = new HashMap<>();
 
@@ -95,7 +95,7 @@ public class TableController {
 
         Calendar calendarTemp = Calendar.getInstance();
 
-        for (MediaDataEntity m : mediaDataList
+        for (MediaData m : mediaDataList
                 ) {
             calendarTemp.setTime(m.getOverTime());
             long diffDays = (calendarTemp.getTimeInMillis() - calendarNow.getTimeInMillis()) / (1000 * 60 * 60 * 24);
@@ -124,7 +124,7 @@ public class TableController {
     @ResponseBody
     public Map[] getShareData(HttpSession session, int category_id, int type) {
 
-        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
+        User user = (User) session.getAttribute("loginUser");
 
         // 创建返回的数组
         Map[] maps = new HashMap[7];
@@ -156,7 +156,7 @@ public class TableController {
                 for (int i = 7; i > 0; i--) {
                     // 获取数据
                     int a = shareDataDao.countByTime(
-                            user.getUserId(), category_id, begin, end, ShareDataEntity.SHARE_TYPE_WEB_CLICK);
+                            user.getUserId(), category_id, begin, end, ShareData.SHARE_TYPE_WEB_CLICK);
 
                     // 创建返回的Map对象
                     Map<String, Object> result = new HashMap<>();
@@ -180,9 +180,9 @@ public class TableController {
                 // 循环查询七天内的分享给好友量、分享到朋友圈
                 for (int i = 7; i > 0; i--) {
                     int chats_num = shareDataDao.countByTime(
-                            user.getUserId(), category_id, begin, end, ShareDataEntity.SHARE_TYPE_WECHAT_SHARE_CHATS);
+                            user.getUserId(), category_id, begin, end, ShareData.SHARE_TYPE_WECHAT_SHARE_CHATS);
                     int moments_num = shareDataDao.countByTime(
-                            user.getUserId(), category_id, begin, end, ShareDataEntity.SHARE_TYPE_WECHAT_SHARE_MOMENTS);
+                            user.getUserId(), category_id, begin, end, ShareData.SHARE_TYPE_WECHAT_SHARE_MOMENTS);
                     // 创建返回的Map对象
                     Map<String, Object> result = new HashMap<>();
 
@@ -222,15 +222,15 @@ public class TableController {
     @ResponseBody
     public Map getSystemInfo(HttpSession session, int category_id) {
 
-        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
+        User user = (User) session.getAttribute("loginUser");
 
         // 创建返回的数组
         Map<String, Object> result = new HashMap<>();
 
         // 查找用户的套餐系统信息
-        UserCategoryEntity userCategory = userCategoryDao.findByUser_idAndCategory_id(user.getUserId(), category_id, UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
+        UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_id(user.getUserId(), category_id, UserCategory.USER_CATEGORY_STATE_NORMAL);
         // 计算用户该套餐系统内状态为张昌的媒体数据的数量
-        int media_num = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(user.getUserId(), category_id, MediaDataEntity.MEDIA_STATE_NORMAL);
+        int media_num = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(user.getUserId(), category_id, MediaData.MEDIA_STATE_NORMAL);
 
         // System.out.println(userCategory);
 
@@ -254,7 +254,7 @@ public class TableController {
     @ResponseBody
     public Map getRecycleInfo(HttpSession session, int category_id) {
 
-        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
+        User user = (User) session.getAttribute("loginUser");
 
         // 创建返回的数组
         Map<String, Object> result = new HashMap<>();
@@ -276,11 +276,11 @@ public class TableController {
 
         // 查询回收站中该套餐系统的总数
         int recycle_total = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                user.getUserId(), category_id, MediaDataEntity.MEDIA_STATE_RECYCLE);
+                user.getUserId(), category_id, MediaData.MEDIA_STATE_RECYCLE);
 
         // 查询回收站中该套餐系统的7天内过期的媒体数
         int recycle_7 = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                user.getUserId(), category_id, begin, end, MediaDataEntity.MEDIA_STATE_RECYCLE);
+                user.getUserId(), category_id, begin, end, MediaData.MEDIA_STATE_RECYCLE);
 
         // 将日历设置都15天之后
         calendar.add(Calendar.DATE, 8);
@@ -290,7 +290,7 @@ public class TableController {
 
         // 查询回收站中该套餐系统的15天内过期的媒体数
         int recycle_15 = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                user.getUserId(), category_id, begin, end, MediaDataEntity.MEDIA_STATE_RECYCLE);
+                user.getUserId(), category_id, begin, end, MediaData.MEDIA_STATE_RECYCLE);
 
         result.put("recycle_total", recycle_total);
         result.put("recycle_7", recycle_7);
@@ -310,7 +310,7 @@ public class TableController {
     @ResponseBody
     public Map getRecycleInfoTotal(HttpSession session) {
 
-        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
+        User user = (User) session.getAttribute("loginUser");
 
         // 创建返回的数组
         Map<String, Object> result = new HashMap<>();
@@ -332,11 +332,11 @@ public class TableController {
 
         // 查询回收站中该套餐系统的总数
         int recycle_total = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                user.getUserId(), null, MediaDataEntity.MEDIA_STATE_RECYCLE);
+                user.getUserId(), null, MediaData.MEDIA_STATE_RECYCLE);
 
         // 查询回收站中该套餐系统的7天内过期的媒体数
         int recycle_7 = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                user.getUserId(), null, begin, end, MediaDataEntity.MEDIA_STATE_RECYCLE);
+                user.getUserId(), null, begin, end, MediaData.MEDIA_STATE_RECYCLE);
 
         // 将日历设置都15天之后
         calendar.add(Calendar.DATE, 8);
@@ -346,7 +346,7 @@ public class TableController {
 
         // 查询回收站中该套餐系统的15天内过期的媒体数
         int recycle_15 = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                user.getUserId(), null, begin, end, MediaDataEntity.MEDIA_STATE_RECYCLE);
+                user.getUserId(), null, begin, end, MediaData.MEDIA_STATE_RECYCLE);
 
         result.put("recycle_total", recycle_total);
         result.put("recycle_7", recycle_7);
@@ -366,13 +366,13 @@ public class TableController {
     @ResponseBody
     public Map deleteMediaData(Long media_id, HttpSession session) {
 
-        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
+        User user = (User) session.getAttribute("loginUser");
 
         // 创建返回的数组
         Map<String, Object> result = new HashMap<>();
 
         // 查找media_id对应的mediaData
-        MediaDataEntity mediaData = mediaDataDao.findByMedia_id(media_id);
+        MediaData mediaData = mediaDataDao.findByMedia_id(media_id);
 
         changeMediaDataToRecycle(mediaData);
 
@@ -409,7 +409,7 @@ public class TableController {
     @ResponseBody
     public Map deleteMediaDataList(String media_id_list, HttpSession session) {
 
-        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
+        User user = (User) session.getAttribute("loginUser");
 
         Map<String, Object> result = new HashMap<>();
 
@@ -424,9 +424,9 @@ public class TableController {
         }
 
         // 加载数据库中的对象
-        List<MediaDataEntity> mediaDataList = mediaDataDao.findByMedia_ids(media_ids);
+        List<MediaData> mediaDataList = mediaDataDao.findByMedia_ids(media_ids);
 
-        for (MediaDataEntity m : mediaDataList
+        for (MediaData m : mediaDataList
                 ) {
             changeMediaDataToRecycle(m);
         }
@@ -461,14 +461,14 @@ public class TableController {
     @ResponseBody
     public Map cleanMediaData(Long media_id, HttpSession session) {
 
-        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
+        User user = (User) session.getAttribute("loginUser");
 
         Map<String, Object> result = new HashMap<>();
 
         // 查找media_id对应的mediaData
-        MediaDataEntity mediaData = mediaDataDao.findByMedia_id(media_id);
+        MediaData mediaData = mediaDataDao.findByMedia_id(media_id);
 
-        mediaData.setMediaState(MediaDataEntity.MEDIA_STATE_DELETE);
+        mediaData.setMediaState(MediaData.MEDIA_STATE_DELETE);
         mediaData.setOverTime(new Timestamp(System.currentTimeMillis()));
 
         MDC.put("user_id", user.getUserId());
@@ -503,7 +503,7 @@ public class TableController {
     @ResponseBody
     public Map cleanMediaDataList(String media_id_list, HttpSession session) {
 
-        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
+        User user = (User) session.getAttribute("loginUser");
 
         Map<String, Object> result = new HashMap<>();
 
@@ -518,12 +518,12 @@ public class TableController {
         }
 
         // 加载数据库中的对象
-        List<MediaDataEntity> mediaDataList = mediaDataDao.findByMedia_ids(media_ids);
+        List<MediaData> mediaDataList = mediaDataDao.findByMedia_ids(media_ids);
 
         // 循环更新队列中的媒体数据的信息
-        for (MediaDataEntity m : mediaDataList
+        for (MediaData m : mediaDataList
                 ) {
-            m.setMediaState(MediaDataEntity.MEDIA_STATE_DELETE);
+            m.setMediaState(MediaData.MEDIA_STATE_DELETE);
             m.setOverTime(new Timestamp(System.currentTimeMillis()));
         }
 
@@ -560,16 +560,16 @@ public class TableController {
     @ResponseBody
     public Map reductionMediaData(Long media_id, HttpSession session) {
 
-        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
+        User user = (User) session.getAttribute("loginUser");
 
         Map<String, Object> result = new HashMap<>();
 
         // 查找media_id对应的mediaData
-        MediaDataEntity mediaData = mediaDataDao.findByMedia_id(media_id);
+        MediaData mediaData = mediaDataDao.findByMedia_id(media_id);
 
         // 查询该媒体数据对应的系统
-        UserCategoryEntity userCategory = userCategoryDao.findByUser_idAndCategory_id(
-                user.getUserId(), mediaData.getCategoryId(), UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
+        UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_id(
+                user.getUserId(), mediaData.getCategoryId(), UserCategory.USER_CATEGORY_STATE_NORMAL);
 
         MDC.put("user_id", user.getUserId());
         MDC.put("category_id", mediaData.getCategoryId());
@@ -587,7 +587,7 @@ public class TableController {
 
         // 判断数据库中该系统草滩媒体数据总量是否超过套餐总量
         if (mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                user.getUserId(), mediaData.getCategoryId(), MediaDataEntity.MEDIA_STATE_NORMAL) >= userCategory.getMediaNumber()) {
+                user.getUserId(), mediaData.getCategoryId(), MediaData.MEDIA_STATE_NORMAL) >= userCategory.getMediaNumber()) {
 
             result.put("success", false);
             result.put("message", "该媒体数据隶属于的系统已经达到最大媒体数据容量，请联系客服另行购买。");
@@ -598,7 +598,7 @@ public class TableController {
         }
 
         // 给媒体数据信息赋予新的值
-        mediaData.setMediaState(MediaDataEntity.MEDIA_STATE_NORMAL);
+        mediaData.setMediaState(MediaData.MEDIA_STATE_NORMAL);
         mediaData.setOverTime(null);
         mediaData.setDeleteTime(null);
 
@@ -633,7 +633,7 @@ public class TableController {
     @ResponseBody
     public Map reductionMediaDataList(String media_id_list, HttpSession session, HttpServletRequest request) {
 
-        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
+        User user = (User) session.getAttribute("loginUser");
 
         Map<String, Object> result = new HashMap<>();
 
@@ -650,13 +650,13 @@ public class TableController {
         MDC.put("user_id", user.getUserId());
 
         // 加载数据库中的对象
-        List<MediaDataEntity> mediaDataList = mediaDataDao.findByMedia_ids(media_ids);
+        List<MediaData> mediaDataList = mediaDataDao.findByMedia_ids(media_ids);
 
         // 创建用于判断媒体数据容量的临时map对象
         Map<Integer, Integer> tempMap = new HashMap<>();
 
         // 循环媒体数据对象队列，
-        for (MediaDataEntity m : mediaDataList
+        for (MediaData m : mediaDataList
                 ) {
 
             // 判断临时map对象中是否有对应的key，有的话加1
@@ -668,7 +668,7 @@ public class TableController {
         }
 
         // 查询该用户所有正常状态的
-        List<UserCategoryEntity> userCategoryList = (List<UserCategoryEntity>) session.getAttribute("allUserCategory");
+        List<UserCategory> userCategoryList = (List<UserCategory>) session.getAttribute("allUserCategory");
 
         boolean flag = true;
 
@@ -678,10 +678,10 @@ public class TableController {
         ServletContext application = request.getSession().getServletContext();
 
         // 从application中获取所有套餐系统对象
-        List<CategoryEntity> categoryList = (List<CategoryEntity>) application.getAttribute("category");
+        List<Category> categoryList = (List<Category>) application.getAttribute("category");
 
         // 遍历用户的套餐系统
-        for (UserCategoryEntity u : userCategoryList
+        for (UserCategory u : userCategoryList
                 ) {
 
             // 判断临时map对象中是否有key
@@ -692,26 +692,26 @@ public class TableController {
 
                 // 获取数据库中的钙系统媒体总量
                 int mediaDataTotal = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                        user.getUserId(), u.getCategoryId(), MediaDataEntity.MEDIA_STATE_NORMAL);
+                        user.getUserId(), u.getCategoryId(), MediaData.MEDIA_STATE_NORMAL);
 
                 // 比较两个值，判断是否能还原
                 if ((tempMapNum + mediaDataTotal) >= u.getMediaNumber()) {
 
                     // 创建套餐系统对象
-                    CategoryEntity categoryEntity = null;
+                    Category category = null;
 
                     // 遍历套餐系统对象，从中取出相应的套餐系统对象
-                    for (CategoryEntity c : categoryList
+                    for (Category c : categoryList
                             ) {
 
                         if (c.getCategoryId() == u.getCategoryId()) {
-                            categoryEntity = c;
+                            category = c;
                         }
 
                     }
 
                     flag = false;
-                    msg += categoryEntity.getCategoryName() + ",";
+                    msg += category.getCategoryName() + ",";
 
                 }
 
@@ -731,9 +731,9 @@ public class TableController {
         }
 
         // 循环更新队列中的媒体数据的信息
-        for (MediaDataEntity m : mediaDataList
+        for (MediaData m : mediaDataList
                 ) {
-            m.setMediaState(MediaDataEntity.MEDIA_STATE_NORMAL);
+            m.setMediaState(MediaData.MEDIA_STATE_NORMAL);
             m.setOverTime(null);
             m.setDeleteTime(null);
         }

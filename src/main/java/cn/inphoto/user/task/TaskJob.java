@@ -3,9 +3,9 @@ package cn.inphoto.user.task;
 import cn.inphoto.dao.MediaDataDao;
 import cn.inphoto.dao.UserCategoryDao;
 import cn.inphoto.dao.UserDao;
-import cn.inphoto.dbentity.user.MediaDataEntity;
-import cn.inphoto.dbentity.user.UserCategoryEntity;
-import cn.inphoto.dbentity.user.UsersEntity;
+import cn.inphoto.dbentity.user.MediaData;
+import cn.inphoto.dbentity.user.UserCategory;
+import cn.inphoto.dbentity.user.User;
 import cn.inphoto.log.TaskLog;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
@@ -68,13 +68,13 @@ public class TaskJob {
 
         Date date = new Date();
 
-        List<UserCategoryEntity> userCategoryEntities = userCategoryDao.findByOverTimeByNormal(date, UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
+        List<UserCategory> userCategoryEntities = userCategoryDao.findByOverTimeByNormal(date, UserCategory.USER_CATEGORY_STATE_NORMAL);
 
         String s = "";
 
-        for (UserCategoryEntity u : userCategoryEntities
+        for (UserCategory u : userCategoryEntities
                 ) {
-            u.setUserCategoryState(UserCategoryEntity.USER_CATEGORY_STATE_OVER);
+            u.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_OVER);
             s += "," + u.getUserCategoryId();
 
         }
@@ -94,13 +94,13 @@ public class TaskJob {
 
         Date date = new Date();
 
-        List<UserCategoryEntity> userCategoryEntities = userCategoryDao.findByNotStartBy(date, UserCategoryEntity.USER_CATEGORY_STATE_NOT_START);
+        List<UserCategory> userCategoryEntities = userCategoryDao.findByNotStartBy(date, UserCategory.USER_CATEGORY_STATE_NOT_START);
 
         String s = "";
 
-        for (UserCategoryEntity u : userCategoryEntities
+        for (UserCategory u : userCategoryEntities
                 ) {
-            u.setUserCategoryState(UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
+            u.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_NORMAL);
             s += "," + u.getUserCategoryId();
         }
 
@@ -121,13 +121,13 @@ public class TaskJob {
 
         Date date = new Date();
 
-        List<MediaDataEntity> mediaDataList = mediaDataDao.findByOver_timeAndState(date, MediaDataEntity.MEDIA_STATE_RECYCLE);
+        List<MediaData> mediaDataList = mediaDataDao.findByOver_timeAndState(date, MediaData.MEDIA_STATE_RECYCLE);
 
         String s = "";
 
-        for (MediaDataEntity m : mediaDataList
+        for (MediaData m : mediaDataList
                 ) {
-            m.setMediaState(MediaDataEntity.MEDIA_STATE_DELETE);
+            m.setMediaState(MediaData.MEDIA_STATE_DELETE);
             s += "," + m.getMediaId();
         }
 
@@ -141,18 +141,18 @@ public class TaskJob {
 
     public void autoChangeNormalState() {
 
-        List<UsersEntity> userList = userDao.findAll();
+        List<User> userList = userDao.findAll();
 
-        for (UsersEntity u : userList) {
+        for (User u : userList) {
 
-            List<UserCategoryEntity> userCategoryList = userCategoryDao.findByUser_idAndState(u.getUserId(), UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
+            List<UserCategory> userCategoryList = userCategoryDao.findByUser_idAndState(u.getUserId(), UserCategory.USER_CATEGORY_STATE_NORMAL);
 
-            List<MediaDataEntity> mediaDataList = mediaDataDao.findByUser_idAndState(u.getUserId(), MediaDataEntity.MEDIA_STATE_NORMAL);
+            List<MediaData> mediaDataList = mediaDataDao.findByUser_idAndState(u.getUserId(), MediaData.MEDIA_STATE_NORMAL);
 
-            for (MediaDataEntity m: mediaDataList
+            for (MediaData m: mediaDataList
                  ) {
                 boolean b = false;
-                for (UserCategoryEntity uc:userCategoryList
+                for (UserCategory uc:userCategoryList
                      ) {
 
                     if (uc.getCategoryId() == m.getCategoryId()) {

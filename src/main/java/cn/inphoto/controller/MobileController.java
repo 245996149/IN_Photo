@@ -80,26 +80,26 @@ public class MobileController {
         if (user_id == null || category_id == null) return MOBILE_404;
 
         // 查询user_id对应的用户
-        UsersEntity user = userDao.findByUser_id(user_id);
+        User user = userDao.findByUser_id(user_id);
 
         // 判断查询到的用户是否存在
         if (user == null) return MOBILE_404;
 
         // 根据user_id、category_id查询状态正常的用户套餐系统
-        UserCategoryEntity userCategory = userCategoryDao.findByUser_idAndCategory_id(
-                user.getUserId(), category_id, UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
+        UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_id(
+                user.getUserId(), category_id, UserCategory.USER_CATEGORY_STATE_NORMAL);
 
         // 判断用户套餐系统是否存在
         if (userCategory == null) return MOBILE_404;
 
-        String codeState = CodeWebinfoEntity.CODE_WEB_INFO_STATE_NORMAL;
+        String codeState = CodeWebInfo.CODE_WEB_INFO_STATE_NORMAL;
 
         if (test) {
-            codeState = CodeWebinfoEntity.CODE_WEB_INFO_STATE_PREVIEW;
+            codeState = CodeWebInfo.CODE_WEB_INFO_STATE_PREVIEW;
         }
 
         // 查询用户的提取页面设置
-        CodeWebinfoEntity codeWebinfo = webinfoDao.findCodeByUser_idAndCategory_id(
+        CodeWebInfo codeWebinfo = webinfoDao.findCodeByUser_idAndCategory_id(
                 user.getUserId(), userCategory.getCategoryId(), codeState);
 
         // 输出日志
@@ -135,7 +135,7 @@ public class MobileController {
         Map<String, Object> result = new HashMap<>();
 
         // 查询验证码
-        MediaCodeEntity mediaCode = mediaCodeDao.findByUser_idAndCategory_idAndMedia_code(
+        MediaCode mediaCode = mediaCodeDao.findByUser_idAndCategory_idAndMedia_code(
                 user_id, category_id, code);
 
         // 判断验证码是否有效
@@ -192,40 +192,40 @@ public class MobileController {
         try {
 
             // 查询user_id对应的用户
-            UsersEntity user = userDao.findByUser_id(user_id);
+            User user = userDao.findByUser_id(user_id);
 
             // 判断查询到的用户是否存在
             if (user == null) return MOBILE_404;
 
             // 根据user_id、category_id查询状态正常的用户套餐系统
-            UserCategoryEntity userCategory = userCategoryDao.findByUser_idAndCategory_id(
-                    user.getUserId(), category_id, UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
+            UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_id(
+                    user.getUserId(), category_id, UserCategory.USER_CATEGORY_STATE_NORMAL);
 
             // 判断用户套餐系统是否存在
             if (userCategory == null) return MOBILE_404;
 
-            String picState = PicWebinfoEntity.PIC_WEB_INFO_STATE_NORMAL;
+            String picState = PicWebinfo.PIC_WEB_INFO_STATE_NORMAL;
 
             // 判断是否在测试模式，在测试模式将media_id设置为0
             if (test) {
                 model.addAttribute("media_id", 0);
-                picState = PicWebinfoEntity.PIC_WEB_INFO_STATE_PREVIEW;
+                picState = PicWebinfo.PIC_WEB_INFO_STATE_PREVIEW;
             } else {
                 // 查询媒体数据，并判断媒体数据是否在正常状态内
-                MediaDataEntity mediaData = mediaDataDao.findByMedia_id(media_id);
-                if (mediaData == null || !MediaDataEntity.MEDIA_STATE_NORMAL.equals(mediaData.getMediaState()))
+                MediaData mediaData = mediaDataDao.findByMedia_id(media_id);
+                if (mediaData == null || !MediaData.MEDIA_STATE_NORMAL.equals(mediaData.getMediaState()))
                     return MOBILE_404;
 
                 model.addAttribute("media_id", mediaData.getMediaId());
             }
 
             // 查询用户展示页面设置
-            PicWebinfoEntity picWebinfo = webinfoDao.findPicByUser_idAndCategory_id(
+            PicWebinfo picWebinfo = webinfoDao.findPicByUser_idAndCategory_id(
                     user.getUserId(), userCategory.getCategoryId(), picState);
 
-            ShareInfoEntity shareInfoEntity = webinfoDao.findShareByUser_idAndCategory(user_id, category_id);
+            ShareInfo shareInfo = webinfoDao.findShareByUser_idAndCategory(user_id, category_id);
 
-            model.addAttribute("shareInfoEntity", shareInfoEntity);
+            model.addAttribute("shareInfoEntity", shareInfo);
             model.addAttribute("url", "http://" + request.getServerName());
             model.addAttribute("test", test);
             model.addAttribute("category_id", userCategory.getCategoryId());
@@ -345,14 +345,14 @@ public class MobileController {
             return result;
         }
 
-        ShareDataEntity shareDataEntity = new ShareDataEntity();
+        ShareData shareData = new ShareData();
 
-        shareDataEntity.setCategoryId(category_id);
-        shareDataEntity.setMediaId(media_id);
-        shareDataEntity.setUserId(user_id);
-        shareDataEntity.setShareType(share_type);
+        shareData.setCategoryId(category_id);
+        shareData.setMediaId(media_id);
+        shareData.setUserId(user_id);
+        shareData.setShareType(share_type);
 
-        if (!utilDao.save(shareDataEntity)) {
+        if (!utilDao.save(shareData)) {
 
             result.put("success", false);
             result.put("message", "将数据保存到数据库时发生了错误");

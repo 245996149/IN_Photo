@@ -7,7 +7,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "media_code", schema = "IN_Photo", catalog = "")
-public class MediaCodeEntity {
+public class MediaCode {
 
     private long mediaCodeId;
     private String mediaCode;
@@ -71,7 +71,7 @@ public class MediaCodeEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        MediaCodeEntity that = (MediaCodeEntity) o;
+        MediaCode that = (MediaCode) o;
 
         if (mediaCodeId != that.mediaCodeId) return false;
         if (mediaId != that.mediaId) return false;
@@ -94,7 +94,7 @@ public class MediaCodeEntity {
 
     @Override
     public String toString() {
-        return "MediaCodeEntity{" +
+        return "MediaCode{" +
                 "mediaCodeId=" + mediaCodeId +
                 ", mediaCode='" + mediaCode + '\'' +
                 ", mediaId=" + mediaId +

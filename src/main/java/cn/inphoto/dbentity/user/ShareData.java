@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "share_data", schema = "IN_Photo", catalog = "")
-public class ShareDataEntity {
+public class ShareData {
 
     /*页面点击*/
     public static final String SHARE_TYPE_WEB_CLICK = "0";
@@ -98,7 +98,7 @@ public class ShareDataEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ShareDataEntity that = (ShareDataEntity) o;
+        ShareData that = (ShareData) o;
 
         if (shareDataId != that.shareDataId) return false;
         if (userId != that.userId) return false;

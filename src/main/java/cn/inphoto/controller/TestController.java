@@ -1,7 +1,7 @@
 package cn.inphoto.controller;
 
 import cn.inphoto.dao.ShareDataDao;
-import cn.inphoto.dbentity.user.ShareDataEntity;
+import cn.inphoto.dbentity.user.ShareData;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -64,7 +64,7 @@ public class TestController {
         for (int i = 7; i > 0; i--) {
             // 获取数据
             int a = shareDataDao.countByTime(
-                    1L, 3, begin, end, ShareDataEntity.SHARE_TYPE_WEB_CLICK);
+                    1L, 3, begin, end, ShareData.SHARE_TYPE_WEB_CLICK);
 
             // 创建返回的Map对象
             Map<String, Object> result = new HashMap<>();

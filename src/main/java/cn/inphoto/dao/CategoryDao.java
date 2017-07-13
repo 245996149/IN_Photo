@@ -1,6 +1,6 @@
 package cn.inphoto.dao;
 
-import cn.inphoto.dbentity.user.CategoryEntity;
+import cn.inphoto.dbentity.user.Category;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public interface CategoryDao {
      * @param category_code 简码
      * @return
      */
-    CategoryEntity findByCategory_code(String category_code);
+    Category findByCategory_code(String category_code);
 
     /**
      * 根据套餐id查询套餐系统
@@ -23,13 +23,13 @@ public interface CategoryDao {
      * @param category_id 简码
      * @return
      */
-    CategoryEntity findByCategory_id(int category_id);
+    Category findByCategory_id(int category_id);
 
     /**
      * 查询系统中所有的套餐系统
      * @return 套餐系统队列
      */
-    List<CategoryEntity> findAll();
+    List<Category> findAll();
 
 
 }

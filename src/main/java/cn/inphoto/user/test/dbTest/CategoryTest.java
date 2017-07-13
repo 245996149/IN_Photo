@@ -1,7 +1,7 @@
 package cn.inphoto.user.test.dbTest;
 
 import cn.inphoto.dao.UserCategoryDao;
-import cn.inphoto.dbentity.user.UserCategoryEntity;
+import cn.inphoto.dbentity.user.UserCategory;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -22,9 +22,9 @@ public class CategoryTest {
 
         Date date = new Date();
 
-        List<UserCategoryEntity> userCategoryEntities = userCategoryDao.findByOverTimeByNormal(date, UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
+        List<UserCategory> userCategoryEntities = userCategoryDao.findByOverTimeByNormal(date, UserCategory.USER_CATEGORY_STATE_NORMAL);
 
-        for (UserCategoryEntity u: userCategoryEntities
+        for (UserCategory u: userCategoryEntities
              ) {
             System.out.println(u.toString());
         }

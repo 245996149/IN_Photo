@@ -1,6 +1,6 @@
 package cn.inphoto.dao;
 
-import cn.inphoto.dbentity.user.UsersEntity;
+import cn.inphoto.dbentity.user.User;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public interface UserDao {
      * @param user_name 用户名
      * @return 用户对象
      */
-    UsersEntity findByUser_name(String user_name);
+    User findByUser_name(String user_name);
 
     /**
      * 根据user_id查询用户对象
@@ -23,13 +23,13 @@ public interface UserDao {
      * @param user_id 用户id号
      * @return 用户对象
      */
-    UsersEntity findByUser_id(Long user_id);
+    User findByUser_id(Long user_id);
 
     /**
      * 查询所有用户对象
      *
      * @return 用户对象
      */
-    List<UsersEntity> findAll();
+    List<User> findAll();
 
 }

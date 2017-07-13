@@ -1,7 +1,7 @@
 package cn.inphoto.user.test.dbTest;
 
 import cn.inphoto.dao.MediaDataDao;
-import cn.inphoto.dbentity.user.MediaDataEntity;
+import cn.inphoto.dbentity.user.MediaData;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -25,9 +25,9 @@ public class MediaDataTest {
         media_ids.add(1L);
         media_ids.add(2L);
 
-        List<MediaDataEntity> mediaDataEntities = mediaDataDao.findByMedia_ids(media_ids);
+        List<MediaData> mediaDataEntities = mediaDataDao.findByMedia_ids(media_ids);
 
-        for (MediaDataEntity m : mediaDataEntities
+        for (MediaData m : mediaDataEntities
                 ) {
             System.out.println(m.toString());
         }

@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  */
 @Entity
 @Table(name = "code_webinfo", schema = "IN_Photo", catalog = "")
-public class CodeWebinfoEntity {
+public class CodeWebInfo {
 
     /*正常生效*/
     public static final String CODE_WEB_INFO_STATE_NORMAL = "0";
@@ -225,7 +225,7 @@ public class CodeWebinfoEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        CodeWebinfoEntity that = (CodeWebinfoEntity) o;
+        CodeWebInfo that = (CodeWebInfo) o;
 
         if (codeWebinfoId != that.codeWebinfoId) return false;
         if (userId != that.userId) return false;

@@ -7,7 +7,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "pic_webinfo", schema = "IN_Photo", catalog = "")
-public class PicWebinfoEntity {
+public class PicWebinfo {
 
     /*正常生效*/
     public static final String PIC_WEB_INFO_STATE_NORMAL = "0";
@@ -134,7 +134,7 @@ public class PicWebinfoEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PicWebinfoEntity that = (PicWebinfoEntity) o;
+        PicWebinfo that = (PicWebinfo) o;
 
         if (picWebinfoId != that.picWebinfoId) return false;
         if (userId != that.userId) return false;
@@ -169,7 +169,7 @@ public class PicWebinfoEntity {
 
     @Override
     public String toString() {
-        return "PicWebinfoEntity{" +
+        return "PicWebinfo{" +
                 "picWebinfoId=" + picWebinfoId +
                 ", userId=" + userId +
                 ", categoryId=" + categoryId +

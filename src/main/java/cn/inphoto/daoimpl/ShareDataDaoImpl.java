@@ -22,7 +22,7 @@ public class ShareDataDaoImpl extends SuperDao implements ShareDataDao {
         try (Session session = sessionFactory.openSession()) {
 
             Query query = session.createQuery(
-                    "select count(*) from ShareDataEntity where userId = :user_id  and shareType = :share_type and " +
+                    "select count(*) from ShareData where userId = :user_id  and shareType = :share_type and " +
                             "shareTime between :beginTime and :endTime");
 
             query.setParameter("user_id", user_id);
@@ -41,7 +41,7 @@ public class ShareDataDaoImpl extends SuperDao implements ShareDataDao {
         try (Session session = sessionFactory.openSession()) {
 
             Query query = session.createQuery(
-                    "select count(*) from ShareDataEntity where userId = :user_id and categoryId = :category_id and shareType = :share_type and " +
+                    "select count(*) from ShareData where userId = :user_id and categoryId = :category_id and shareType = :share_type and " +
                             "shareTime between :beginTime and :endTime");
 
             query.setParameter("category_id", category_id);

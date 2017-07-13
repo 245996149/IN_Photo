@@ -1,7 +1,7 @@
 package cn.inphoto.user.test.dbTest;
 
 import cn.inphoto.dao.UtilDao;
-import cn.inphoto.dbentity.user.UsersEntity;
+import cn.inphoto.dbentity.user.User;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -16,10 +16,10 @@ public class UserTest {
 
     @Test
     public void addUserTest() {
-        UsersEntity usersEntity = new UsersEntity();
-        usersEntity.setUserName("ming2");
-        usersEntity.setPassword("123456");
-        System.out.println(UtilDao.save(usersEntity));
+        User user = new User();
+        user.setUserName("ming2");
+        user.setPassword("123456");
+        System.out.println(UtilDao.save(user));
     }
 
 }

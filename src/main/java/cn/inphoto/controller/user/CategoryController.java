@@ -2,9 +2,9 @@ package cn.inphoto.controller.user;
 
 import cn.inphoto.dao.MediaDataDao;
 import cn.inphoto.dao.UserCategoryDao;
-import cn.inphoto.dbentity.user.MediaDataEntity;
-import cn.inphoto.dbentity.user.UserCategoryEntity;
-import cn.inphoto.dbentity.user.UsersEntity;
+import cn.inphoto.dbentity.user.MediaData;
+import cn.inphoto.dbentity.user.UserCategory;
+import cn.inphoto.dbentity.user.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,23 +40,23 @@ public class CategoryController {
     public String toCategory(HttpSession session, Model model) {
 
         // 获取用户信息
-        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
+        User user = (User) session.getAttribute("loginUser");
 
         // 找到所有用户套餐
-        List<UserCategoryEntity> userCategoryList = userCategoryDao.findByUser_id(user.getUserId());
+        List<UserCategory> userCategoryList = userCategoryDao.findByUser_id(user.getUserId());
 
         // 从session中找到所有生效的用户套餐
-        List<UserCategoryEntity> myUserCategoryList = (List<UserCategoryEntity>) session.getAttribute("allUserCategory");
+        List<UserCategory> myUserCategoryList = (List<UserCategory>) session.getAttribute("allUserCategory");
 
         Map<Long, Integer> tempMap = new HashMap<>();
 
         // 遍历生效的套餐
-        for (UserCategoryEntity uc : myUserCategoryList
+        for (UserCategory uc : myUserCategoryList
                 ) {
 
             // 查询套餐对应的正常状态的媒体总数
             int a = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                    user.getUserId(), uc.getCategoryId(), MediaDataEntity.MEDIA_STATE_NORMAL);
+                    user.getUserId(), uc.getCategoryId(), MediaData.MEDIA_STATE_NORMAL);
 
             // 将数据写入临时Map中以供页面调用
             tempMap.put(uc.getUserCategoryId(), (a * 100 / uc.getMediaNumber()));

@@ -7,7 +7,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "category", schema = "IN_Photo", catalog = "")
-public class CategoryEntity {
+public class Category {
     private int categoryId;
     private String categoryCode;
     private String categoryName;
@@ -50,7 +50,7 @@ public class CategoryEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        CategoryEntity that = (CategoryEntity) o;
+        Category that = (Category) o;
 
         if (categoryId != that.categoryId) return false;
         if (categoryCode != null ? !categoryCode.equals(that.categoryCode) : that.categoryCode != null) return false;

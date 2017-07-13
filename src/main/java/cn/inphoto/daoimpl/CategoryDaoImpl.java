@@ -2,7 +2,7 @@ package cn.inphoto.daoimpl;
 
 import cn.inphoto.dao.CategoryDao;
 import cn.inphoto.dao.SuperDao;
-import cn.inphoto.dbentity.user.CategoryEntity;
+import cn.inphoto.dbentity.user.Category;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
@@ -16,38 +16,38 @@ import java.util.List;
 public class CategoryDaoImpl extends SuperDao implements CategoryDao {
 
     @Override
-    public CategoryEntity findByCategory_code(String category_code) {
+    public Category findByCategory_code(String category_code) {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from CategoryEntity where categoryCode = :category_code");
+            Query query = session.createQuery("from Category where categoryCode = :category_code");
 
             query.setParameter("category_code", category_code);
 
-            return (CategoryEntity) query.uniqueResult();
+            return (Category) query.uniqueResult();
         }
     }
 
     @Override
-    public CategoryEntity findByCategory_id(int category_id) {
+    public Category findByCategory_id(int category_id) {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from CategoryEntity where categoryId = :category_id");
+            Query query = session.createQuery("from Category where categoryId = :category_id");
 
             query.setParameter("category_id", category_id);
 
-            return (CategoryEntity) query.uniqueResult();
+            return (Category) query.uniqueResult();
         }
 
     }
 
     @Override
-    public List<CategoryEntity> findAll() {
+    public List<Category> findAll() {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from CategoryEntity");
+            Query query = session.createQuery("from Category");
 
             return query.list();
         }

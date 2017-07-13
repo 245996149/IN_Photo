@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "users", schema = "IN_Photo", catalog = "")
-public class UsersEntity {
+public class User {
     private long userId;
     private String userName;
     private String password;
@@ -117,7 +117,7 @@ public class UsersEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UsersEntity that = (UsersEntity) o;
+        User that = (User) o;
 
         if (userId != that.userId) return false;
         if (userName != null ? !userName.equals(that.userName) : that.userName != null) return false;

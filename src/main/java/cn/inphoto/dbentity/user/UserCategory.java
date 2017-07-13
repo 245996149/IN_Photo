@@ -11,7 +11,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "user_category", schema = "IN_Photo", catalog = "")
-public class UserCategoryEntity implements Serializable {
+public class UserCategory implements Serializable {
 
     /*系统正常*/
     public static final String USER_CATEGORY_STATE_NORMAL = "0";
@@ -119,7 +119,7 @@ public class UserCategoryEntity implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserCategoryEntity that = (UserCategoryEntity) o;
+        UserCategory that = (UserCategory) o;
 
         if (userCategoryId != that.userCategoryId) return false;
         if (userId != that.userId) return false;
@@ -149,7 +149,7 @@ public class UserCategoryEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "UserCategoryEntity{" +
+        return "UserCategory{" +
                 "userCategoryId=" + userCategoryId +
                 ", userId=" + userId +
                 ", payTime=" + payTime +

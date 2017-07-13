@@ -1,6 +1,6 @@
 package cn.inphoto.util;
 
-import cn.inphoto.dbentity.user.UsersEntity;
+import cn.inphoto.dbentity.user.User;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -95,7 +95,7 @@ public class DirUtil {
      * @return
      * @throws IOException
      */
-    public static String createSettingsPic(MultipartFile file, UsersEntity user) throws IOException {
+    public static String createSettingsPic(MultipartFile file, User user) throws IOException {
         // 获取上传文件名
         String fileName = file.getOriginalFilename();
         // 获取配置文件中的存储数据的根目录

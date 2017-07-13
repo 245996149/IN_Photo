@@ -2,7 +2,7 @@ package cn.inphoto.daoimpl;
 
 import cn.inphoto.dao.SuperDao;
 import cn.inphoto.dao.UserCategoryDao;
-import cn.inphoto.dbentity.user.UserCategoryEntity;
+import cn.inphoto.dbentity.user.UserCategory;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -23,27 +23,27 @@ public class UserCategoryDaoImpl extends SuperDao implements UserCategoryDao {
     Logger logger = Logger.getLogger(UserCategoryDaoImpl.class);
 
     @Override
-    public UserCategoryEntity findByUser_idAndCategory_id(Long user_id, Integer category_id, String user_category_state) {
+    public UserCategory findByUser_idAndCategory_id(Long user_id, Integer category_id, String user_category_state) {
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery(" from UserCategoryEntity where userId = :user_id and categoryId = :category_id  " +
+            Query query = session.createQuery(" from UserCategory where userId = :user_id and categoryId = :category_id  " +
                     "and userCategoryState = :user_category_state");
 
             query.setParameter("user_id", user_id);
             query.setParameter("category_id", category_id);
             query.setParameter("user_category_state", user_category_state);
 
-            return (UserCategoryEntity) query.uniqueResult();
+            return (UserCategory) query.uniqueResult();
         }
 
     }
 
     @Override
-    public List<UserCategoryEntity> findByUser_idAndState(Long user_id, String user_category_state) {
+    public List<UserCategory> findByUser_idAndState(Long user_id, String user_category_state) {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery(" from UserCategoryEntity where userId = :user_id and userCategoryState = :user_category_state");
+            Query query = session.createQuery(" from UserCategory where userId = :user_id and userCategoryState = :user_category_state");
 
             query.setParameter("user_id", user_id);
             query.setParameter("user_category_state", user_category_state);
@@ -54,11 +54,11 @@ public class UserCategoryDaoImpl extends SuperDao implements UserCategoryDao {
     }
 
     @Override
-    public List<UserCategoryEntity> findByUser_id(Long user_id) {
+    public List<UserCategory> findByUser_id(Long user_id) {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery(" from UserCategoryEntity where userId = :user_id order by endTime desc ");
+            Query query = session.createQuery(" from UserCategory where userId = :user_id order by endTime desc ");
 
             query.setParameter("user_id", user_id);
 
@@ -68,11 +68,11 @@ public class UserCategoryDaoImpl extends SuperDao implements UserCategoryDao {
     }
 
     @Override
-    public List<UserCategoryEntity> findByOverTimeByNormal(Date over_time, String user_category_state) {
+    public List<UserCategory> findByOverTimeByNormal(Date over_time, String user_category_state) {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery(" from UserCategoryEntity where endTime < :over_time and userCategoryState = :user_category_state");
+            Query query = session.createQuery(" from UserCategory where endTime < :over_time and userCategoryState = :user_category_state");
 
             query.setParameter("over_time", over_time);
             query.setParameter("user_category_state", user_category_state);
@@ -83,11 +83,11 @@ public class UserCategoryDaoImpl extends SuperDao implements UserCategoryDao {
     }
 
     @Override
-    public List<UserCategoryEntity> findByNotStartBy(Date begin_time, String user_category_state) {
+    public List<UserCategory> findByNotStartBy(Date begin_time, String user_category_state) {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery(" from UserCategoryEntity where beginTime > :begin_time and userCategoryState = :user_category_state");
+            Query query = session.createQuery(" from UserCategory where beginTime > :begin_time and userCategoryState = :user_category_state");
 
             query.setParameter("begin_time", begin_time);
             query.setParameter("user_category_state", user_category_state);
@@ -98,11 +98,11 @@ public class UserCategoryDaoImpl extends SuperDao implements UserCategoryDao {
     }
 
     @Override
-    public List<UserCategoryEntity> findByState(String user_category_state) {
+    public List<UserCategory> findByState(String user_category_state) {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery(" from UserCategoryEntity where userCategoryState = :user_category_state");
+            Query query = session.createQuery(" from UserCategory where userCategoryState = :user_category_state");
 
             query.setParameter("user_category_state", user_category_state);
 
@@ -112,7 +112,7 @@ public class UserCategoryDaoImpl extends SuperDao implements UserCategoryDao {
     }
 
     @Override
-    public boolean updateList(List<UserCategoryEntity> userCategoryList) {
+    public boolean updateList(List<UserCategory> userCategoryList) {
 
         boolean flag = false;
 
@@ -122,7 +122,7 @@ public class UserCategoryDaoImpl extends SuperDao implements UserCategoryDao {
 
         try {
 
-            for (UserCategoryEntity uc : userCategoryList
+            for (UserCategory uc : userCategoryList
                     ) {
                 session.update(uc);
             }

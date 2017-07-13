@@ -67,7 +67,8 @@ public class DownloadController {
      * @throws IOException 抛出IO错误
      */
     @RequestMapping("getMedia.do")
-    public void getMedia(HttpServletResponse response, HttpServletRequest request, Long id, int type, boolean thumbnail, boolean download) throws IOException {
+    public void getMedia(HttpServletResponse response, HttpServletRequest request,
+                         Long id, int type, boolean thumbnail, boolean download) throws IOException {
 
         String file_path = null;
 
@@ -80,44 +81,44 @@ public class DownloadController {
             switch (type) {
                 case 1://type=1 media_data
 
-                    MediaDataEntity mediaDataEntity = mediaDataDao.findByMedia_id(id);
-                    if (mediaDataEntity != null) {
-                        file_path = mediaDataEntity.getFilePath();
+                    MediaData mediaData = mediaDataDao.findByMedia_id(id);
+                    if (mediaData != null) {
+                        file_path = mediaData.getFilePath();
                     }
                     break;
 
                 case 2://type=2 pic_bg
 
-                    PicWebinfoEntity picWebinfoEntity = webinfoDao.findPicByPic_id(id);
-                    if (picWebinfoEntity != null) {
-                        file_path = picWebinfoEntity.getBackground();
+                    PicWebinfo picWebinfo = webinfoDao.findPicByPic_id(id);
+                    if (picWebinfo != null) {
+                        file_path = picWebinfo.getBackground();
                     }
                     break;
 
                 case 3://type=3 code_bg
 
-                    CodeWebinfoEntity codeWebinfo1 = webinfoDao.findCodeByCode_id(id);
+                    CodeWebInfo codeWebinfo1 = webinfoDao.findCodeByCode_id(id);
                     if (codeWebinfo1 != null) {
                         file_path = codeWebinfo1.getBackground();
                     }
                     break;
                 case 4://type=4 code_con
 
-                    CodeWebinfoEntity codeWebinfo2 = webinfoDao.findCodeByCode_id(id);
+                    CodeWebInfo codeWebinfo2 = webinfoDao.findCodeByCode_id(id);
                     if (codeWebinfo2 != null) {
                         file_path = codeWebinfo2.getButtonPic();
                     }
                     break;
                 case 5://type=5 share_moments_icon
 
-                    ShareInfoEntity shareInfo1 = webinfoDao.findShareByShare_id(id);
+                    ShareInfo shareInfo1 = webinfoDao.findShareByShare_id(id);
                     if (shareInfo1 != null) {
                         file_path = shareInfo1.getShareMomentsIcon();
                     }
                     break;
                 case 6://type=6 share_chats_icon
 
-                    ShareInfoEntity shareInfo2 = webinfoDao.findShareByShare_id(id);
+                    ShareInfo shareInfo2 = webinfoDao.findShareByShare_id(id);
                     if (shareInfo2 != null) {
                         file_path = shareInfo2.getShareChatsIcon();
                     }
@@ -194,7 +195,7 @@ public class DownloadController {
     public void getMedias(HttpServletResponse response, HttpSession session,
                           String media_id_list) throws IOException {
         // 获取session中的user
-        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
+        User user = (User) session.getAttribute("loginUser");
 
         // 将接收到的数组转换为JSONArray
         JSONArray jsonArray = new JSONArray(media_id_list);
@@ -207,7 +208,7 @@ public class DownloadController {
         }
 
         // 加载数据库中的对象
-        List<MediaDataEntity> mediaDataList = mediaDataDao.findByMedia_ids(media_ids);
+        List<MediaData> mediaDataList = mediaDataDao.findByMedia_ids(media_ids);
 
         // 创建文件数组
         File[] files = new File[mediaDataList.size()];

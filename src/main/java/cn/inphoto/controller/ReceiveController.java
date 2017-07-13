@@ -100,7 +100,7 @@ public class ReceiveController {
         }
 
         // 根据user_id查询user
-        UsersEntity user = userDao.findByUser_id(user_id);
+        User user = userDao.findByUser_id(user_id);
 
         if (user == null) {
 
@@ -113,17 +113,17 @@ public class ReceiveController {
 
         }
 
-        CategoryEntity category = categoryDao.findByCategory_id(category_id);
+        Category category = categoryDao.findByCategory_id(category_id);
 
         // 设置日志信息
         MDC.put("user_id", user.getUserId());
         MDC.put("category_id", category_id);
 
         // 根据category_code、user_id查询用户有效期内的系统
-        UserCategoryEntity userCategory =
+        UserCategory userCategory =
                 userCategoryDao.findByUser_idAndCategory_id(
                         user.getUserId(), category_id,
-                        UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
+                        UserCategory.USER_CATEGORY_STATE_NORMAL);
 
         if (userCategory == null) {
 
@@ -295,12 +295,12 @@ public class ReceiveController {
             }
 
             // 创建MediaData用于将媒体信息写入数据库
-            MediaDataEntity mediaData = new MediaDataEntity();
+            MediaData mediaData = new MediaData();
             mediaData.setUserId(user.getUserId());
             mediaData.setCategoryId(category.getCategoryId());
             mediaData.setFilePath(filePath);
             mediaData.setMediaName(names);
-            mediaData.setMediaState(MediaDataEntity.MEDIA_STATE_NORMAL);
+            mediaData.setMediaState(MediaData.MEDIA_STATE_NORMAL);
 
             // 将媒体信息写入数据库
             if (!utilDao.save(mediaData)) {
@@ -317,7 +317,7 @@ public class ReceiveController {
             System.out.println(mediaData.toString());
 
             // 创建验证码对象用于更新、新增验证码表
-            MediaCodeEntity mediaCode = new MediaCodeEntity();
+            MediaCode mediaCode = new MediaCode();
             mediaCode.setCategoryId(category.getCategoryId());
             mediaCode.setMediaCode(media_code);
             mediaCode.setUserId(user.getUserId());
@@ -339,14 +339,14 @@ public class ReceiveController {
 
             // 判断数据总量是否超过用户购买量，超过则将时间最早的数据移到回收站中
             if (mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                    user.getUserId(), category.getCategoryId(), MediaDataEntity.MEDIA_STATE_NORMAL) > userCategory.getMediaNumber()) {
+                    user.getUserId(), category.getCategoryId(), MediaData.MEDIA_STATE_NORMAL) > userCategory.getMediaNumber()) {
 
                 // 数据总量超过用户购买量，获取该用户改套餐系统正常状态下创建时间最早的一条媒体数据
-                MediaDataEntity mediaDataEntity = mediaDataDao.findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(
-                        user.getUserId(), category.getCategoryId(), MediaDataEntity.MEDIA_STATE_NORMAL);
+                MediaData mediaDataEntity = mediaDataDao.findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(
+                        user.getUserId(), category.getCategoryId(), MediaData.MEDIA_STATE_NORMAL);
 
                 // 将该数据移到回收站
-                mediaDataEntity.setMediaState(MediaDataEntity.MEDIA_STATE_RECYCLE);
+                mediaDataEntity.setMediaState(MediaData.MEDIA_STATE_RECYCLE);
 
                 // 更新该数据库中该数据信息
                 utilDao.update(mediaDataEntity);

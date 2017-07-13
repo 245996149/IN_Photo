@@ -23,10 +23,10 @@ public class DBUtil {
      * @param mediaCodeEntity 媒体验证码
      * @return 更新、创建是否成功
      */
-    public static boolean judgeMediaCode(MediaCodeDao mediaCodeDao, UtilDao utilDao, MediaCodeEntity mediaCodeEntity) {
+    public static boolean judgeMediaCode(MediaCodeDao mediaCodeDao, UtilDao utilDao, MediaCode mediaCodeEntity) {
 
         // 查询媒体验证码对象
-        MediaCodeEntity mediaCode = mediaCodeDao.findByUser_idAndCategory_idAndMedia_code(
+        MediaCode mediaCode = mediaCodeDao.findByUser_idAndCategory_idAndMedia_code(
                 mediaCodeEntity.getUserId(), mediaCodeEntity.getCategoryId(), mediaCodeEntity.getMediaCode());
 
         // 判断媒体验证码对象是否有效
@@ -47,7 +47,7 @@ public class DBUtil {
      * @param session session
      * @param user    用户对象
      */
-    public static void selectTodayData(ShareDataDao shareDataDao, HttpSession session, UsersEntity user) {
+    public static void selectTodayData(ShareDataDao shareDataDao, HttpSession session, User user) {
 
 
         // 创建日历对象
@@ -66,9 +66,9 @@ public class DBUtil {
         Date end = calendar.getTime();
 
         // 查询数据
-        int click_num = shareDataDao.countByTimeTotal(user.getUserId(), begin, end, ShareDataEntity.SHARE_TYPE_WEB_CLICK);
-        int chats_num = shareDataDao.countByTimeTotal(user.getUserId(), begin, end, ShareDataEntity.SHARE_TYPE_WECHAT_SHARE_CHATS);
-        int moments_num = shareDataDao.countByTimeTotal(user.getUserId(), begin, end, ShareDataEntity.SHARE_TYPE_WECHAT_SHARE_MOMENTS);
+        int click_num = shareDataDao.countByTimeTotal(user.getUserId(), begin, end, ShareData.SHARE_TYPE_WEB_CLICK);
+        int chats_num = shareDataDao.countByTimeTotal(user.getUserId(), begin, end, ShareData.SHARE_TYPE_WECHAT_SHARE_CHATS);
+        int moments_num = shareDataDao.countByTimeTotal(user.getUserId(), begin, end, ShareData.SHARE_TYPE_WECHAT_SHARE_MOMENTS);
 
         session.setAttribute("click_num", click_num);
         session.setAttribute("chats_num", chats_num);
@@ -81,13 +81,13 @@ public class DBUtil {
      *
      * @return 套餐系统信息
      */
-    public static List<CategoryEntity> judgeCategory(CategoryDao categoryDao, HttpServletRequest request) {
+    public static List<Category> judgeCategory(CategoryDao categoryDao, HttpServletRequest request) {
 
         // 获取application对象
         ServletContext application = request.getSession().getServletContext();
 
         // 从application对象中获取套餐系统信息
-        List<CategoryEntity> categoryList = (List<CategoryEntity>) application.getAttribute("category");
+        List<Category> categoryList = (List<Category>) application.getAttribute("category");
 
         // 判断套餐系统信息是否有效，无效获取新的套餐系统信息
         if (categoryList == null) {
@@ -106,20 +106,20 @@ public class DBUtil {
     /**
      * 将媒体数据移入回收站
      *
-     * @param mediaDataEntity
+     * @param mediaData
      */
-    public static void changeMediaDataToRecycle(MediaDataEntity mediaDataEntity) {
+    public static void changeMediaDataToRecycle(MediaData mediaData) {
 
         Date date = new Date();
 
-        mediaDataEntity.setMediaState(MediaDataEntity.MEDIA_STATE_RECYCLE);
-        mediaDataEntity.setDeleteTime(new Timestamp((date.getTime())));
+        mediaData.setMediaState(MediaData.MEDIA_STATE_RECYCLE);
+        mediaData.setDeleteTime(new Timestamp((date.getTime())));
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DATE, 30);
 
-        mediaDataEntity.setOverTime(new Timestamp(calendar.getTimeInMillis()));
+        mediaData.setOverTime(new Timestamp(calendar.getTimeInMillis()));
     }
 
 }

@@ -1,6 +1,6 @@
 package cn.inphoto.dao;
 
-import cn.inphoto.dbentity.user.UserCategoryEntity;
+import cn.inphoto.dbentity.user.UserCategory;
 
 import java.util.Date;
 import java.util.List;
@@ -18,7 +18,7 @@ public interface UserCategoryDao {
      * @param user_category_state 用户套餐系统对象状态
      * @return 用户套餐系统对象
      */
-    UserCategoryEntity findByUser_idAndCategory_id(Long user_id, Integer category_id, String user_category_state);
+    UserCategory findByUser_idAndCategory_id(Long user_id, Integer category_id, String user_category_state);
 
     /**
      * 根据user_id、user_category_state查询该用户所有套餐系统对象
@@ -27,7 +27,7 @@ public interface UserCategoryDao {
      * @param user_category_state 用户套餐系统对象状态
      * @return 用户套餐系统对象
      */
-    List<UserCategoryEntity> findByUser_idAndState(Long user_id, String user_category_state);
+    List<UserCategory> findByUser_idAndState(Long user_id, String user_category_state);
 
     /**
      * 根据user_id查询该用户所有套餐系统对象
@@ -35,7 +35,7 @@ public interface UserCategoryDao {
      * @param user_id 用户id
      * @return 用户套餐系统对象
      */
-    List<UserCategoryEntity> findByUser_id(Long user_id);
+    List<UserCategory> findByUser_id(Long user_id);
 
     /**
      * 找到正常状态下结束时间在现在之前的套餐系统
@@ -44,7 +44,7 @@ public interface UserCategoryDao {
      * @param user_category_state 用户状态
      * @return 用户套餐系统对象
      */
-    List<UserCategoryEntity> findByOverTimeByNormal(Date over_time, String user_category_state);
+    List<UserCategory> findByOverTimeByNormal(Date over_time, String user_category_state);
 
     /**
      * 找到未生效状态下开始时间在现在之前的套餐系统
@@ -53,7 +53,7 @@ public interface UserCategoryDao {
      * @param user_category_state 用户状态
      * @return 用户套餐系统对象
      */
-    List<UserCategoryEntity> findByNotStartBy(Date begin_time, String user_category_state);
+    List<UserCategory> findByNotStartBy(Date begin_time, String user_category_state);
 
     /**
      * 查询所有在某状态下的用户套餐系统
@@ -61,7 +61,7 @@ public interface UserCategoryDao {
      * @param user_category_state 某状态
      * @return 用户套餐系统对象
      */
-    List<UserCategoryEntity> findByState(String user_category_state);
+    List<UserCategory> findByState(String user_category_state);
 
     /**
      * 更新数据库
@@ -69,6 +69,6 @@ public interface UserCategoryDao {
      * @param userCategoryList 更新的对象队列
      * @return 是否更新成功
      */
-    boolean updateList(List<UserCategoryEntity> userCategoryList);
+    boolean updateList(List<UserCategory> userCategoryList);
 
 }

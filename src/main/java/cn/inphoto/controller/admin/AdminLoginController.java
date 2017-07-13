@@ -1,9 +1,8 @@
 package cn.inphoto.controller.admin;
 
 import cn.inphoto.dao.AdminDao;
-import cn.inphoto.dbentity.admin.AdminEntity;
-import cn.inphoto.dbentity.user.UsersEntity;
-import cn.inphoto.log.UserLog;
+import cn.inphoto.dbentity.admin.AdminInfo;
+import cn.inphoto.dbentity.admin.ModuleInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,6 +11,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,7 +42,7 @@ public class AdminLoginController {
             return result;
         }
 
-        AdminEntity adminEntity = adminDao.findByAdmin_name(admin_name);
+        AdminInfo adminEntity = adminDao.findByAdmin_name(admin_name);
 
         if (!password.equals(adminEntity.getPassword())) {
             result.put("success", false);
@@ -64,7 +64,7 @@ public class AdminLoginController {
     public String login(String admin_name, String password, HttpSession session, HttpServletRequest request) {
         Map<String, Object> result = new HashMap<>();
 
-        AdminEntity adminEntity = adminDao.findByAdmin_name(admin_name);
+        AdminInfo adminEntity = adminDao.findByAdmin_name(admin_name);
 
         if (!password.equals(adminEntity.getPassword())) {
             result.put("success", false);
@@ -72,8 +72,10 @@ public class AdminLoginController {
             //logger.log(UserLog.USER, "用户user_name=" + user_name + " 的用户尝试登陆，登陆结果为：" + result.toString());
             return "redirect:toLogin.do";
         }
+        List<ModuleInfo> moduleList = adminDao.findModulesByAdmin(adminEntity.getAdminId());
 
         session.setAttribute("adminUser", adminEntity);
+        session.setAttribute("allModules", moduleList);
 
         return "redirect:/admin/index.do";
     }

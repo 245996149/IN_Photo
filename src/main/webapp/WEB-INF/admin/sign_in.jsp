@@ -39,9 +39,9 @@
     <div class="alert alert-danger" role="alert" style="display: none" id="error_message">...</div>
     <form class="form-signin" id="signin_form" action="login.do" method="post">
         <h2 class="form-signin-heading">IN Photo管理员系统</h2>
-        <label for="inputUsername" class="sr-only">User name</label>
-        <input type="email" id="inputUsername" class="form-control" placeholder="User name" required autofocus
-               name="user_name">
+        <label for="inputUsername" class="sr-only">Admin name</label>
+        <input type="email" id="inputUsername" class="form-control" placeholder="Admin name" required autofocus
+               name="admin_name">
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
         <div class="checkbox">
@@ -49,10 +49,10 @@
                 <input type="checkbox" value="remember-me" checked="checked">
                 记住登录状态 </label>
             <%--<label style="float: right;">--%>
-                <%--<a href="#">忘记密码?</a>--%>
+            <%--<a href="#">忘记密码?</a>--%>
             <%--</label>--%>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" onclick="check_user();">登&nbsp;陆</button>
+        <button class="btn btn-lg btn-primary btn-block" onclick="check_admin();">登&nbsp;陆</button>
     </form>
 </div>
 <!-- /container -->
@@ -61,16 +61,16 @@
 <script src="${pageContext.request.contextPath}/js/ie10-viewport-bug-workaround.js"></script>
 <script type="text/javascript">
 
-    function check_user() {
+    function check_admin() {
         var user_name = $("#inputUsername").val();
         var password = $("#inputPassword").val();
         var error_message = $("#error_message");
         var signin_form = $("#signin_form");
 
         $.post(
-            "checkUser.do",
+            "checkAdmin.do",
             {
-                "user_name": user_name,
+                "admin_name": user_name,
                 "password": password
             },
             function (res) {

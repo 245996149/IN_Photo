@@ -4,9 +4,9 @@ import cn.inphoto.dao.CategoryDao;
 import cn.inphoto.dao.ShareDataDao;
 import cn.inphoto.dao.UserCategoryDao;
 import cn.inphoto.dao.UserDao;
-import cn.inphoto.dbentity.user.CategoryEntity;
-import cn.inphoto.dbentity.user.UserCategoryEntity;
-import cn.inphoto.dbentity.user.UsersEntity;
+import cn.inphoto.dbentity.user.Category;
+import cn.inphoto.dbentity.user.UserCategory;
+import cn.inphoto.dbentity.user.User;
 import cn.inphoto.log.UserLog;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
@@ -65,16 +65,16 @@ public class UserLoginController {
             return result;
         }
 
-        UsersEntity usersEntity = userDao.findByUser_name(user_name);
+        User user = userDao.findByUser_name(user_name);
 
-        if (!password.equals(usersEntity.getPassword())) {
+        if (!password.equals(user.getPassword())) {
             result.put("success", false);
             result.put("message", "密码错误，请重新输入密码!");
             logger.log(UserLog.USER, "用户user_name=" + user_name + " 的用户尝试登陆，登陆结果为：" + result.toString());
             return result;
         }
 
-        MDC.put("user_id", usersEntity.getUserId());
+        MDC.put("user_id", user.getUserId());
 
         result.put("success", true);
         result.put("message", "验证成功");
@@ -89,26 +89,26 @@ public class UserLoginController {
 
         Map<String, Object> result = new HashMap<>();
 
-        UsersEntity usersEntity = userDao.findByUser_name(user_name);
+        User user = userDao.findByUser_name(user_name);
 
-        if (!password.equals(usersEntity.getPassword())) {
+        if (!password.equals(user.getPassword())) {
             result.put("success", false);
             result.put("message", "密码错误，请重新输入密码!");
             logger.log(UserLog.USER, "用户user_name=" + user_name + " 的用户尝试登陆，登陆结果为：" + result.toString());
             return "redirect:toLogin.do";
         }
 
-        MDC.put("user_id", usersEntity.getUserId());
+        MDC.put("user_id", user.getUserId());
 
         // 查询该用户所有的用户套餐系统
-        List<UserCategoryEntity> userCategoryList = userCategoryDao.findByUser_idAndState(
-                usersEntity.getUserId(), UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
+        List<UserCategory> userCategoryList = userCategoryDao.findByUser_idAndState(
+                user.getUserId(), UserCategory.USER_CATEGORY_STATE_NORMAL);
 
         //查询所有的套餐系统
         judgeCategory(categoryDao, request);
 
         // 查询今日数据并写入session
-        selectTodayData(shareDataDao, session, usersEntity);
+        selectTodayData(shareDataDao, session, user);
 
         // 将所有的用户套餐系统写入session
         session.setAttribute("allUserCategory", userCategoryList);
@@ -117,7 +117,7 @@ public class UserLoginController {
         result.put("message", "登陆成功");
         logger.log(UserLog.USER, "用户user_name=" + user_name + " 的用户尝试登陆，登陆结果为：" + result.toString());
 
-        session.setAttribute("loginUser", usersEntity);
+        session.setAttribute("loginUser", user);
 
         return "redirect:/user/index.do";
     }
@@ -125,9 +125,9 @@ public class UserLoginController {
     @RequestMapping("/signOut.do")
     public String signOut(HttpSession session) {
 
-        UsersEntity usersEntity = (UsersEntity) session.getAttribute("loginUser");
+        User user = (User) session.getAttribute("loginUser");
 
-        MDC.put("user_id", usersEntity.getUserId());
+        MDC.put("user_id", user.getUserId());
 
         // 查找到所有session中的参数
         Enumeration em = session.getAttributeNames();
@@ -139,7 +139,7 @@ public class UserLoginController {
 
         }
 
-        logger.log(UserLog.USER, "用户user_name=" + usersEntity.getUserName() + " 的用户退出登陆");
+        logger.log(UserLog.USER, "用户user_name=" + user.getUserName() + " 的用户退出登陆");
 
         return "redirect:toLogin.do";
 
@@ -167,7 +167,7 @@ public class UserLoginController {
 
         }
 
-        UsersEntity user = userDao.findByUser_name(user_name);
+        User user = userDao.findByUser_name(user_name);
 
         if (user == null) {
 
@@ -181,7 +181,7 @@ public class UserLoginController {
         // 比较查询到的用户的password与传入的password，正确判断用户是否有有效的类别，错误返回错误信息
         if (password.equals(user.getPassword())) {
 
-            CategoryEntity category = categoryDao.findByCategory_code(type);
+            Category category = categoryDao.findByCategory_code(type);
 
             if (category == null) {
 
@@ -192,8 +192,8 @@ public class UserLoginController {
 
             }
 
-            UserCategoryEntity userCategory = userCategoryDao.findByUser_idAndCategory_id(
-                    user.getUserId(), category.getCategoryId(), UserCategoryEntity.USER_CATEGORY_STATE_NORMAL);
+            UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_id(
+                    user.getUserId(), category.getCategoryId(), UserCategory.USER_CATEGORY_STATE_NORMAL);
 
             if (userCategory == null) {
 

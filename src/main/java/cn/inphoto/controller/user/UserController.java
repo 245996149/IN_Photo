@@ -1,6 +1,6 @@
 package cn.inphoto.controller.user;
 
-import cn.inphoto.dbentity.user.UsersEntity;
+import cn.inphoto.dbentity.user.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,16 +28,16 @@ public class UserController {
 
     @RequestMapping("/index.do")
     public String index(Model model, HttpSession session) {
-        UsersEntity usersEntity = (UsersEntity) session.getAttribute("loginUser");
-        model.addAttribute("usersEntity", usersEntity);
+        User user = (User) session.getAttribute("loginUser");
+        model.addAttribute("usersEntity", user);
         session.setAttribute("nav_code", UserController.INDEX_CODE);
         return "user/index";
     }
 
     @RequestMapping("/toTable.do")
     public String toTable(Model model, HttpSession session) {
-        UsersEntity usersEntity = (UsersEntity) session.getAttribute("loginUser");
-        model.addAttribute("usersEntity", usersEntity);
+        User user = (User) session.getAttribute("loginUser");
+        model.addAttribute("usersEntity", user);
         return "user/table";
     }
 

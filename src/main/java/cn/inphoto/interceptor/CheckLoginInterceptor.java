@@ -1,6 +1,6 @@
 package cn.inphoto.interceptor;
 
-import cn.inphoto.dbentity.user.UsersEntity;
+import cn.inphoto.dbentity.user.User;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         HttpSession session = httpServletRequest.getSession();
-        UsersEntity user = (UsersEntity) session.getAttribute("loginUser");
+        User user = (User) session.getAttribute("loginUser");
         if (user == null) {
             httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/login/toLogin.do");
             return false;

@@ -181,15 +181,15 @@
         <input type="text" value="${media_id}" id="media_id">
 
         <c:choose>
-            <c:when test="${shareInfoEntity!=null}">
-                <input type="text" value="${shareInfoEntity.shareMomentsTitle}" id="share_moments_title">
+            <c:when test="${shareInfo!=null}">
+                <input type="text" value="${shareInfo.shareMomentsTitle}" id="share_moments_title">
                 <input type="text"
-                       value="${url}${pageContext.request.contextPath}/get/getMedia.do?type=5&id=${shareInfoEntity.shareInfoId}"
+                       value="${url}${pageContext.request.contextPath}/get/getMedia.do?type=5&id=${shareInfo.shareInfoId}"
                        id="share_moments_icon">
-                <input type="text" value="${shareInfoEntity.shareChatsTitle}" id="share_chats_title">
-                <input type="text" value="${shareInfoEntity.shareChatsText}" id="share_chats_text">
+                <input type="text" value="${shareInfo.shareChatsTitle}" id="share_chats_title">
+                <input type="text" value="${shareInfo.shareChatsText}" id="share_chats_text">
                 <input type="text"
-                       value="${url}${pageContext.request.contextPath}/get/getMedia.do?type=6&id=${shareInfoEntity.shareInfoId}"
+                       value="${url}${pageContext.request.contextPath}/get/getMedia.do?type=6&id=${shareInfo.shareInfoId}"
                        id="share_chats_icon">
             </c:when>
             <c:otherwise>

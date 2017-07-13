@@ -2,7 +2,7 @@ package cn.inphoto.daoimpl;
 
 import cn.inphoto.dao.MediaDataDao;
 import cn.inphoto.dao.SuperDao;
-import cn.inphoto.dbentity.user.MediaDataEntity;
+import cn.inphoto.dbentity.user.MediaData;
 import cn.inphoto.dbentity.page.TablePage;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
@@ -24,7 +24,7 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     Logger logger = Logger.getLogger(MediaDataDaoImpl.class);
 
     @Override
-    public List<MediaDataEntity> findByPage(TablePage tablePage) {
+    public List<MediaData> findByPage(TablePage tablePage) {
 
         try (Session session = sessionFactory.openSession()) {
 
@@ -33,11 +33,11 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
             // 判断是否有category_id参数
             if (tablePage.getCategory_id() == 0) {
 
-                query = session.createQuery(" from MediaDataEntity where userId = :user_id and mediaState = :media_state order by deleteTime desc");
+                query = session.createQuery(" from MediaData where userId = :user_id and mediaState = :media_state order by deleteTime desc");
 
             } else {
 
-                query = session.createQuery(" from MediaDataEntity where userId = :user_id and mediaState = :media_state and categoryId = :category_id order by mediaId desc");
+                query = session.createQuery(" from MediaData where userId = :user_id and mediaState = :media_state and categoryId = :category_id order by mediaId desc");
                 query.setParameter("category_id", tablePage.getCategory_id());
 
             }
@@ -61,10 +61,10 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
             // 判断是否有category_id参数
             if (category_id == null) {
                 query = session.createQuery(
-                        "select count(*) from MediaDataEntity where userId = :user_id  and mediaState = :media_state");
+                        "select count(*) from MediaData where userId = :user_id  and mediaState = :media_state");
             } else {
                 query = session.createQuery(
-                        "select count(*) from MediaDataEntity where userId = :user_id and mediaState = :media_state and categoryId = :category_id");
+                        "select count(*) from MediaData where userId = :user_id and mediaState = :media_state and categoryId = :category_id");
                 query.setParameter("category_id", category_id);
             }
 
@@ -83,12 +83,12 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
 
             if (category_id == null) {
                 query = session.createQuery(
-                        "select count(*) from MediaDataEntity where userId = :user_id  and mediaState = :media_state and" +
+                        "select count(*) from MediaData where userId = :user_id  and mediaState = :media_state and" +
                                 " overTime between :beginTime and :endTime");
 
             } else {
                 query = session.createQuery(
-                        "select count(*) from MediaDataEntity where" +
+                        "select count(*) from MediaData where" +
                                 " userId = :user_id  and mediaState = :media_state and categoryId = :category_id and " +
                                 "overTime between :beginTime and :endTime ");
                 query.setParameter("category_id", category_id);
@@ -104,40 +104,40 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     }
 
     @Override
-    public MediaDataEntity findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(Long user_id, int category_id, String media_state) {
+    public MediaData findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(Long user_id, int category_id, String media_state) {
         try (Session session = sessionFactory.openSession()) {
 
             Query query = session.createQuery(
-                    "from MediaDataEntity where userId = :user_id  and mediaState = :media_state and categoryId = :category_id order by createTime");
+                    "from MediaData where userId = :user_id  and mediaState = :media_state and categoryId = :category_id order by createTime");
 
             query.setParameter("category_id", category_id);
             query.setParameter("user_id", user_id);
             query.setParameter("media_state", media_state);
             query.setMaxResults(1);
 
-            return (MediaDataEntity) query.uniqueResult();
+            return (MediaData) query.uniqueResult();
         }
     }
 
     @Override
-    public MediaDataEntity findByMedia_id(Long media_id) {
+    public MediaData findByMedia_id(Long media_id) {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from MediaDataEntity where mediaId = :media_id");
+            Query query = session.createQuery("from MediaData where mediaId = :media_id");
 
             query.setParameter("media_id", media_id);
 
-            return (MediaDataEntity) query.uniqueResult();
+            return (MediaData) query.uniqueResult();
         }
     }
 
     @Override
-    public List<MediaDataEntity> findByMedia_ids(List<Long> media_ids) {
+    public List<MediaData> findByMedia_ids(List<Long> media_ids) {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from MediaDataEntity where mediaId in (:ids)");
+            Query query = session.createQuery("from MediaData where mediaId in (:ids)");
 
             query.setParameterList("ids", media_ids);
 
@@ -147,7 +147,7 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     }
 
     @Override
-    public boolean updateMediaList(List<MediaDataEntity> mediaDataList) {
+    public boolean updateMediaList(List<MediaData> mediaDataList) {
 
         boolean flag = false;
 
@@ -157,7 +157,7 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
 
         try {
 
-            for (MediaDataEntity m : mediaDataList
+            for (MediaData m : mediaDataList
                     ) {
                 session.update(m);
             }
@@ -181,11 +181,11 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     }
 
     @Override
-    public List<MediaDataEntity> findByOver_timeAndState(Date over_time, String media_data_state) {
+    public List<MediaData> findByOver_timeAndState(Date over_time, String media_data_state) {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from MediaDataEntity where overTime < :over_time and mediaState = :media_data_state");
+            Query query = session.createQuery("from MediaData where overTime < :over_time and mediaState = :media_data_state");
 
             query.setParameter("over_time", over_time);
             query.setParameter("media_data_state", media_data_state);
@@ -196,10 +196,10 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     }
 
     @Override
-    public List<MediaDataEntity> findByUser_idAndState(Long user_id,String media_state){
+    public List<MediaData> findByUser_idAndState(Long user_id, String media_state){
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from MediaDataEntity where userId = :user_id and mediaState = :media_state");
+            Query query = session.createQuery("from MediaData where userId = :user_id and mediaState = :media_state");
 
             query.setParameter("user_id", user_id);
             query.setParameter("media_state", media_state);
