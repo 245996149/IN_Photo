@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 判断当前模块拦截器
+ * 判断Admin当前模块拦截器
  * Created by root on 17-7-12.
  */
 public class CurrentAdminModuleInterceptor implements HandlerInterceptor {

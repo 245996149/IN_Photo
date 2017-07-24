@@ -18,11 +18,25 @@ public class UserLog extends Level {
      */
     public static final int USER_INT = FATAL_INT + 10;
 
+    public static final int ADMIN_INT = FATAL_INT + 9;
+
+    public static final int TASK_INT = FATAL_INT + 20;
+
+    public static final Level TASK = new UserLog(TASK_INT, "TASK", 10);
+
     public static final Level USER = new UserLog(USER_INT, "USER", 10);
 
+    public static final Level ADMIN = new UserLog(ADMIN_INT, "ADMIN", 10);
+
     public static Level toLevel(String logArgument) {
-        if (logArgument != null && logArgument.toUpperCase().equals("USER")) {
-            return USER;
+        if (logArgument != null) {
+            if (logArgument.toUpperCase().equals("USER")) {
+                return USER;
+            } else if (logArgument.toUpperCase().equals("ADMIN")) {
+                return ADMIN;
+            } else if (logArgument.toUpperCase().equals("TASK")) {
+                return TASK;
+            }
         }
         return (Level) toLevel(logArgument);
     }
@@ -42,8 +56,14 @@ public class UserLog extends Level {
     }
 
     public static Level toLevel(String logArgument, Level defaultLevel) {
-        if (logArgument != null && logArgument.toUpperCase().equals("USER")) {
-            return USER;
+        if (logArgument != null) {
+            if (logArgument.toUpperCase().equals("USER")) {
+                return USER;
+            } else if (logArgument.toUpperCase().equals("ADMIN")) {
+                return ADMIN;
+            } else if (logArgument.toUpperCase().equals("TASK")) {
+                return TASK;
+            }
         }
         return Level.toLevel(logArgument, defaultLevel);
     }

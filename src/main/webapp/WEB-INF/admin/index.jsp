@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <title>Bootstrap 101 Template</title>
+    <title>IN Photo管理员系统 首页</title>
     <link rel="icon" href="${pageContext.request.contextPath}/images/logo.png">
 
     <!-- Bootstrap -->
@@ -21,9 +21,9 @@
 </head>
 <body style="padding-top: 70px;">
 
-<jsp:include page="/WEB-INF/user/menu.jsp"/>
+<jsp:include page="/WEB-INF/admin/menu.jsp"/>
 
-<h1>你好，世界！</h1>
+<h1>你好，管理员！</h1>
 <canvas id="myChart" width="400" height="100"></canvas>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

@@ -18,8 +18,7 @@ public class LogJDBCAppender extends JDBCAppender {
     protected Connection getConnection() throws SQLException {
         // TODO Auto-generated method stub
         if (!DriverManager.getDrivers().hasMoreElements()) setDriver("sun.jdbc.odbc.JdbcOdbcDriver");
-// 判断连接是否实效,如果失效,则重新获取连接
-
+        // 判断连接是否有效,如果失效,则重新获取连接
         try {
             connection.isClosed();
         } catch (Exception e) {

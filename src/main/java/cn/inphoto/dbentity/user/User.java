@@ -20,6 +20,7 @@ public class User {
     private String company;
     private String userState;
     private String note;
+    private int adminId;
 
     @Id
     @Column(name = "user_id")
@@ -144,5 +145,15 @@ public class User {
         result = 31 * result + (userState != null ? userState.hashCode() : 0);
         result = 31 * result + (note != null ? note.hashCode() : 0);
         return result;
+    }
+
+    @Basic
+    @Column(name = "admin_id")
+    public int getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(int adminId) {
+        this.adminId = adminId;
     }
 }

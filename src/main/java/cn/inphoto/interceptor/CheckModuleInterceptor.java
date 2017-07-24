@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
+ * 权限检查拦截器
  * Created by root on 17-7-12.
  */
 public class CheckModuleInterceptor implements HandlerInterceptor {

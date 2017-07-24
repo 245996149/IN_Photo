@@ -3,6 +3,8 @@ package cn.inphoto.controller.admin;
 import cn.inphoto.dao.AdminDao;
 import cn.inphoto.dbentity.admin.AdminInfo;
 import cn.inphoto.dbentity.admin.ModuleInfo;
+import cn.inphoto.log.UserLog;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,6 +23,8 @@ import java.util.Map;
 @Controller
 @RequestMapping("/admin/login")
 public class AdminLoginController {
+
+    private static Logger logger = Logger.getLogger(AdminLoginController.class);
 
     @Resource
     AdminDao adminDao;
@@ -47,7 +51,7 @@ public class AdminLoginController {
         if (!password.equals(adminEntity.getPassword())) {
             result.put("success", false);
             result.put("message", "密码错误，请重新输入密码!");
-//            logger.log(UserLog.USER, "用户user_name=" + admin_name + " 的用户尝试登陆，登陆结果为：" + result.toString());
+            logger.log(UserLog.USER, "用户user_name=" + admin_name + " 的用户尝试登陆，登陆结果为：" + result.toString());
             return result;
         }
 

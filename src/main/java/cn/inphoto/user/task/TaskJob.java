@@ -4,15 +4,16 @@ import cn.inphoto.dao.MediaDataDao;
 import cn.inphoto.dao.UserCategoryDao;
 import cn.inphoto.dao.UserDao;
 import cn.inphoto.dbentity.user.MediaData;
-import cn.inphoto.dbentity.user.UserCategory;
 import cn.inphoto.dbentity.user.User;
-import cn.inphoto.log.TaskLog;
+import cn.inphoto.dbentity.user.UserCategory;
+import cn.inphoto.log.UserLog;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 import static cn.inphoto.util.DBUtil.changeMediaDataToRecycle;
 
@@ -80,9 +81,9 @@ public class TaskJob {
         }
 
         if (userCategoryDao.updateList(userCategoryEntities)) {
-            logger.log(TaskLog.TASK, "清理用户套餐系统超时任务成功，共改变" + userCategoryEntities.size() + "个用户套餐，id分别为：" + s);
+            logger.log(UserLog.TASK, "清理用户套餐系统超时任务成功，共改变" + userCategoryEntities.size() + "个用户套餐，id分别为：" + s);
         } else {
-            logger.log(TaskLog.TASK, "清理用户套餐系统超时任务失败，找到" + userCategoryEntities.size() + "个用户套餐，id分别为：" + s);
+            logger.log(UserLog.TASK, "清理用户套餐系统超时任务失败，找到" + userCategoryEntities.size() + "个用户套餐，id分别为：" + s);
         }
 
     }
@@ -106,10 +107,10 @@ public class TaskJob {
 
         if (userCategoryDao.updateList(userCategoryEntities)) {
 
-            logger.log(TaskLog.TASK, "用户套餐系统生效任务成功，共改变" + userCategoryEntities.size() + "个用户套餐，id分别为：" + s);
+            logger.log(UserLog.TASK, "用户套餐系统生效任务成功，共改变" + userCategoryEntities.size() + "个用户套餐，id分别为：" + s);
 
         } else {
-            logger.log(TaskLog.TASK, "用户套餐系统生效任务失败，找到" + userCategoryEntities.size() + "个用户套餐，id分别为：" + s);
+            logger.log(UserLog.TASK, "用户套餐系统生效任务失败，找到" + userCategoryEntities.size() + "个用户套餐，id分别为：" + s);
         }
 
     }
@@ -132,9 +133,9 @@ public class TaskJob {
         }
 
         if (mediaDataDao.updateMediaList(mediaDataList)) {
-            logger.log(TaskLog.TASK, "自动更新回收站中媒体数据的状态成功，共改变" + mediaDataList.size() + "个媒体数据，id分别为：" + s);
+            logger.log(UserLog.TASK, "自动更新回收站中媒体数据的状态成功，共改变" + mediaDataList.size() + "个媒体数据，id分别为：" + s);
         } else {
-            logger.log(TaskLog.TASK, "自动更新回收站中媒体数据的状态失败，找到" + mediaDataList.size() + "个媒体数据，id分别为：" + s);
+            logger.log(UserLog.TASK, "自动更新回收站中媒体数据的状态失败，找到" + mediaDataList.size() + "个媒体数据，id分别为：" + s);
         }
 
     }

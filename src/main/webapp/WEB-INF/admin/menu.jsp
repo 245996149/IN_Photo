@@ -27,11 +27,11 @@
                     <c:if test="${m.moduleId==1}">
                         <c:choose>
                             <c:when test="${currentModule=1}">
-                                <li class="active"><a href="${pageContext.request.contextPath}/admin/index.do">用户管理</a>
+                                <li class="active"><a href="${pageContext.request.contextPath}/admin/index.do">客户管理</a>
                                 </li>
                             </c:when>
                             <c:otherwise>
-                                <li><a href="${pageContext.request.contextPath}/admin/index.do">用户管理</a></li>
+                                <li><a href="${pageContext.request.contextPath}/admin/index.do">客户管理</a></li>
                             </c:otherwise>
                         </c:choose>
                     </c:if>
@@ -49,11 +49,22 @@
                     <c:if test="${m.moduleId==3}">
                         <c:choose>
                             <c:when test="${currentModule=3}">
-                                <li class="active"><a href="${pageContext.request.contextPath}/admin/index.do">操作员管理</a>
+                                <li class="active"><a href="${pageContext.request.contextPath}/admin/index.do">用户管理</a>
                                 </li>
                             </c:when>
                             <c:otherwise>
-                                <li><a href="${pageContext.request.contextPath}/admin/index.do">操作员管理</a></li>
+                                <li><a href="${pageContext.request.contextPath}/admin/index.do">用户管理</a></li>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:if>
+                    <c:if test="${m.moduleId==4}">
+                        <c:choose>
+                            <c:when test="${currentModule=4}">
+                                <li class="active"><a href="${pageContext.request.contextPath}/admin/index.do">角色管理</a>
+                                </li>
+                            </c:when>
+                            <c:otherwise>
+                                <li><a href="${pageContext.request.contextPath}/admin/index.do">角色管理</a></li>
                             </c:otherwise>
                         </c:choose>
                     </c:if>
