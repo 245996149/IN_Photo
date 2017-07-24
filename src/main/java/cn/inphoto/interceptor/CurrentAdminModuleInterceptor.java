@@ -7,20 +7,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
+ * 判断当前模块拦截器
  * Created by root on 17-7-12.
  */
-public class CurrentModuleInterceptor implements HandlerInterceptor {
+public class CurrentAdminModuleInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         // 判断当前用户访问的模块
         String url = httpServletRequest.getRequestURL().toString();
-        int currentModule = 0; // 默认0是NETCTOSS首页
-        if (url.contains("user")) {
+        int currentModule = 0; // 默认0是首页
+        if (url.contains("clientManage")) {
             currentModule = 1;
-        } else if (url.contains("category")) {
+        } else if (url.contains("categoryManage")) {
             currentModule = 2;
-        } else if (url.contains("adminManage")) {
+        } else if (url.contains("userManage")) {
             currentModule = 3;
+        } else if (url.contains("roleManage")) {
+            currentModule = 4;
         }
 
         httpServletRequest.getSession().setAttribute(
