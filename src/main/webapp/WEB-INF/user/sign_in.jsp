@@ -40,7 +40,7 @@
     <form class="form-signin" id="signin_form" action="login.do" method="post">
         <h2 class="form-signin-heading">IN Photo管理系统</h2>
         <label for="inputUsername" class="sr-only">User name</label>
-        <input type="email" id="inputUsername" class="form-control" placeholder="User name" required autofocus
+        <input type="text" id="inputUsername" class="form-control" placeholder="User name" required autofocus
                name="user_name">
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">

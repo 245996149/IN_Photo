@@ -1,5 +1,6 @@
 package cn.inphoto.dao;
 
+import cn.inphoto.dbentity.page.UserPage;
 import cn.inphoto.dbentity.user.User;
 
 import java.util.List;
@@ -31,5 +32,21 @@ public interface UserDao {
      * @return 用户对象
      */
     List<User> findAll();
+
+    /**
+     * 根据表格分页对象查询客户对象列表
+     *
+     * @param userPage 表格分页对象
+     * @return 客户对象列表
+     */
+    List<User> findByPage(UserPage userPage);
+
+    /**
+     * 根据表格分页对象统计客户对象列表
+     *
+     * @param userPage 表格分页对象
+     * @return 客户对象列表总数
+     */
+    int countByPage(UserPage userPage);
 
 }

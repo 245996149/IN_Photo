@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletContext;
@@ -27,6 +29,7 @@ import static cn.inphoto.util.DBUtil.changeMediaDataToRecycle;
  */
 @Controller
 @RequestMapping("/user/table")
+@SessionAttributes("tablePage")
 public class TableController {
 
     private static Logger logger = Logger.getLogger(TableController.class);

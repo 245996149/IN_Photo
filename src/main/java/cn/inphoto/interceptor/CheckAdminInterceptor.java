@@ -24,8 +24,23 @@ public class CheckAdminInterceptor implements HandlerInterceptor {
             httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/admin/login/toLogin.do");
             return false;
         } else {
-            return true;
+            // 判断当前用户访问的模块
+            String url = httpServletRequest.getRequestURL().toString();
+            int currentModule = 0; // 默认0是首页
+            if (url.contains("clientManage")) {
+                currentModule = 1;
+            } else if (url.contains("categoryManage")) {
+                currentModule = 2;
+            } else if (url.contains("userManage")) {
+                currentModule = 3;
+            } else if (url.contains("roleManage")) {
+                currentModule = 4;
+            }
 
+            httpServletRequest.getSession().setAttribute(
+                    "currentModule", currentModule);
+
+            return true;
         }
     }
 

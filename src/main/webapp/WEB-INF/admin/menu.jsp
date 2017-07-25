@@ -26,18 +26,18 @@
                 <c:forEach items="${allModules}" var="m">
                     <c:if test="${m.moduleId==1}">
                         <c:choose>
-                            <c:when test="${currentModule=1}">
-                                <li class="active"><a href="${pageContext.request.contextPath}/admin/index.do">客户管理</a>
+                            <c:when test="${currentModule==1}">
+                                <li class="active"><a href="${pageContext.request.contextPath}/admin/clientManage/toClient.do">客户管理</a>
                                 </li>
                             </c:when>
                             <c:otherwise>
-                                <li><a href="${pageContext.request.contextPath}/admin/index.do">客户管理</a></li>
+                                <li><a href="${pageContext.request.contextPath}/admin/clientManage/toClient.do">客户管理</a></li>
                             </c:otherwise>
                         </c:choose>
                     </c:if>
                     <c:if test="${m.moduleId==2}">
                         <c:choose>
-                            <c:when test="${currentModule=2}">
+                            <c:when test="${currentModule==2}">
                                 <li class="active"><a href="${pageContext.request.contextPath}/admin/index.do">套餐管理</a>
                                 </li>
                             </c:when>
@@ -48,7 +48,7 @@
                     </c:if>
                     <c:if test="${m.moduleId==3}">
                         <c:choose>
-                            <c:when test="${currentModule=3}">
+                            <c:when test="${currentModule==3}">
                                 <li class="active"><a href="${pageContext.request.contextPath}/admin/index.do">用户管理</a>
                                 </li>
                             </c:when>
@@ -59,7 +59,7 @@
                     </c:if>
                     <c:if test="${m.moduleId==4}">
                         <c:choose>
-                            <c:when test="${currentModule=4}">
+                            <c:when test="${currentModule==4}">
                                 <li class="active"><a href="${pageContext.request.contextPath}/admin/index.do">角色管理</a>
                                 </li>
                             </c:when>

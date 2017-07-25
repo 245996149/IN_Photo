@@ -11,6 +11,14 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "users", schema = "IN_Photo", catalog = "")
 public class User {
+
+    /*正常生效*/
+    public static final String USER_STATE_NORMAL = "0";
+    /*暂停状态*/
+    public static final String USER_STATE_PAUSE = "1";
+    /*停用状态*/
+    public static final String USER_STATE_DISABLE = "2";
+
     private long userId;
     private String userName;
     private String password;
@@ -155,5 +163,21 @@ public class User {
 
     public void setAdminId(int adminId) {
         this.adminId = adminId;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", createTime=" + createTime +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", company='" + company + '\'' +
+                ", userState='" + userState + '\'' +
+                ", note='" + note + '\'' +
+                ", adminId=" + adminId +
+                '}';
     }
 }
