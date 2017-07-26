@@ -19,6 +19,14 @@ public interface UserDao {
     User findByUser_name(String user_name);
 
     /**
+     * 根据email查询用户对象
+     *
+     * @param email 邮箱地址
+     * @return 用户对象
+     */
+    User findByEmail(String email);
+
+    /**
      * 根据user_id查询用户对象
      *
      * @param user_id 用户id号

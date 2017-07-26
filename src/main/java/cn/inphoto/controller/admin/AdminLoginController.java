@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static cn.inphoto.util.MD5Util.getMD5;
+
 /**
  * 管理员登录控制器
  * Created by root on 17-7-11.
@@ -48,7 +50,7 @@ public class AdminLoginController {
 
         AdminInfo adminEntity = adminDao.findByAdmin_name(admin_name);
 
-        if (!password.equals(adminEntity.getPassword())) {
+        if (!getMD5(password).equals(adminEntity.getPassword())) {
             result.put("success", false);
             result.put("message", "密码错误，请重新输入密码!");
             logger.log(UserLog.USER, "用户user_name=" + admin_name + " 的用户尝试登陆，登陆结果为：" + result.toString());
@@ -70,7 +72,7 @@ public class AdminLoginController {
 
         AdminInfo adminEntity = adminDao.findByAdmin_name(admin_name);
 
-        if (!password.equals(adminEntity.getPassword())) {
+        if (!getMD5(password).equals(adminEntity.getPassword())) {
             result.put("success", false);
             result.put("message", "密码错误，请重新输入密码!");
             //logger.log(UserLog.USER, "用户user_name=" + user_name + " 的用户尝试登陆，登陆结果为：" + result.toString());

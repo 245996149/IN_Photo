@@ -96,4 +96,16 @@ public class Category {
     public void setCategoryNote(String categoryNote) {
         this.categoryNote = categoryNote;
     }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "categoryId=" + categoryId +
+                ", categoryCode='" + categoryCode + '\'' +
+                ", categoryName='" + categoryName + '\'' +
+                ", madeGif=" + madeGif +
+                ", gifTransparency=" + gifTransparency +
+                ", categoryNote='" + categoryNote + '\'' +
+                '}';
+    }
 }

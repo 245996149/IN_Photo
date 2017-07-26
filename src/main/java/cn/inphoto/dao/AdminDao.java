@@ -2,6 +2,7 @@ package cn.inphoto.dao;
 
 import cn.inphoto.dbentity.admin.AdminInfo;
 import cn.inphoto.dbentity.admin.ModuleInfo;
+import cn.inphoto.dbentity.user.Category;
 
 import java.util.List;
 
@@ -18,5 +19,20 @@ public interface AdminDao {
      */
     AdminInfo findByAdmin_name(String admin_name);
 
+    /**
+     * 根据admin_id查询该管理员所有模块
+     *
+     * @param admin_id
+     * @return
+     */
     List<ModuleInfo> findModulesByAdmin(int admin_id);
+
+    /**
+     * 根据admin_id查询该管理员可以管理的所有模块
+     *
+     * @param admin_id
+     * @return
+     */
+    List<Category> findCategoryByAdmin(int admin_id);
+
 }

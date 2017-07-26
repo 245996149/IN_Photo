@@ -64,7 +64,7 @@ CREATE TABLE `admin_info` (
 
 LOCK TABLES `admin_info` WRITE;
 /*!40000 ALTER TABLE `admin_info` DISABLE KEYS */;
-INSERT INTO `admin_info` VALUES (1,'ming','chen245996149',NULL,NULL,'2017-07-10 16:00:00','0');
+INSERT INTO `admin_info` VALUES (1,'ming','25D55AD283AA400AF464C76D713C07AD',NULL,NULL,'2017-07-10 16:00:00','0');
 /*!40000 ALTER TABLE `admin_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -444,7 +444,7 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
   `user_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '用户id号',
-  `user_name` varchar(20) NOT NULL COMMENT '用户名',
+  `user_name` varchar(20) DEFAULT NULL COMMENT '用户名',
   `password` varchar(50) NOT NULL COMMENT '密码',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '用户创建时间',
   `phone` varchar(20) DEFAULT NULL COMMENT '用户手机号',
@@ -457,7 +457,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `user_name_UNIQUE` (`user_name`),
   UNIQUE KEY `email_UNIQUE` (`email`),
   UNIQUE KEY `phone_UNIQUE` (`phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -466,7 +466,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'ming','chen245996149','2017-06-05 07:16:57','18817774173','245996149@qq.com',NULL,'0',NULL,1),(2,'inshow','inshow123','2017-06-12 05:10:39',NULL,NULL,NULL,'0',NULL,1);
+INSERT INTO `users` VALUES (1,'ming','25D55AD283AA400AF464C76D713C07AD','2017-06-05 07:16:57','18817774173','245996149@qq.com',NULL,'0',NULL,1),(2,'inshow','C01C624C6E877C2782B7435EFD0290C8','2017-06-12 05:10:39','17087950984','chen.ming@in-show.com.cn',NULL,'0',NULL,1),(6,NULL,'2F9B753FD304E3A26D3EC6AEBDFCCBCA','2017-07-26 04:33:58',NULL,'1925689992@qq.com','上海赢秀多媒体科技有限公司','0',NULL,1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -479,4 +479,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-25 18:13:12
+-- Dump completed on 2017-07-26 12:36:07

@@ -33,6 +33,20 @@ public class UserDaoImpl extends SuperDao implements UserDao {
     }
 
     @Override
+    public User findByEmail(String email) {
+
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery("from User where email= :email");
+
+            query.setParameter("email", email);
+
+            return (User) query.uniqueResult();
+        }
+
+    }
+
+    @Override
     public User findByUser_id(Long user_id) {
 
         try (Session session = sessionFactory.openSession()) {

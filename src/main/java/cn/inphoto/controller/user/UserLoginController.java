@@ -5,8 +5,8 @@ import cn.inphoto.dao.ShareDataDao;
 import cn.inphoto.dao.UserCategoryDao;
 import cn.inphoto.dao.UserDao;
 import cn.inphoto.dbentity.user.Category;
-import cn.inphoto.dbentity.user.UserCategory;
 import cn.inphoto.dbentity.user.User;
+import cn.inphoto.dbentity.user.UserCategory;
 import cn.inphoto.log.UserLog;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
@@ -25,6 +25,7 @@ import java.util.Map;
 
 import static cn.inphoto.util.DBUtil.judgeCategory;
 import static cn.inphoto.util.DBUtil.selectTodayData;
+import static cn.inphoto.util.MD5Util.getMD5;
 
 /**
  * 登陆控制器
@@ -67,7 +68,7 @@ public class UserLoginController {
 
         User user = userDao.findByUser_name(user_name);
 
-        if (!password.equals(user.getPassword())) {
+        if (!getMD5(password).equals(user.getPassword())) {
             result.put("success", false);
             result.put("message", "密码错误，请重新输入密码!");
             logger.log(UserLog.USER, "用户user_name=" + user_name + " 的用户尝试登陆，登陆结果为：" + result.toString());
@@ -91,7 +92,7 @@ public class UserLoginController {
 
         User user = userDao.findByUser_name(user_name);
 
-        if (!password.equals(user.getPassword())) {
+        if (!getMD5(password).equals(user.getPassword())) {
             result.put("success", false);
             result.put("message", "密码错误，请重新输入密码!");
             logger.log(UserLog.USER, "用户user_name=" + user_name + " 的用户尝试登陆，登陆结果为：" + result.toString());
@@ -179,7 +180,7 @@ public class UserLoginController {
         }
 
         // 比较查询到的用户的password与传入的password，正确判断用户是否有有效的类别，错误返回错误信息
-        if (password.equals(user.getPassword())) {
+        if (getMD5(password).equals(user.getPassword())) {
 
             Category category = categoryDao.findByCategory_code(type);
 

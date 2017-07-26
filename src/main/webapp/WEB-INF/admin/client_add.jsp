@@ -45,8 +45,38 @@
             </div>
             <div class="panel-body">
                 <div class="input-group input-group-lg">
-                    <span class="input-group-addon" id="sizing-addon1">邮箱</span>
-                    <input type="text" class="form-control" placeholder="Email" aria-describedby="sizing-addon1">
+                    <span class="input-group-addon" id="Email">邮箱</span>
+                    <input type="text" class="form-control" placeholder="Email" aria-describedby="Email" readonly
+                           value="${user.email}">
+                </div>
+                <br/>
+                <div class=" input-group input-group-lg">
+                    <span class="input-group-addon" id="company">公司</span>
+                    <input type="text" class="form-control" placeholder="公司" aria-describedby="company" readonly
+                           value="${user.company}">
+                </div>
+                <br/>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="category" checked >添加套餐
+                            </label>
+                            <label>
+                                <input type="radio" name="category">不添加套餐
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+
+                <div class="row">
+                    <div class="col-md-12" style="text-align: center">
+                        <div class="btn-group" role="group" aria-label="...">
+                            <button type="button" class="btn btn-danger">返回</button>
+                            <button type="button" class="btn btn-success">下一步</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -4,6 +4,7 @@ import cn.inphoto.dao.AdminDao;
 import cn.inphoto.dao.SuperDao;
 import cn.inphoto.dbentity.admin.AdminInfo;
 import cn.inphoto.dbentity.admin.ModuleInfo;
+import cn.inphoto.dbentity.user.Category;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
@@ -51,6 +52,22 @@ public class AdminDaoImpl extends SuperDao implements AdminDao {
             return query.list();
 
         }
+    }
+
+    @Override
+    public List<Category> findCategoryByAdmin(int admin_id) {
+
+        try (Session session = sessionFactory.openSession()) {
+            Query query = session.createQuery("from Category where categoryId in " +
+                    "(select ac.categoryId from AdminCategory ac where " +
+                    "adminId = :admin_id) order by categoryId");
+
+            query.setParameter("admin_id", admin_id);
+
+            return query.list();
+
+        }
+
     }
 
 }

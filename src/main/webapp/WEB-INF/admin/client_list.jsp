@@ -15,7 +15,7 @@
     <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="${pageContext.request.contextPath}/"></script>
+    <script src="${pageContext.request.contextPath}/js/jquery-3.2.1.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 
@@ -35,10 +35,15 @@
 
 <div class="row">
     <div class="col-md-12">
-
+        <div style="float: right">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                添加客户
+            </button>
+        </div>
     </div>
 </div>
-
+<br/>
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
@@ -242,5 +247,105 @@
 
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">添加客户</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="${pageContext.request.contextPath}/admin/clientManage/toAddClient.do"
+                      id="addFrom">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon" id="email_span">邮箱</span>
+                        <input type="text" class="form-control" placeholder="Email" aria-describedby="Email_span"
+                               id="email" name="email">
+                    </div>
+                    <br/>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon" id="company_span">公司</span>
+                        <input type="text" class="form-control" placeholder="公司" aria-describedby="company_span"
+                               id="company" name="company">
+                    </div>
+                    <br/>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="category" checked value="true" >添加套餐
+                                </label>
+                                <label>
+                                    <input type="radio" name="category" value="false">不添加套餐
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <button type="button" class="btn btn-primary" onclick="checkForm();">下一步</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function checkForm() {
+        var forms = $("#addFrom");
+        if (!judgeNull(forms)) {
+            alert("有必填项为空！");
+            return false;
+        }
+
+        var email = $("#email");
+
+        var emailReg = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+        if (!email.val().match(emailReg)) {
+
+            alert("请填写正确格式的邮箱");
+            email.val("");
+            return false;
+
+        }
+
+        $.post(
+            "checkEmail.do",
+            {"email": email.val()},
+            function (res) {
+                if (res.success) {
+                    forms.submit();
+                } else {
+                    alert(res.message);
+                    email.val("");
+                }
+
+            });
+
+    }
+
+
+    /*判断表单中是否有空*/
+    function judgeNull(a) {
+        var forms = a.find('input');
+        //alert(forms.length);
+        for (var i = 0; i < forms.length; i++) {
+            if (forms[i].value == "") {
+                forms[i].focus();
+                //alert("有选项为空");
+                return false;
+            }
+        }
+        return true;
+    }
+
+</script>
+
 </body>
 </html>
