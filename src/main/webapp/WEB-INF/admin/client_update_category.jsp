@@ -45,9 +45,21 @@
             </div>
             <div class="panel-body">
                 <div class="input-group input-group-lg">
-                    <span class="input-group-addon" id="Email">邮箱</span>
-                    <input type="text" class="form-control" placeholder="Email" aria-describedby="Email" readonly
-                           value="${user.email}">
+                    <span class="input-group-addon" id="user_name">用户名</span>
+                    <input type="text" class="form-control" placeholder="user_name" aria-describedby="user_name" readonly
+                           value="${user.user}">
+                </div>
+                <br/>
+                <div class=" input-group input-group-lg">
+                    <span class="input-group-addon" id="company">手机号</span>
+                    <input type="text" class="form-control" placeholder="公司" aria-describedby="company" readonly
+                           value="${user.company}">
+                </div>
+                <br/>
+                <div class=" input-group input-group-lg">
+                    <span class="input-group-addon" id="company">邮箱</span>
+                    <input type="text" class="form-control" placeholder="公司" aria-describedby="company" readonly
+                           value="${user.company}">
                 </div>
                 <br/>
                 <div class=" input-group input-group-lg">
