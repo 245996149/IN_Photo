@@ -1,8 +1,10 @@
 package cn.inphoto.controller.admin;
 
 import cn.inphoto.dao.AdminDao;
+import cn.inphoto.dao.ClientDao;
 import cn.inphoto.dbentity.admin.AdminInfo;
 import cn.inphoto.dbentity.admin.ModuleInfo;
+import cn.inphoto.dbentity.admin.RoleInfo;
 import cn.inphoto.log.UserLog;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -30,6 +32,9 @@ public class AdminLoginController {
 
     @Resource
     AdminDao adminDao;
+
+    @Resource
+    ClientDao clientDao;
 
     @RequestMapping("/toLogin.do")
     public String toLogin() {
@@ -80,6 +85,23 @@ public class AdminLoginController {
         }
         List<ModuleInfo> moduleList = adminDao.findModulesByAdmin(adminEntity.getAdminId());
 
+        List<RoleInfo> roleInfos = clientDao.findRoleByAdminId(adminEntity.getAdminId());
+
+        /*
+        判断是否有管理员权限
+         */
+        boolean isAdmin = false;
+
+        for (RoleInfo r : roleInfos
+                ) {
+            if (r.getRoleId() == 1) {
+                isAdmin = true;
+                break;
+            }
+        }
+
+        session.setAttribute("roleInfoList", roleInfos);
+        session.setAttribute("isAdmin", isAdmin);
         session.setAttribute("adminUser", adminEntity);
         session.setAttribute("allModules", moduleList);
 

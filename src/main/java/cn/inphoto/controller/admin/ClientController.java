@@ -9,6 +9,7 @@ import cn.inphoto.dbentity.admin.RoleInfo;
 import cn.inphoto.dbentity.page.UserPage;
 import cn.inphoto.dbentity.user.Category;
 import cn.inphoto.dbentity.user.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,6 +49,12 @@ public class ClientController {
             'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
             'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
+    /*
+    注册邮件中的IN Photo管理中心地址
+     */
+    @Value("#{properties['EmailManageAdd']}")
+    String emailManageAdd;
+
     /**
      * 前往客户管理页
      *
@@ -59,23 +66,10 @@ public class ClientController {
     @RequestMapping("/toClient.do")
     public String toClient(Model model, HttpSession session, UserPage userPage) {
         AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
+        boolean isAdmin = (boolean) session.getAttribute("isAdmin");
 
-        List<RoleInfo> roleInfos = clientDao.findRoleByAdminId(adminInfo.getAdminId());
-
-        /*
-        判断是否有管理员权限
-         */
-        boolean flag = false;
-
-        for (RoleInfo r : roleInfos
-                ) {
-            if (r.getRoleId() == 1) {
-                flag = true;
-                break;
-            }
-        }
-
-        if (flag) {
+        // 判断是否有管理员权限
+        if (isAdmin) {
             userPage.setAdminId(0);
         } else {
             userPage.setAdminId(adminInfo.getAdminId());
@@ -85,10 +79,10 @@ public class ClientController {
 
         List<User> users = userDao.findByPage(userPage);
 
-        for (User u : users
-                ) {
-            System.out.println(u.toString());
-        }
+//        for (User u : users
+//                ) {
+//            System.out.println(u.toString());
+//        }
 
         model.addAttribute("userList", users);
         model.addAttribute("userPage", userPage);
@@ -158,43 +152,59 @@ public class ClientController {
         System.out.println(pwd.toString());
         System.out.println("加密后密码：" + getMD5(pwd.toString()));
 
-        // 发送邮件
-//        try {
-//            sendMail(user.getEmail(), "IN Photo注册邮件",
-//                    "<div>尊敬的" + user.getEmail() + "您好！ 感谢您成功注册IN Photo的会员。</div>" +
-//                            "<div><includetail><p>我们将为您提供最贴心的服务，祝您使用愉快！</p>" +
-//                            "<p>您在IN Photo管理中心的登录帐号：</p><p>帐号：" + user.getEmail() + "</p>" +
-//                            "<p>密码：" + pwd.toString() + "</p><p>请您及时登录系统更改密码。</p>" +
-//                            "<p><a href='http://www.baidu.com'>点击前往IN Photo管理中心</a></p>" +
-//                            "<p>此邮件为系统自动发送，请勿直接回复该邮件</p></includetail></div>");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        if (utilDao.save(user)) {
 
-        utilDao.save(user);
+            //TODO 添加发送邮件逻辑
+            // 发送邮件
+//            try {
+//                sendMail(user.getEmail(), "IN Photo注册邮件",
+//                        "<div>尊敬的" + user.getEmail() + "您好！ 感谢您成功注册IN Photo的会员。</div>" +
+//                                "<div><includetail><p>我们将为您提供最贴心的服务，祝您使用愉快！</p>" +
+//                                "<p>您在IN Photo管理中心的登录帐号：</p><p>帐号：" + user.getEmail() + "</p>" +
+//                                "<p>密码：" + pwd.toString() + "</p><p>请您及时登录系统更改密码。</p>" +
+//                                "<p><a href='" + emailManageAdd + "'>点击前往IN Photo管理中心</a></p>" +
+//                                "<p>此邮件为系统自动发送，请勿直接回复该邮件</p></includetail></div>");
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+
+        } else {
+
+        }
 
         System.out.println(user.toString());
 
+        // 判断是否现在添加套餐
         if (category) {
             return "redirect:toUpdateCategory.do?user_id=" + user.getUserId();
-        } else
+        } else {
             return "redirect:toClient.do";
+        }
     }
 
     @RequestMapping("/toUpdateCategory.do")
-    @ResponseBody
+   // @ResponseBody
     public String toUpdateCategory(Long user_id, Model model, HttpSession session) {
-//        AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
+        AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
+        boolean isAdmin = (boolean) session.getAttribute("isAdmin");
 
         User user = userDao.findByUser_id(user_id);
+
+        // 判断是否有管理员权限
+        if (!isAdmin) {
+            //没有管理员权限，判断是否有管理权限
+            if (user.getAdminId() != adminInfo.getAdminId()) {
+                return "no_power";
+            }
+        }
 
         List<Category> categoryList = adminDao.findCategoryByAdmin(user.getAdminId());
 
         model.addAttribute("user", user);
         model.addAttribute("categoryList", categoryList);
 
-        for (Category c: categoryList
-             ) {
+        for (Category c : categoryList
+                ) {
             System.out.println(c.toString());
         }
 

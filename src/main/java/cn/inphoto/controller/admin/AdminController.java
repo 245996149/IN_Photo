@@ -15,4 +15,9 @@ public class AdminController {
         return "admin/index";
     }
 
+    @RequestMapping("/noPower.do")
+    public String noPower() {
+        return "no_power";
+    }
+
 }

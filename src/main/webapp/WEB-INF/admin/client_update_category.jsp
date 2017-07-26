@@ -15,7 +15,7 @@
     <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="${pageContext.request.contextPath}/"></script>
+    <script src="${pageContext.request.contextPath}/js/jquery-3.2.1.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 
@@ -46,40 +46,57 @@
             <div class="panel-body">
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon" id="user_name">用户名</span>
-                    <input type="text" class="form-control" placeholder="user_name" aria-describedby="user_name" readonly
-                           value="${user.user}">
+                    <input type="text" class="form-control" placeholder="客户未填写用户名" aria-describedby="user_name"
+                           readonly
+                           value="${user.userName}">
                 </div>
                 <br/>
                 <div class=" input-group input-group-lg">
-                    <span class="input-group-addon" id="company">手机号</span>
-                    <input type="text" class="form-control" placeholder="公司" aria-describedby="company" readonly
-                           value="${user.company}">
+                    <span class="input-group-addon" id="phone">手机号</span>
+                    <input type="text" class="form-control" placeholder="客户未填写手机号" aria-describedby="phone" readonly
+                           value="${user.phone}">
                 </div>
                 <br/>
                 <div class=" input-group input-group-lg">
-                    <span class="input-group-addon" id="company">邮箱</span>
-                    <input type="text" class="form-control" placeholder="公司" aria-describedby="company" readonly
-                           value="${user.company}">
+                    <span class="input-group-addon" id="email">邮箱</span>
+                    <input type="text" class="form-control" placeholder="客户未填写邮箱" aria-describedby="email" readonly
+                           value="${user.email}">
                 </div>
                 <br/>
                 <div class=" input-group input-group-lg">
                     <span class="input-group-addon" id="company">公司</span>
-                    <input type="text" class="form-control" placeholder="公司" aria-describedby="company" readonly
+                    <input type="text" class="form-control" placeholder="客户未填写公司" aria-describedby="company" readonly
                            value="${user.company}">
                 </div>
                 <br/>
-                <div class="form-group">
-                    <div class="col-sm-12">
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="category" checked >添加套餐
-                            </label>
-                            <label>
-                                <input type="radio" name="category">不添加套餐
-                            </label>
-                        </div>
+                <div class="input-group input-group-lg">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default disabled">添加套餐</button>
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <c:forEach items="${categoryList}" var="cl">
+                                <li><a href="#" onclick="selectCategory(${cl.categoryId},'${cl.categoryName}');" >${cl.categoryName}</a></li>
+                            <%--<option value="${cl.categoryId}">${cl.categoryName}</option>--%>
+                            </c:forEach>
+                        </ul>
                     </div>
+                    <input type="text" id="category_name" placeholder="点击左侧下拉箭头，选择要添加的系统" readonly class="form-control" aria-label="Text input with segmented button dropdown">
                 </div>
+                <%--<select>--%>
+                <%--<c:forEach items="${categoryList}" var="cl">--%>
+                <%--<option value="${cl.categoryId}">${cl.categoryName}</option>--%>
+                <%--</c:forEach>--%>
+                <%--</select>--%>
+                <br/>
+                <div class=" input-group input-group-lg">
+                    <span class="input-group-addon" id="beginDate">生效时间</span>
+                    <input type="datetime-local" class="form-control" placeholder="客户未填写公司" aria-describedby="beginDate"                           >
+                </div>
+
                 <br/>
 
                 <div class="row">
@@ -95,5 +112,18 @@
 
     </div>
 </div>
+
+<script type="text/javascript">
+    var category;
+    
+    function selectCategory(category_id,category_name) {
+
+        category = category_id;
+
+        $("#category_name").val(category_name);
+
+    }
+    
+</script>
 </body>
 </html>
