@@ -183,8 +183,9 @@ public class ClientController {
     }
 
     @RequestMapping("/toUpdateCategory.do")
-   // @ResponseBody
+    // @ResponseBody
     public String toUpdateCategory(Long user_id, Model model, HttpSession session) {
+
         AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
         boolean isAdmin = (boolean) session.getAttribute("isAdmin");
 
@@ -203,12 +204,12 @@ public class ClientController {
         model.addAttribute("user", user);
         model.addAttribute("categoryList", categoryList);
 
-        for (Category c : categoryList
-                ) {
+        for (Category c : categoryList) {
             System.out.println(c.toString());
         }
 
         return "admin/client_update_category";
+
     }
 
 }

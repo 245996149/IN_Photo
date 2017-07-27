@@ -20,6 +20,22 @@ public interface AdminDao {
     AdminInfo findByAdmin_name(String admin_name);
 
     /**
+     * 根据Phone查询管理员对象
+     *
+     * @param Phone 手机号
+     * @return 用户对象
+     */
+    AdminInfo findByPhone(String Phone);
+
+    /**
+     * 根据Email查询管理员对象
+     *
+     * @param Email 邮箱
+     * @return 用户对象
+     */
+    AdminInfo findByEmail(String Email);
+
+    /**
      * 根据admin_id查询该管理员所有模块
      *
      * @param admin_id

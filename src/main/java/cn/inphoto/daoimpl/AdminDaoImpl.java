@@ -30,6 +30,30 @@ public class AdminDaoImpl extends SuperDao implements AdminDao {
     }
 
     @Override
+    public AdminInfo findByPhone(String Phone) {
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery("from AdminInfo where phone= :Phone");
+
+            query.setParameter("Phone", Phone);
+
+            return (AdminInfo) query.uniqueResult();
+        }
+    }
+
+    @Override
+    public AdminInfo findByEmail(String Email) {
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery("from AdminInfo where email= :Email");
+
+            query.setParameter("Email", Email);
+
+            return (AdminInfo) query.uniqueResult();
+        }
+    }
+
+    @Override
     public List<ModuleInfo> findModulesByAdmin(int admin_id) {
         try (Session session = sessionFactory.openSession()) {
 

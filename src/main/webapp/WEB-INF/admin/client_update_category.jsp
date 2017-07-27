@@ -79,12 +79,15 @@
                         </button>
                         <ul class="dropdown-menu">
                             <c:forEach items="${categoryList}" var="cl">
-                                <li><a href="#" onclick="selectCategory(${cl.categoryId},'${cl.categoryName}');" >${cl.categoryName}</a></li>
-                            <%--<option value="${cl.categoryId}">${cl.categoryName}</option>--%>
+                                <li><a href="#"
+                                       onclick="selectCategory(${cl.categoryId},'${cl.categoryName}');">${cl.categoryName}</a>
+                                </li>
+                                <%--<option value="${cl.categoryId}">${cl.categoryName}</option>--%>
                             </c:forEach>
                         </ul>
                     </div>
-                    <input type="text" id="category_name" placeholder="点击左侧下拉箭头，选择要添加的系统" readonly class="form-control" aria-label="Text input with segmented button dropdown">
+                    <input type="text" id="category_name" placeholder="点击左侧下拉箭头，选择要添加的系统" readonly class="form-control"
+                           aria-label="Text input with segmented button dropdown">
                 </div>
                 <%--<select>--%>
                 <%--<c:forEach items="${categoryList}" var="cl">--%>
@@ -94,11 +97,10 @@
                 <br/>
                 <div class=" input-group input-group-lg">
                     <span class="input-group-addon" id="beginDate">生效时间</span>
-                    <input type="datetime-local" class="form-control" placeholder="客户未填写公司" aria-describedby="beginDate"                           >
+                    <input type="datetime-local" class="form-control" placeholder="客户未填写公司"
+                           aria-describedby="beginDate">
                 </div>
-
                 <br/>
-
                 <div class="row">
                     <div class="col-md-12" style="text-align: center">
                         <div class="btn-group" role="group" aria-label="...">
@@ -115,15 +117,15 @@
 
 <script type="text/javascript">
     var category;
-    
-    function selectCategory(category_id,category_name) {
+
+    function selectCategory(category_id, category_name) {
 
         category = category_id;
 
         $("#category_name").val(category_name);
 
     }
-    
+
 </script>
 </body>
 </html>

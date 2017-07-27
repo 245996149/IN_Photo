@@ -17,6 +17,13 @@ public class AdminInfo {
     private Timestamp createTime;
     private String adminStatu;
 
+    /*用户名登录*/
+    public static final int LOGIN_ADMIN_NAME = 0;
+    /*手机号登录*/
+    public static final int LOGIN_PHONE = 1;
+    /*邮箱登录*/
+    public static final int LOGIN_EMAIL = 2;
+
     @Id
     @Column(name = "admin_id")
     public int getAdminId() {
