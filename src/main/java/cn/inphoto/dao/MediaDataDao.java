@@ -90,4 +90,14 @@ public interface MediaDataDao {
      */
     List<MediaData> findByUser_idAndState(Long user_id, String media_state);
 
+    /**
+     * 根据用户、套餐及状态查询所有对应的媒体数据
+     *
+     * @param user_id     客户
+     * @param category_id 套餐
+     * @param media_state 状态
+     * @return
+     */
+    List<MediaData> findByUser_idAndCategory_idAndState(Long user_id, Integer category_id, String media_state);
+
 }

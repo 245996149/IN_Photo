@@ -121,7 +121,7 @@ public class ReceiveController {
 
         // 根据category_code、user_id查询用户有效期内的系统
         UserCategory userCategory =
-                userCategoryDao.findByUser_idAndCategory_id(
+                userCategoryDao.findByUser_idAndCategory_idAndState(
                         user.getUserId(), category_id,
                         UserCategory.USER_CATEGORY_STATE_NORMAL);
 

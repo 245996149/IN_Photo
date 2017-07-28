@@ -76,7 +76,7 @@
                 </ul>
             </div><!-- /btn-group -->
             <c:choose>
-                <c:when test="${login_type!=null}">
+                <c:when test="${login_type!=''}">
                     <input type="text" hidden id="login_type" name="login_type" value="${login_type}">
                 </c:when>
                 <c:otherwise>

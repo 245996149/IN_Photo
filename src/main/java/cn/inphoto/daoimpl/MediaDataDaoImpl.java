@@ -196,7 +196,7 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     }
 
     @Override
-    public List<MediaData> findByUser_idAndState(Long user_id, String media_state){
+    public List<MediaData> findByUser_idAndState(Long user_id, String media_state) {
         try (Session session = sessionFactory.openSession()) {
 
             Query query = session.createQuery("from MediaData where userId = :user_id and mediaState = :media_state");
@@ -207,6 +207,21 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
             return query.list();
         }
 
+    }
+
+    @Override
+    public List<MediaData> findByUser_idAndCategory_idAndState(Long user_id, Integer category_id, String media_state) {
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery(
+                    "from MediaData where userId = :user_id and categoryId = :category_id and mediaState = :media_state");
+
+            query.setParameter("user_id", user_id);
+            query.setParameter("category_id", category_id);
+            query.setParameter("media_state", media_state);
+
+            return query.list();
+        }
     }
 
 }

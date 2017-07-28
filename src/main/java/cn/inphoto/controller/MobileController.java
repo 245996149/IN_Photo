@@ -86,7 +86,7 @@ public class MobileController {
         if (user == null) return MOBILE_404;
 
         // 根据user_id、category_id查询状态正常的用户套餐系统
-        UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_id(
+        UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_idAndState(
                 user.getUserId(), category_id, UserCategory.USER_CATEGORY_STATE_NORMAL);
 
         // 判断用户套餐系统是否存在
@@ -198,7 +198,7 @@ public class MobileController {
             if (user == null) return MOBILE_404;
 
             // 根据user_id、category_id查询状态正常的用户套餐系统
-            UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_id(
+            UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_idAndState(
                     user.getUserId(), category_id, UserCategory.USER_CATEGORY_STATE_NORMAL);
 
             // 判断用户套餐系统是否存在

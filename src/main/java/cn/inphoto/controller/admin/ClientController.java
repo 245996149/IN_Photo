@@ -1,15 +1,15 @@
 package cn.inphoto.controller.admin;
 
-import cn.inphoto.dao.AdminDao;
-import cn.inphoto.dao.ClientDao;
-import cn.inphoto.dao.UserDao;
-import cn.inphoto.dao.UtilDao;
+import cn.inphoto.dao.*;
 import cn.inphoto.dbentity.admin.AdminInfo;
 import cn.inphoto.dbentity.admin.RoleInfo;
 import cn.inphoto.dbentity.page.UserPage;
 import cn.inphoto.dbentity.user.Category;
+import cn.inphoto.dbentity.user.MediaData;
 import cn.inphoto.dbentity.user.User;
+import cn.inphoto.dbentity.user.UserCategory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,11 +18,10 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.sql.Timestamp;
+import java.util.*;
 
+import static cn.inphoto.util.DateUtil.getTodayDate;
 import static cn.inphoto.util.MD5Util.getMD5;
 import static cn.inphoto.util.MailUtil.sendMail;
 
@@ -30,6 +29,9 @@ import static cn.inphoto.util.MailUtil.sendMail;
 @RequestMapping("/admin/clientManage")
 @SessionAttributes("userPage")
 public class ClientController {
+
+    @Resource
+    CategoryDao categoryDao;
 
     @Resource
     ClientDao clientDao;
@@ -43,6 +45,12 @@ public class ClientController {
     @Resource
     AdminDao adminDao;
 
+    @Resource
+    MediaDataDao mediaDataDao;
+
+    @Resource
+    UserCategoryDao userCategoryDao;
+
     static char[] str = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
             'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w',
             'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
@@ -54,6 +62,9 @@ public class ClientController {
      */
     @Value("#{properties['EmailManageAdd']}")
     String emailManageAdd;
+
+    @Value("#{properties['sendEmail']}")
+    boolean sendEmail;
 
     /**
      * 前往客户管理页
@@ -123,7 +134,7 @@ public class ClientController {
      * @return 页面
      */
     @RequestMapping("/toAddClient.do")
-    public String toAddClient(Model model, HttpSession session, User user, boolean category) {
+    public String toAddClient(Model model, HttpSession session, User user, boolean category) throws Exception {
 
         AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
 
@@ -156,17 +167,15 @@ public class ClientController {
 
             //TODO 添加发送邮件逻辑
             // 发送邮件
-//            try {
-//                sendMail(user.getEmail(), "IN Photo注册邮件",
-//                        "<div>尊敬的" + user.getEmail() + "您好！ 感谢您成功注册IN Photo的会员。</div>" +
-//                                "<div><includetail><p>我们将为您提供最贴心的服务，祝您使用愉快！</p>" +
-//                                "<p>您在IN Photo管理中心的登录帐号：</p><p>帐号：" + user.getEmail() + "</p>" +
-//                                "<p>密码：" + pwd.toString() + "</p><p>请您及时登录系统更改密码。</p>" +
-//                                "<p><a href='" + emailManageAdd + "'>点击前往IN Photo管理中心</a></p>" +
-//                                "<p>此邮件为系统自动发送，请勿直接回复该邮件</p></includetail></div>");
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
+            if (sendEmail) {
+                sendMail(user.getEmail(), "IN Photo注册邮件",
+                        "<div>尊敬的" + user.getEmail() + "您好！ 感谢您成功注册IN Photo的会员。</div>" +
+                                "<div><includetail><p>我们将为您提供最贴心的服务，祝您使用愉快！</p>" +
+                                "<p>您在IN Photo管理中心的登录帐号：</p><p>帐号：" + user.getEmail() + "</p>" +
+                                "<p>密码：" + pwd.toString() + "</p><p>请您及时登录系统更改密码。</p>" +
+                                "<p><a href='" + emailManageAdd + "'>点击前往IN Photo管理中心</a></p>" +
+                                "<p>此邮件为系统自动发送，请勿直接回复该邮件</p></includetail></div>");
+            }
 
         } else {
 
@@ -176,15 +185,22 @@ public class ClientController {
 
         // 判断是否现在添加套餐
         if (category) {
-            return "redirect:toUpdateCategory.do?user_id=" + user.getUserId();
+            return "redirect:toAddCategory.do?user_id=" + user.getUserId();
         } else {
             return "redirect:toClient.do";
         }
     }
 
-    @RequestMapping("/toUpdateCategory.do")
-    // @ResponseBody
-    public String toUpdateCategory(Long user_id, Model model, HttpSession session) {
+    /**
+     * 前往添加套餐页面
+     *
+     * @param user_id 用户id
+     * @param model
+     * @param session
+     * @return 页面
+     */
+    @RequestMapping("/toAddCategory.do")
+    public String toAddCategory(Long user_id, Model model, HttpSession session) {
 
         AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
         boolean isAdmin = (boolean) session.getAttribute("isAdmin");
@@ -204,11 +220,220 @@ public class ClientController {
         model.addAttribute("user", user);
         model.addAttribute("categoryList", categoryList);
 
-        for (Category c : categoryList) {
-            System.out.println(c.toString());
+        return "admin/client_add_category";
+
+    }
+
+    /**
+     * 向客户添加一个套餐
+     *
+     * @param user_id     客户id
+     * @param category_id 套餐id
+     * @param begin_date  开始时间
+     * @param end_date    结束时间
+     * @param number      套餐数据量
+     * @return 是否成功
+     */
+    @RequestMapping("/addCategory.do")
+    @ResponseBody
+    public Map addCategory(Long user_id, Integer category_id,
+                           @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date,
+                           @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date, Integer number) {
+        Map<String, Object> result = new HashMap<>();
+
+        List<UserCategory> userCategoryList = userCategoryDao.findByUser_idAndCategory_id(user_id, category_id);
+
+        // 清除队列中已经过期的套餐
+        int num = userCategoryList.size();
+        for (int i = 0; i < num; i++) {
+
+            UserCategory uc = userCategoryList.get(i);
+
+            System.out.println(uc.toString());
+            if (UserCategory.USER_CATEGORY_STATE_OVER.equals(uc.getUserCategoryState())) {
+                userCategoryList.remove(i);
+                i--;
+                num--;
+            }
         }
 
-        return "admin/client_update_category";
+        // 获取输入时间的时间戳
+        long inputBeginTime = begin_date.getTime();
+        long inputEndTime = end_date.getTime();
+
+        boolean beginTimeFlag = false;
+        boolean endTimeFlag = false;
+
+        // 判断开始时间、结束时间是否在已存在套餐内
+        for (UserCategory uc : userCategoryList
+                ) {
+            long ucBeginTime = uc.getBeginTime().getTime();
+            long ucEndTime = uc.getEndTime().getTime();
+
+            if (inputBeginTime > ucBeginTime && inputBeginTime < ucEndTime) {
+                // 输入的开始时间在这个套餐的时间范围内
+                beginTimeFlag = true;
+                break;
+            } else if (inputEndTime > ucBeginTime && inputEndTime < ucEndTime) {
+                // 输入的结束时间在这个套餐的时间范围内
+                endTimeFlag = true;
+                break;
+            }
+        }
+
+        if (beginTimeFlag || endTimeFlag) {
+
+            result.put("success", false);
+            result.put("message", "该时间段内存在相同的套餐");
+            return result;
+
+        }
+
+        UserCategory userCategory = new UserCategory();
+        userCategory.setUserId(user_id);
+        userCategory.setCategoryId(category_id);
+        userCategory.setBeginTime(new Timestamp(begin_date.getTime()));
+        userCategory.setEndTime(new Timestamp(end_date.getTime()));
+        userCategory.setMediaNumber(number);
+        if (getTodayDate().getTime() / 1000 == begin_date.getTime() / 1000) {
+            userCategory.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_NORMAL);
+        } else {
+            userCategory.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_NOT_START);
+        }
+
+        System.out.println(userCategory.toString());
+
+        if (utilDao.save(userCategory)) {
+            result.put("success", true);
+            result.put("message", "添加成功，请等待跳转");
+
+        } else {
+            result.put("success", false);
+            result.put("message", "数据写入数据库时发生了点小意外，请稍后再试");
+
+        }
+
+        return result;
+    }
+
+    /**
+     * 前往用户套餐列表页
+     *
+     * @param user_id 用户id
+     * @param session
+     * @param model
+     * @return 页面
+     */
+    @RequestMapping("/toCategoryList.do")
+    public String toCategoryList(Long user_id, HttpSession session, Model model) {
+
+        AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
+        boolean isAdmin = (boolean) session.getAttribute("isAdmin");
+
+        User user = userDao.findByUser_id(user_id);
+
+        // 判断是否有管理员权限
+        if (!isAdmin) {
+            //没有管理员权限，判断是否有管理权限
+            if (user.getAdminId() != adminInfo.getAdminId()) {
+                return "no_power";
+            }
+        }
+
+        List<Category> categoryList = categoryDao.findAll();
+
+        // 找到所有用户套餐
+        List<UserCategory> userCategoryList = userCategoryDao.findByUser_id(user_id);
+
+        Map<Long, Integer> tempMap = new HashMap<>();
+
+        for (UserCategory uc : userCategoryList
+                ) {
+
+            if (UserCategory.USER_CATEGORY_STATE_NORMAL.equals(uc.getUserCategoryState())) {
+
+                // 查询套餐对应的正常状态的媒体总数
+                int a = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
+                        user.getUserId(), uc.getCategoryId(), MediaData.MEDIA_STATE_NORMAL);
+
+                // 将数据写入临时Map中以供页面调用
+                tempMap.put(uc.getUserCategoryId(), (a * 100 / uc.getMediaNumber()));
+
+            }
+
+        }
+
+        model.addAttribute("category", categoryList);
+        model.addAttribute("user", user);
+        model.addAttribute("tempMap", tempMap);
+        model.addAttribute("userCategoryList", userCategoryList);
+
+        return "admin/client_category_list";
+    }
+
+    @RequestMapping("/stopUserCategory.do")
+    @ResponseBody
+    public Map stopUserCategory(Long user_id, Long userCategory_id, HttpSession session) {
+
+        Map<String, Object> result = new HashMap<>();
+
+        AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
+        boolean isAdmin = (boolean) session.getAttribute("isAdmin");
+
+        User user = userDao.findByUser_id(user_id);
+
+        // 判断是否有管理员权限
+        if (!isAdmin) {
+            //没有管理员权限，判断是否有管理权限
+            if (user.getAdminId() != adminInfo.getAdminId()) {
+                result.put("success", false);
+                result.put("message", "您没有权限操作该用户");
+                return result;
+            }
+        }
+
+        // 查找对应的用户套餐
+        UserCategory userCategory = userCategoryDao.findByUser_category_id(userCategory_id);
+
+        // 查找对应的媒体数据
+        List<MediaData> mediaDataList = mediaDataDao.findByUser_idAndCategory_idAndState(
+                user_id, userCategory.getCategoryId(), MediaData.MEDIA_STATE_NORMAL);
+
+        // 判断是否有对应的媒体数据，没有媒体数据跳过更新媒体数据状态
+        if (mediaDataList.size() != 0) {
+
+            // 更新查找到的媒体数据状态
+            for (MediaData m : mediaDataList
+                    ) {
+                m.setMediaState(MediaData.MEDIA_STATE_WILL_DELETE);
+            }
+
+            // 更新数据库中的媒体数据
+            if (!mediaDataDao.updateMediaList(mediaDataList)) {
+
+                // 更新失败
+                result.put("success", false);
+                result.put("message", "更新对应的媒体数据是发生了错误，请稍后再试。");
+                return result;
+
+            }
+
+        }
+
+        // 更新用户套餐
+        userCategory.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_OVER);
+
+        // 更新数据库中的用户套餐
+        if (!utilDao.update(userCategory)) {
+
+            // 更新失败
+            result.put("success", false);
+            result.put("message", "更新对应的用户套餐时发生了错误，请稍后再试。");
+            return result;
+
+        }
+
+        return result;
 
     }
 

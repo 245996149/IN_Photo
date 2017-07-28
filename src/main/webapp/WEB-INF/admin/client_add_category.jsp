@@ -192,7 +192,7 @@
         }
 
         $.post(
-            "",
+            "addCategory.do",
             {
                 "user_id": $("#user_id").val(),
                 "category_id": category,

@@ -231,7 +231,7 @@ public class TableController {
         Map<String, Object> result = new HashMap<>();
 
         // 查找用户的套餐系统信息
-        UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_id(user.getUserId(), category_id, UserCategory.USER_CATEGORY_STATE_NORMAL);
+        UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_idAndState(user.getUserId(), category_id, UserCategory.USER_CATEGORY_STATE_NORMAL);
         // 计算用户该套餐系统内状态为张昌的媒体数据的数量
         int media_num = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(user.getUserId(), category_id, MediaData.MEDIA_STATE_NORMAL);
 
@@ -571,7 +571,7 @@ public class TableController {
         MediaData mediaData = mediaDataDao.findByMedia_id(media_id);
 
         // 查询该媒体数据对应的系统
-        UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_id(
+        UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_idAndState(
                 user.getUserId(), mediaData.getCategoryId(), UserCategory.USER_CATEGORY_STATE_NORMAL);
 
         MDC.put("user_id", user.getUserId());

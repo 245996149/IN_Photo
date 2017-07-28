@@ -29,9 +29,6 @@ public class UserCategory implements Serializable {
     private Integer categoryId;
     private String userCategoryState;
 
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
 
     @Id
     @Column(name = "user_category_id")
@@ -49,7 +46,7 @@ public class UserCategory implements Serializable {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 

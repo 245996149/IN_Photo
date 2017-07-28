@@ -35,11 +35,10 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div style="float: right">
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-                添加客户
-            </button>
+        <div class="page-header">
+            <h1>客户列表
+                <small>列出你有权限修改的客户名单</small>
+            </h1>
         </div>
     </div>
 </div>
@@ -48,14 +47,19 @@
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">数据列表</h3>
+                <h3 class="panel-title">数据列表
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
+                        添加客户
+                    </button>
+                </h3>
             </div>
             <!-- Table -->
             <div class="table-responsive">
-                <table class="table table-bordered table-hover dataTable" style="font-size: x-large;">
+                <table class="table <%--table-bordered--%> table-hover <%--dataTable--%>"
+                       style="font-size: large;text-align: center;">
                     <thead>
                     <tr>
-                        <td><input type="checkbox" id="media_data_all_checkbox" onclick="DoCheck();"><span>客户编号</span>
+                        <td><%--<input type="checkbox" id="media_data_all_checkbox" onclick="DoCheck();">--%><span>客户编号</span>
                             <div class="dropdown" id="media_data_operation" style="display: none;">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
                                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -73,15 +77,16 @@
                         <td>手机号</td>
                         <td>邮箱</td>
                         <td>客户状态</td>
-                        <td>隶属于(管理员ID)</td>
+                        <td>
+                            <c:if test="${sessionScope.isAdmin==true}">隶属于(管理员ID)</c:if></td>
                         <td>操作</td>
                     </tr>
                     </thead>
                     <tbody>
                     <c:forEach items="${userList}" var="u">
                         <tr>
-                            <td><input type="checkbox" name="media_data_checkbox"
-                                       onclick="checkAllCheck();" value="${u.userId}"><span>${u.userId}</span></td>
+                            <td><%--<input type="checkbox" name="media_data_checkbox"
+                                       onclick="checkAllCheck();" value="${u.userId}">--%><span>${u.userId}</span></td>
                             <td>${u.userName}</td>
                             <td><fmt:formatDate value="${u.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                             <td>${u.phone}</td>
@@ -94,14 +99,15 @@
                                     <c:otherwise>未知</c:otherwise>
                                 </c:choose>
                             </td>
-                            <td>${u.adminId}</td>
+                            <td><c:if test="${sessionScope.isAdmin==true}">${u.adminId}</c:if></td>
                             <td>
                                 <div class="btn-group-sm" role="group" aria-label="...">
                                     <button type="button" class="btn btn-danger" onclick="">
                                         删除
                                     </button>
-                                    <button type="button" class="btn btn-primary" onclick="">
-                                        查看
+                                    <button type="button" class="btn btn-primary"
+                                            onclick="location='toCategoryList.do?user_id=${u.userId}'">
+                                        套餐管理
                                     </button>
                                     <button type="button" class="btn btn-info" onclick="">下载
                                     </button>
@@ -276,7 +282,7 @@
                         <div class="col-sm-12">
                             <div class="radio">
                                 <label>
-                                    <input type="radio" name="category" checked value="true" >添加套餐
+                                    <input type="radio" name="category" checked value="true">添加套餐
                                 </label>
                                 <label>
                                     <input type="radio" name="category" value="false">不添加套餐
@@ -329,7 +335,6 @@
             });
 
     }
-
 
     /*判断表单中是否有空*/
     function judgeNull(a) {

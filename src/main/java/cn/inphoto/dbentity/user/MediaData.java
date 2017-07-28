@@ -18,6 +18,8 @@ public class MediaData {
     public static final String MEDIA_STATE_RECYCLE = "1";
     /*媒体数据已删除*/
     public static final String MEDIA_STATE_DELETE = "2";
+    /*套餐过期，媒体数据待移动到回收站中*/
+    public static final String MEDIA_STATE_WILL_DELETE = "3";
 
     private long mediaId;
     private String mediaName;

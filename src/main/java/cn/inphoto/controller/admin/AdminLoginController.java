@@ -78,8 +78,10 @@ public class AdminLoginController {
 
     @RequestMapping("/checkAdmin.do")
     @ResponseBody
-    public Map checkAdmin(Integer login_type, String input_text, String password,boolean remLogin,
+    public Map checkAdmin(Integer login_type, String input_text, String password, boolean remLogin,
                           HttpServletResponse response, HttpSession session, HttpServletRequest request) throws UnsupportedEncodingException {
+
+//        System.out.println(login_type + "   " + input_text + "   " + password + "   " + remLogin);
 
         Map<String, Object> result = new HashMap<>();
 
@@ -147,16 +149,16 @@ public class AdminLoginController {
 
         if (remLogin) {
             // 记住登录状态，添加cookie
-            response.addCookie(createCookie("inphoto_admin_login_type",Integer.toString(login_type)));
-            response.addCookie(createCookie("inphoto_admin_input_text",input_text));
-            response.addCookie(createCookie("inphoto_admin_password_name",password));
-            response.addCookie(createCookie("inphoto_admin_rem_login","0"));
+            response.addCookie(createCookie("inphoto_admin_login_type", Integer.toString(login_type)));
+            response.addCookie(createCookie("inphoto_admin_input_text", input_text));
+            response.addCookie(createCookie("inphoto_admin_password_name", password));
+            response.addCookie(createCookie("inphoto_admin_rem_login", "0"));
         } else {
             // 不记住登录状态，清除cookie，并把inphoto_admin_rem_login改为1
             response.addCookie(cleanCookie("inphoto_admin_login_type"));
             response.addCookie(cleanCookie("inphoto_admin_input_text"));
             response.addCookie(cleanCookie("inphoto_admin_password_name"));
-            response.addCookie(createCookie("inphoto_admin_rem_login","1"));
+            response.addCookie(createCookie("inphoto_admin_rem_login", "1"));
         }
 
         session.setAttribute("roleInfoList", roleInfos);

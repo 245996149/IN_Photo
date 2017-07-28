@@ -18,7 +18,23 @@ public interface UserCategoryDao {
      * @param user_category_state 用户套餐系统对象状态
      * @return 用户套餐系统对象
      */
-    UserCategory findByUser_idAndCategory_id(Long user_id, Integer category_id, String user_category_state);
+    UserCategory findByUser_idAndCategory_idAndState(Long user_id, Integer category_id, String user_category_state);
+
+    /**
+     * 根据userCategory_id查询用户套餐系统对象
+     * @param userCategory_id
+     * @return
+     */
+    UserCategory findByUser_category_id(Long userCategory_id);
+
+    /**
+     * 根据user_id、category_id查询该用户所有套餐系统对象
+     *
+     * @param user_id     用户id
+     * @param category_id 套餐系统id
+     * @return 用户套餐系统对象
+     */
+    List<UserCategory> findByUser_idAndCategory_id(Long user_id, Integer category_id);
 
     /**
      * 根据user_id、user_category_state查询该用户所有套餐系统对象

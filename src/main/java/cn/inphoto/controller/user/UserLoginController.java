@@ -193,7 +193,7 @@ public class UserLoginController {
 
             }
 
-            UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_id(
+            UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_idAndState(
                     user.getUserId(), category.getCategoryId(), UserCategory.USER_CATEGORY_STATE_NORMAL);
 
             if (userCategory == null) {

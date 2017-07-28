@@ -108,7 +108,7 @@ public class UserDaoImpl extends SuperDao implements UserDao {
 
             hql = hql + " order by userId";
 
-            System.out.println(hql);
+//            System.out.println(hql);
 
             query = session.createQuery(hql);
 
@@ -157,7 +157,7 @@ public class UserDaoImpl extends SuperDao implements UserDao {
 
             hql = hql + " order by userId";
 
-            System.out.println(hql);
+//            System.out.println(hql);
 
             query = session.createQuery(hql);
 
