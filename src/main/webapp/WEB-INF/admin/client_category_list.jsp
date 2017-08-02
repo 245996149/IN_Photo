@@ -47,6 +47,9 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">数据列表
+                    <a class="btn btn-success" style="color: white;"
+                       href="${pageContext.request.contextPath}/admin/clientManage/toAddCategory.do?user_id=${user.userId}">添加套餐</a>
+                    <input hidden id="user_id" value="${user.userId}">
                 </h3>
             </div>
             <!-- Table -->
@@ -97,15 +100,32 @@
                                         </c:forEach>
                                     </td>
                                     <td>
+                                        <a class="btn btn-success btn-xs"
+                                           href="${pageContext.request.contextPath}/admin/clientManage/toUpdateCategory.do?userCategory_id=${uc.userCategoryId}">修改套餐信息</a>
+                                        <c:forEach items="${category}" var="c">
+                                            <c:if test="${uc.categoryId==c.categoryId}">
+                                                <button type="button" class="btn btn-danger btn-xs"
+                                                        onclick="stopUserCategory(${uc.userCategoryId},'${c.categoryName}');">
+                                                    失效
+                                                </button>
+                                            </c:if>
+                                        </c:forEach>
                                         <button type="button" class="btn btn-primary btn-xs"
-                                                onclick="a(${uc.categoryId})">
+                                                onclick="getURL(${uc.categoryId})">
                                             显示提取地址
                                         </button>
                                     </td>
                                 </c:when>
                                 <c:when test="${uc.userCategoryState==2}">
                                     <td> 未生效</td>
-                                    <td></td>
+                                    <td>
+                                        <a class="btn btn-success btn-xs"
+                                           href="${pageContext.request.contextPath}/admin/clientManage/toUpdateCategory.do?userCategory_id=${uc.userCategoryId}">修改套餐信息</a>
+
+                                            <%--<button type="button" class="btn btn-success btn-xs">--%>
+                                            <%--修改套餐信息--%>
+                                            <%--</button>--%>
+                                    </td>
                                 </c:when>
                                 <c:otherwise>
                                     <td> 已过期</td>
@@ -146,18 +166,18 @@
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<!-- Url Modal -->
+<div class="modal fade" id="urlModal" tabindex="-1" role="dialog" aria-labelledby="urlModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="myModalLabel">提取地址</h4>
+                <h4 class="modal-title" id="urlModalLabel">提取地址</h4>
             </div>
             <div class="modal-body" style="text-align: center">
                 <img src="${pageContext.request.contextPath}/images/QRcode_test.png" id="modal_img"><br>
-                <span id="modal_span">微信扫描二维码预览页面</span>
+                <span id="url_modal_span">微信扫描二维码预览页面</span>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
@@ -166,9 +186,30 @@
     </div>
 </div>
 
+<!-- Danger Modal -->
+<div class="modal fade" id="dangerModal" tabindex="-1" role="dialog" aria-labelledby="dangerModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="dangerModalLabel">危险操作提醒</h4>
+            </div>
+            <div class="modal-body" style="text-align: center">
+                <span id="danger_modal_span"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消操作</button>
+                <button type="button" class="btn btn-danger" onclick="confirmStopUserCategory();">确认操作</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
 
-    function a(category_id) {
+    /*弹出获取url模态框*/
+    function getURL(category_id) {
 
         //获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
         var curWwwPath = window.document.location.href;
@@ -185,10 +226,51 @@
         var aa = projectName + "/get/getQR.do?url=" + encodeURIComponent(s);
 
         $("#modal_img").attr("src", aa);
-        $("#modal_span").html(s);
-        $("#myModal").modal(
+        $("#url_modal_span").html(s);
+        $("#urlModal").modal(
             {backdrop: 'static'}
         );
+    }
+
+    var user_category_id;
+
+    /*提交停止申请，弹出确认模态框*/
+    function stopUserCategory(userCategory_id, category_name) {
+
+        user_category_id = userCategory_id;
+
+        $("#danger_modal_span").html("此操作属于危险操作，请确认您真的要使一下的用户套餐失效吗？<br/>" +
+            "<strong>用户套餐id： " + userCategory_id + " ，套餐名称： " + category_name +
+            "</strong> <br/>失效之后，相应的媒体数据会进入待删除状态。待删除状态下，7天内没有相应的套餐生效，媒体数据将会进入回收站回收流程。" +
+            "7天内，如果有相应的套餐生效，则待删除状态的媒体数据在下一个数据更新周期将会重新进入正常状态。");
+        $("#dangerModal").modal(
+            {backdrop: 'static'}
+        );
+
+    }
+
+    /*确认停止申请*/
+    function confirmStopUserCategory() {
+
+        var user_id = $("#user_id").val();
+
+        $.post(
+            "stopUserCategory.do",
+            {
+                "user_id": user_id,
+                "userCategory_id": user_category_id
+            },
+            function (res) {
+                if (res.success) {
+                    alert(res.message);
+                    window.location.reload();
+                } else {
+                    alert(res.message);
+                    window.location.reload();
+                }
+            }
+        )
+
     }
 
 </script>

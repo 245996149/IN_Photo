@@ -41,7 +41,7 @@
     <div class="col-md-offset-4 col-md-4 col-xs-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">添加套餐</h3>
+                <h3 class="panel-title">修改套餐信息</h3>
             </div>
             <div class="panel-body">
                 <input type="text" hidden id="user_id" name="user_id" value="${user.userId}">
@@ -70,39 +70,49 @@
                            value="${user.company}">
                 </div>
                 <br/>
-                <div class="input-group input-group-lg">
-                    <div class="input-group-btn">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">下拉选择<span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                            <c:forEach items="${categoryList}" var="cl">
-                                <li><a href="#"
-                                       onclick="selectCategory(${cl.categoryId},'${cl.categoryName}');">${cl.categoryName}</a>
-                                </li>
-                                <%--<option value="${cl.categoryId}">${cl.categoryName}</option>--%>
-                            </c:forEach>
-                        </ul>
-                    </div>
-                    <input type="text" id="category_name" placeholder="点击左侧，选择要添加的系统" readonly class="form-control"
-                           aria-label="Text input with segmented button dropdown">
+                <div class=" input-group input-group-lg">
+                    <span class="input-group-addon" id="user_category_id_span">套餐id</span>
+                    <input type="text" class="form-control" id="user_category_id" name="user_category_id"
+                           value="${userCategory.userCategoryId}" readonly>
+                </div>
+                <br/>
+                <div class=" input-group input-group-lg">
+                    <span class="input-group-addon" id="category_name_span">套餐名称</span>
+                    <c:forEach items="${categoryList}" var="cl">
+                        <c:if test="${cl.categoryId==userCategory.categoryId}">
+                            <input type="text" class="form-control" id="category_name" name="category_name"
+                                   value="${cl.categoryName}" readonly>
+                        </c:if>
+                    </c:forEach>
                 </div>
                 <br/>
                 <form id="check_form">
                     <div class=" input-group input-group-lg">
                         <span class="input-group-addon" id="begin_date_span">生效日期</span>
-                        <input type="date" class="form-control" id="begin_date" name="begin_date"
-                               onchange="settingBeginDate();">
+                        <c:choose>
+                            <c:when test="${userCategory.userCategoryState=='2'}">
+                                <input type="date" class="form-control" id="begin_date" name="begin_date"
+                                       onchange="settingBeginDate();"
+                                       value="<fmt:formatDate value='${userCategory.beginTime}' pattern='yyyy-MM-dd'/>">
+                            </c:when>
+                            <c:otherwise>
+                                <input type="date" class="form-control" id="begin_date" name="begin_date" readonly
+                                       value="<fmt:formatDate value='${userCategory.beginTime}' pattern='yyyy-MM-dd'/>">
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                     <br/>
                     <div class=" input-group input-group-lg">
                         <span class="input-group-addon" id="end_date_span">过期日期</span>
-                        <input type="date" class="form-control" id="end_date" name="end_date">
+                        <input type="date" class="form-control" id="end_date" name="end_date"
+                               value="<fmt:formatDate value='${userCategory.endTime}' pattern='yyyy-MM-dd'/>">
                     </div>
                     <br/>
                     <div class=" input-group input-group-lg">
                         <span class="input-group-addon" id="number_span">数据量</span>
                         <input type="number" class="form-control"
-                               aria-describedby="beginDate" id="number" name="number">
+                               aria-describedby="beginDate" id="number" name="number"
+                               value="${userCategory.mediaNumber}">
                     </div>
                 </form>
                 <br/>
@@ -116,20 +126,16 @@
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 
 <script type="text/javascript">
-    var category;
 
     var today;
 
-    function selectCategory(category_id, category_name) {
-
-        category = category_id;
-
-        $("#category_name").val(category_name);
-
+    window.onload = function () {
+        onloadSetting();
     }
 
     function onloadSetting() {
@@ -151,15 +157,13 @@
 
         var begin_date = $("#begin_date");
 
-        begin_date.val(today);
+        if (!begin_date.readOnly) {
 
-        begin_date.attr("min", today);
+            begin_date.attr("min", today);
 
-        var end_date_str = getNewDay(today, 365);
+        }
 
         var end_date = $("#end_date");
-
-        end_date.val(end_date_str);
 
         end_date.attr("min", getNewDay(today, 1));
 
@@ -179,11 +183,6 @@
 
     function sendData() {
 
-        if (category == null) {
-            alert("没有选择套餐，请返回选择套餐")
-            return false;
-        }
-
         var forms = $("#check_form");
         if (!judgeNull(forms)) {
             alert("有必填项为空！");
@@ -191,10 +190,9 @@
         }
 
         $.post(
-            "addCategory.do",
+            "updateCategory.do",
             {
-                "user_id": $("#user_id").val(),
-                "category_id": category,
+                "user_category_id": $("#user_category_id").val(),
                 "begin_date": $("#begin_date").val(),
                 "end_date": $("#end_date").val(),
                 "number": $("#number").val()
@@ -225,10 +223,6 @@
         if (date < 10) date = "0" + date;
         return (year + "-" + month + "-" + date);
     }
-
-    window.onload = function () {
-        onloadSetting();
-    };
 
     /*判断表单中是否有空*/
     function judgeNull(a) {

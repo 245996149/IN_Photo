@@ -2,7 +2,6 @@ package cn.inphoto.controller.admin;
 
 import cn.inphoto.dao.*;
 import cn.inphoto.dbentity.admin.AdminInfo;
-import cn.inphoto.dbentity.admin.RoleInfo;
 import cn.inphoto.dbentity.page.UserPage;
 import cn.inphoto.dbentity.user.Category;
 import cn.inphoto.dbentity.user.MediaData;
@@ -69,9 +68,9 @@ public class ClientController {
     /**
      * 前往客户管理页
      *
-     * @param model
-     * @param session
-     * @param userPage
+     * @param model    页面数据缓存
+     * @param session  服务器缓存
+     * @param userPage 页面分页对象
      * @return 页面
      */
     @RequestMapping("/toClient.do")
@@ -128,8 +127,8 @@ public class ClientController {
     /**
      * 前往添加客户页
      *
-     * @param model
-     * @param session
+     * @param model   页面数据缓存
+     * @param session 服务器缓存
      * @param user    客户
      * @return 页面
      */
@@ -195,8 +194,8 @@ public class ClientController {
      * 前往添加套餐页面
      *
      * @param user_id 用户id
-     * @param model
-     * @param session
+     * @param model   页面数据缓存
+     * @param session 服务器缓存
      * @return 页面
      */
     @RequestMapping("/toAddCategory.do")
@@ -220,7 +219,7 @@ public class ClientController {
         model.addAttribute("user", user);
         model.addAttribute("categoryList", categoryList);
 
-        return "admin/client_add_category";
+        return "admin/client_category_add";
 
     }
 
@@ -249,7 +248,7 @@ public class ClientController {
 
             UserCategory uc = userCategoryList.get(i);
 
-            System.out.println(uc.toString());
+//            System.out.println(uc.toString());
             if (UserCategory.USER_CATEGORY_STATE_OVER.equals(uc.getUserCategoryState())) {
                 userCategoryList.remove(i);
                 i--;
@@ -301,7 +300,7 @@ public class ClientController {
             userCategory.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_NOT_START);
         }
 
-        System.out.println(userCategory.toString());
+//        System.out.println(userCategory.toString());
 
         if (utilDao.save(userCategory)) {
             result.put("success", true);
@@ -309,7 +308,7 @@ public class ClientController {
 
         } else {
             result.put("success", false);
-            result.put("message", "数据写入数据库时发生了点小意外，请稍后再试");
+            result.put("message", "写入数据时发生了点小意外，请稍后再试");
 
         }
 
@@ -320,8 +319,8 @@ public class ClientController {
      * 前往用户套餐列表页
      *
      * @param user_id 用户id
-     * @param session
-     * @param model
+     * @param session 服务器缓存
+     * @param model   页面数据缓存
      * @return 页面
      */
     @RequestMapping("/toCategoryList.do")
@@ -371,6 +370,14 @@ public class ClientController {
         return "admin/client_category_list";
     }
 
+    /**
+     * 停止客户的某一套餐
+     *
+     * @param user_id         客户
+     * @param userCategory_id 套餐
+     * @param session         服务器缓存
+     * @return 是否成功
+     */
     @RequestMapping("/stopUserCategory.do")
     @ResponseBody
     public Map stopUserCategory(Long user_id, Long userCategory_id, HttpSession session) {
@@ -395,6 +402,20 @@ public class ClientController {
         // 查找对应的用户套餐
         UserCategory userCategory = userCategoryDao.findByUser_category_id(userCategory_id);
 
+        // 更新用户套餐
+        userCategory.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_OVER);
+        userCategory.setEndTime(new Timestamp(System.currentTimeMillis()));
+
+        // 更新数据库中的用户套餐
+        if (!utilDao.update(userCategory)) {
+
+            // 更新失败
+            result.put("success", false);
+            result.put("message", "更新对应的用户套餐时发生了错误，请稍后再试。");
+            return result;
+
+        }
+
         // 查找对应的媒体数据
         List<MediaData> mediaDataList = mediaDataDao.findByUser_idAndCategory_idAndState(
                 user_id, userCategory.getCategoryId(), MediaData.MEDIA_STATE_NORMAL);
@@ -412,25 +433,163 @@ public class ClientController {
             if (!mediaDataDao.updateMediaList(mediaDataList)) {
 
                 // 更新失败
-                result.put("success", false);
-                result.put("message", "更新对应的媒体数据是发生了错误，请稍后再试。");
+                result.put("success", true);
+                result.put("message", "更新用户套餐成功，但是在更新对应的媒体数据是发生了错误，媒体数据将在下一个更新周期自动更新状态。");
                 return result;
 
             }
 
         }
 
-        // 更新用户套餐
-        userCategory.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_OVER);
+        result.put("success", true);
+        result.put("message", "更新用户套餐成功，更新对应的媒体数据成功");
+        return result;
 
-        // 更新数据库中的用户套餐
-        if (!utilDao.update(userCategory)) {
+    }
 
-            // 更新失败
+    /**
+     * 前往更新套餐信息页面
+     *
+     * @param userCategory_id 用户套餐id
+     * @param session         服务器缓存
+     * @param model           页面数据缓存
+     * @return 页面
+     */
+    @RequestMapping("/toUpdateCategory.do")
+    public String toUpdateCategory(Long userCategory_id, HttpSession session, Model model) {
+
+        AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
+        boolean isAdmin = (boolean) session.getAttribute("isAdmin");
+
+        UserCategory userCategory = userCategoryDao.findByUser_category_id(userCategory_id);
+
+        User user = userDao.findByUser_id(userCategory.getUserId());
+
+        // 判断是否有管理员权限
+        if (!isAdmin) {
+            //没有管理员权限，判断是否有管理权限
+            if (user.getAdminId() != adminInfo.getAdminId()) {
+                return "no_power";
+            }
+        }
+
+        if (UserCategory.USER_CATEGORY_STATE_OVER.equals(userCategory.getUserCategoryState())) {
+            return "no_power";
+        }
+
+        List<Category> categoryList = adminDao.findCategoryByAdmin(user.getAdminId());
+
+        model.addAttribute("user", user);
+        model.addAttribute("categoryList", categoryList);
+        model.addAttribute("userCategory", userCategory);
+
+        return "admin/client_category_update";
+    }
+
+    /**
+     * 更新客户套餐
+     *
+     * @param user_category_id 客户套餐
+     * @param session          服务器缓存
+     * @param begin_date       生效时间
+     * @param end_date         结束时间
+     * @param number           数据量
+     * @return 是否成功
+     */
+    @RequestMapping("/updateCategory.do")
+    @ResponseBody
+    public Map updateCategory(Long user_category_id, HttpSession session,
+                              @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date,
+                              @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date, Integer number) {
+        Map<String, Object> result = new HashMap<>();
+
+        AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
+        boolean isAdmin = (boolean) session.getAttribute("isAdmin");
+
+        UserCategory userCategory = userCategoryDao.findByUser_category_id(user_category_id);
+
+        User user = userDao.findByUser_id(userCategory.getUserId());
+
+        // 判断是否有管理员权限
+        if (!isAdmin) {
+            //没有管理员权限，判断是否有管理权限
+            if (user.getAdminId() != adminInfo.getAdminId()) {
+                result.put("success", false);
+                result.put("message", "您没有权限操作该数据");
+                return result;
+            }
+        }
+
+        if (UserCategory.USER_CATEGORY_STATE_OVER.equals(userCategory.getUserCategoryState())) {
             result.put("success", false);
-            result.put("message", "更新对应的用户套餐时发生了错误，请稍后再试。");
+            result.put("message", "用户套餐已经过期，无法对其进行数据修改");
+            return result;
+        }
+
+        List<UserCategory> userCategoryList = userCategoryDao.findByUser_idAndCategory_id(
+                user.getUserId(), userCategory.getCategoryId());
+
+        // 清除队列中已经过期的套餐
+        int num = userCategoryList.size();
+        for (int i = 0; i < num; i++) {
+
+            UserCategory uc = userCategoryList.get(i);
+
+// System.out.println(uc.toString());
+            // 清楚过期以及自身的用户套餐
+            if (UserCategory.USER_CATEGORY_STATE_OVER.equals(uc.getUserCategoryState())
+                    || uc.getUserCategoryId() == userCategory.getUserCategoryId()) {
+                userCategoryList.remove(i);
+                i--;
+                num--;
+            }
+        }
+
+        // 获取输入时间的时间戳
+        long inputBeginTime = begin_date.getTime();
+        long inputEndTime = end_date.getTime();
+
+        boolean beginTimeFlag = false;
+        boolean endTimeFlag = false;
+
+        // 判断开始时间、结束时间是否在已存在套餐内
+        for (UserCategory uc : userCategoryList
+                ) {
+            long ucBeginTime = uc.getBeginTime().getTime();
+            long ucEndTime = uc.getEndTime().getTime();
+
+            if (inputBeginTime > ucBeginTime && inputBeginTime < ucEndTime) {
+                // 输入的开始时间在这个套餐的时间范围内
+                beginTimeFlag = true;
+                break;
+            } else if (inputEndTime > ucBeginTime && inputEndTime < ucEndTime) {
+                // 输入的结束时间在这个套餐的时间范围内
+                endTimeFlag = true;
+                break;
+            }
+        }
+
+        if (beginTimeFlag || endTimeFlag) {
+
+            result.put("success", false);
+            result.put("message", "该时间段内存在相同的套餐");
             return result;
 
+        }
+
+        userCategory.setEndTime(new Timestamp(inputEndTime));
+        userCategory.setMediaNumber(number);
+        if (getTodayDate().getTime() / 1000 == begin_date.getTime() / 1000) {
+            userCategory.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_NORMAL);
+        }
+
+        if (utilDao.update(userCategory)) {
+            result.put("success", true);
+            result.put("message", "修改套餐数据成功，请等待跳转");
+
+        } else {
+            result.put("success", false);
+            result.put("message", "写入数据时发生了点小意外，请稍后再试");
         }
 
         return result;

@@ -121,7 +121,7 @@ public class AdminLoginController {
         if (!getMD5(password).equals(adminEntity.getPassword())) {
             result.put("success", false);
             result.put("message", "密码错误，请重新输入密码!");
-            logger.log(UserLog.USER, "登录验证：用户admin_id=" + adminEntity.getAdminId() +
+            logger.log(UserLog.ADMIN, "登录验证：用户admin_id=" + adminEntity.getAdminId() +
                     " 尝试 " + check_type + " 验证，登陆结果为：" + result.toString());
             return result;
         } else {
@@ -166,7 +166,7 @@ public class AdminLoginController {
         session.setAttribute("adminUser", adminEntity);
         session.setAttribute("allModules", moduleList);
 
-        logger.log(UserLog.USER, "登录验证：用户admin_id=" + adminEntity.getAdminId() +
+        logger.log(UserLog.ADMIN, "登录验证：用户admin_id=" + adminEntity.getAdminId() +
                 " 尝试 " + check_type + " 验证，登陆结果为：" + result.toString());
         return result;
 
