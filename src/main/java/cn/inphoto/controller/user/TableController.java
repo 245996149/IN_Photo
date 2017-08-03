@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.annotation.Resource;
@@ -61,9 +60,12 @@ public class TableController {
 
         tablePage.setUser_id(user.getUserId());
 
-        tablePage.setRows(mediaDataDao.countByUser_idAndCategory_idAndMedia_state(user.getUserId(), tablePage.getCategory_id(), MediaData.MEDIA_STATE_NORMAL));
+        // 判断页面数据对象中是否有相应数据，没有给予初始值
+        if (tablePage.getMedia_state_list().size() == 0) {
+            tablePage.setMedia_state_list(Arrays.asList(MediaData.MEDIA_STATE_NORMAL, MediaData.MEDIA_STATE_WILL_DELETE));
+        }
 
-        tablePage.setMedia_state(MediaData.MEDIA_STATE_NORMAL);
+        tablePage.setRows(mediaDataDao.countByUser_idAndCategory_idAndMedia_state(user.getUserId(), tablePage.getCategory_id(), tablePage.getMedia_state_list()));
 
         List<MediaData> mediaDataList = mediaDataDao.findByPage(tablePage);
 
@@ -85,10 +87,10 @@ public class TableController {
 
         tablePage.setUser_id(user.getUserId());
 
-        tablePage.setRows(mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                user.getUserId(), null, MediaData.MEDIA_STATE_RECYCLE));
+        tablePage.setMedia_state_list(MediaData.MEDIA_STATE_RECYCLE);
 
-        tablePage.setMedia_state(MediaData.MEDIA_STATE_RECYCLE);
+        tablePage.setRows(mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
+                user.getUserId(), null, tablePage.getMedia_state_list()));
 
         List<MediaData> mediaDataList = mediaDataDao.findByPage(tablePage);
 
@@ -233,7 +235,8 @@ public class TableController {
         // 查找用户的套餐系统信息
         UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_idAndState(user.getUserId(), category_id, UserCategory.USER_CATEGORY_STATE_NORMAL);
         // 计算用户该套餐系统内状态为张昌的媒体数据的数量
-        int media_num = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(user.getUserId(), category_id, MediaData.MEDIA_STATE_NORMAL);
+        int media_num = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
+                user.getUserId(), category_id, Collections.singletonList(MediaData.MEDIA_STATE_NORMAL));
 
         // System.out.println(userCategory);
 
@@ -279,7 +282,7 @@ public class TableController {
 
         // 查询回收站中该套餐系统的总数
         int recycle_total = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                user.getUserId(), category_id, MediaData.MEDIA_STATE_RECYCLE);
+                user.getUserId(), category_id, Collections.singletonList(MediaData.MEDIA_STATE_RECYCLE));
 
         // 查询回收站中该套餐系统的7天内过期的媒体数
         int recycle_7 = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
@@ -335,7 +338,7 @@ public class TableController {
 
         // 查询回收站中该套餐系统的总数
         int recycle_total = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                user.getUserId(), null, MediaData.MEDIA_STATE_RECYCLE);
+                user.getUserId(), null, Collections.singletonList(MediaData.MEDIA_STATE_RECYCLE));
 
         // 查询回收站中该套餐系统的7天内过期的媒体数
         int recycle_7 = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
@@ -590,7 +593,8 @@ public class TableController {
 
         // 判断数据库中该系统草滩媒体数据总量是否超过套餐总量
         if (mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                user.getUserId(), mediaData.getCategoryId(), MediaData.MEDIA_STATE_NORMAL) >= userCategory.getMediaNumber()) {
+                user.getUserId(), mediaData.getCategoryId(), Arrays.asList(MediaData.MEDIA_STATE_NORMAL))
+                >= userCategory.getMediaNumber()) {
 
             result.put("success", false);
             result.put("message", "该媒体数据隶属于的系统已经达到最大媒体数据容量，请联系客服另行购买。");
@@ -675,7 +679,7 @@ public class TableController {
 
         boolean flag = true;
 
-        String msg = "选择的媒体数据中，";
+        StringBuilder msg = new StringBuilder("选择的媒体数据中，");
 
         // 获取application对象
         ServletContext application = request.getSession().getServletContext();
@@ -695,7 +699,7 @@ public class TableController {
 
                 // 获取数据库中的钙系统媒体总量
                 int mediaDataTotal = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                        user.getUserId(), u.getCategoryId(), MediaData.MEDIA_STATE_NORMAL);
+                        user.getUserId(), u.getCategoryId(), Collections.singletonList(MediaData.MEDIA_STATE_NORMAL));
 
                 // 比较两个值，判断是否能还原
                 if ((tempMapNum + mediaDataTotal) >= u.getMediaNumber()) {
@@ -714,7 +718,8 @@ public class TableController {
                     }
 
                     flag = false;
-                    msg += category.getCategoryName() + ",";
+                    assert category != null;
+                    msg.append(category.getCategoryName()).append(",");
 
                 }
 

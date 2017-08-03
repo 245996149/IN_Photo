@@ -22,12 +22,13 @@ public interface MediaDataDao {
     /**
      * 根据user_id、category_id、media_state统计总数
      *
-     * @param user_id     用户id
-     * @param category_id 套餐系统id
-     * @param media_state 媒体书记状态
+     * @param user_id          用户id
+     * @param category_id      套餐系统id
+     * @param media_state_list 媒体数据状态队列
      * @return 统计数据
      */
-    int countByUser_idAndCategory_idAndMedia_state(Long user_id, Integer category_id, String media_state);
+//    int countByUser_idAndCategory_idAndMedia_state(Long user_id, Integer category_id, String media_state);
+    int countByUser_idAndCategory_idAndMedia_state(Long user_id, Integer category_id, List<String> media_state_list);
 
     /**
      * 根据user_id、category_id、media_state统计总数

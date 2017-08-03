@@ -21,10 +21,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import static cn.inphoto.util.DBUtil.judgeMediaCode;
 import static cn.inphoto.util.DirUtil.*;
@@ -45,26 +42,26 @@ public class ReceiveController {
     public String data_path;
 
     @Resource
-    UtilDao utilDao;
+    private UtilDao utilDao;
 
     @Resource
-    UserDao userDao;
+    private UserDao userDao;
 
     @Resource
-    UserCategoryDao userCategoryDao;
+    private UserCategoryDao userCategoryDao;
 
     @Resource
-    CategoryDao categoryDao;
+    private CategoryDao categoryDao;
 
     @Resource
-    MediaDataDao mediaDataDao;
+    private MediaDataDao mediaDataDao;
 
     @Resource
-    MediaCodeDao mediaCodeDao;
+    private MediaCodeDao mediaCodeDao;
 
     /**
-     * @param request
-     * @param response
+     * @param request     请求
+     * @param response    发送
      * @param names       文件的唯一编码
      * @param category_id 套餐的唯一码
      * @param media_code  文件的提取码
@@ -72,7 +69,7 @@ public class ReceiveController {
      * @param number      gif的张数
      * @param user_id     用户的id号
      * @return 返回是否提交成功
-     * @throws IOException
+     * @throws IOException 抛出io异常
      */
     @RequestMapping("/receiveMedia.do")
     @ResponseBody
@@ -339,7 +336,8 @@ public class ReceiveController {
 
             // 判断数据总量是否超过用户购买量，超过则将时间最早的数据移到回收站中
             if (mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                    user.getUserId(), category.getCategoryId(), MediaData.MEDIA_STATE_NORMAL) > userCategory.getMediaNumber()) {
+                    user.getUserId(), category.getCategoryId(), Collections.singletonList(MediaData.MEDIA_STATE_NORMAL))
+                    > userCategory.getMediaNumber()) {
 
                 // 数据总量超过用户购买量，获取该用户改套餐系统正常状态下创建时间最早的一条媒体数据
                 MediaData mediaDataEntity = mediaDataDao.findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(

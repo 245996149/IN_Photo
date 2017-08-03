@@ -2,11 +2,9 @@ package cn.inphoto.controller.admin;
 
 import cn.inphoto.dao.*;
 import cn.inphoto.dbentity.admin.AdminInfo;
+import cn.inphoto.dbentity.page.TablePage;
 import cn.inphoto.dbentity.page.UserPage;
-import cn.inphoto.dbentity.user.Category;
-import cn.inphoto.dbentity.user.MediaData;
-import cn.inphoto.dbentity.user.User;
-import cn.inphoto.dbentity.user.UserCategory;
+import cn.inphoto.dbentity.user.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -30,25 +28,28 @@ import static cn.inphoto.util.MailUtil.sendMail;
 public class ClientController {
 
     @Resource
-    CategoryDao categoryDao;
+    private CategoryDao categoryDao;
 
     @Resource
-    ClientDao clientDao;
+    private ClientDao clientDao;
 
     @Resource
-    UserDao userDao;
+    private UserDao userDao;
 
     @Resource
-    UtilDao utilDao;
+    private UtilDao utilDao;
 
     @Resource
-    AdminDao adminDao;
+    private AdminDao adminDao;
 
     @Resource
-    MediaDataDao mediaDataDao;
+    private MediaDataDao mediaDataDao;
 
     @Resource
-    UserCategoryDao userCategoryDao;
+    private UserCategoryDao userCategoryDao;
+
+    @Resource
+    private MediaCodeDao mediaCodeDao;
 
     static char[] str = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
             'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w',
@@ -127,13 +128,12 @@ public class ClientController {
     /**
      * 前往添加客户页
      *
-     * @param model   页面数据缓存
      * @param session 服务器缓存
      * @param user    客户
      * @return 页面
      */
     @RequestMapping("/toAddClient.do")
-    public String toAddClient(Model model, HttpSession session, User user, boolean category) throws Exception {
+    public String toAddClient(HttpSession session, User user, boolean category) throws Exception {
 
         AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
 
@@ -144,7 +144,7 @@ public class ClientController {
         int i; // 生成的随机数
         int count = 0; // 生成的密码的长度
 
-        StringBuffer pwd = new StringBuffer("");
+        StringBuilder pwd = new StringBuilder("");
         Random r = new Random();
         while (count < 10) {
             // 生成随机数，取绝对值，防止生成负数，
@@ -353,7 +353,7 @@ public class ClientController {
 
                 // 查询套餐对应的正常状态的媒体总数
                 int a = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                        user.getUserId(), uc.getCategoryId(), MediaData.MEDIA_STATE_NORMAL);
+                        user.getUserId(), uc.getCategoryId(), Collections.singletonList(MediaData.MEDIA_STATE_NORMAL));
 
                 // 将数据写入临时Map中以供页面调用
                 tempMap.put(uc.getUserCategoryId(), (a * 100 / uc.getMediaNumber()));
@@ -594,6 +594,41 @@ public class ClientController {
 
         return result;
 
+    }
+
+    @RequestMapping("/toClientMedia.do")
+    public String toClientMedia(HttpSession session, Model model,
+                                TablePage tablePage) {
+
+        AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
+        boolean isAdmin = (boolean) session.getAttribute("isAdmin");
+
+        User user = userDao.findByUser_id(tablePage.getUser_id());
+
+        // 判断是否有管理员权限
+        if (!isAdmin) {
+            //没有管理员权限，判断是否有管理权限
+            if (user.getAdminId() != adminInfo.getAdminId()) {
+                return "no_power";
+            }
+        }
+
+        // 判断页面数据对象中是否有相应数据，没有给予初始值
+        if (tablePage.getMedia_state_list().size() == 0) {
+            tablePage.setMedia_state_list(Arrays.asList(MediaData.MEDIA_STATE_NORMAL, MediaData.MEDIA_STATE_WILL_DELETE));
+        }
+
+        tablePage.setRows(mediaDataDao.countByUser_idAndCategory_idAndMedia_state(user.getUserId(), tablePage.getCategory_id(), tablePage.getMedia_state_list()));
+
+        List<MediaData> mediaDataList = mediaDataDao.findByPage(tablePage);
+
+        List<MediaCode> mediaCodeList = mediaCodeDao.findByUser_idAndCategory_id(user.getUserId(), tablePage.getCategory_id());
+
+        model.addAttribute("mediaDataList", mediaDataList);
+        model.addAttribute("mediaCodeList", mediaCodeList);
+        model.addAttribute("tablePage", tablePage);
+
+        return "admin/client_media_list";
     }
 
 }

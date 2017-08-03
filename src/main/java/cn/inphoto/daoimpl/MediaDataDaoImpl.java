@@ -33,17 +33,17 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
             // 判断是否有category_id参数
             if (tablePage.getCategory_id() == 0) {
 
-                query = session.createQuery(" from MediaData where userId = :user_id and mediaState = :media_state order by deleteTime desc");
+                query = session.createQuery(" from MediaData where userId = :user_id and mediaState in (:media_state) order by deleteTime desc");
 
             } else {
 
-                query = session.createQuery(" from MediaData where userId = :user_id and mediaState = :media_state and categoryId = :category_id order by mediaId desc");
+                query = session.createQuery(" from MediaData where userId = :user_id and mediaState in (:media_state) and categoryId = :category_id order by mediaId desc");
                 query.setParameter("category_id", tablePage.getCategory_id());
 
             }
 
             query.setParameter("user_id", tablePage.getUser_id());
-            query.setParameter("media_state", tablePage.getMedia_state());
+            query.setParameter("media_state", tablePage.getMedia_state_list());
 
             query.setFirstResult(tablePage.getBegin());
             query.setMaxResults(tablePage.getPageSize());
@@ -51,9 +51,9 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
             return query.list();
         }
     }
-
+    
     @Override
-    public int countByUser_idAndCategory_idAndMedia_state(Long user_id, Integer category_id, String media_state) {
+    public int countByUser_idAndCategory_idAndMedia_state(Long user_id, Integer category_id, List<String> media_state_list) {
         try (Session session = sessionFactory.openSession()) {
 
             Query query = null;
@@ -61,15 +61,15 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
             // 判断是否有category_id参数
             if (category_id == null) {
                 query = session.createQuery(
-                        "select count(*) from MediaData where userId = :user_id  and mediaState = :media_state");
+                        "select count(*) from MediaData where userId = :user_id  and mediaState in (:media_state_list)");
             } else {
                 query = session.createQuery(
-                        "select count(*) from MediaData where userId = :user_id and mediaState = :media_state and categoryId = :category_id");
+                        "select count(*) from MediaData where userId = :user_id and categoryId = :category_id and mediaState in (:media_state_list) ");
                 query.setParameter("category_id", category_id);
             }
 
             query.setParameter("user_id", user_id);
-            query.setParameter("media_state", media_state);
+            query.setParameterList("media_state_list", media_state_list);
 
             return ((Long) query.uniqueResult()).intValue();
         }

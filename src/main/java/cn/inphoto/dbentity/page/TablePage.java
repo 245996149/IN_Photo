@@ -1,5 +1,8 @@
 package cn.inphoto.dbentity.page;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by root on 17-3-31.
  */
@@ -9,7 +12,7 @@ public class TablePage extends Page {
 
     private int category_id;
 
-    private String media_state;
+    private List<String> media_state_list;
 
     public Long getUser_id() {
         return user_id;
@@ -27,12 +30,18 @@ public class TablePage extends Page {
         this.category_id = category_id;
     }
 
-    public String getMedia_state() {
-        return media_state;
+    public List<String> getMedia_state_list() {
+        return media_state_list;
     }
 
-    public void setMedia_state(String media_state) {
-        this.media_state = media_state;
+    public void setMedia_state_list(List<String> media_state_list) {
+        this.media_state_list = media_state_list;
+    }
+
+    public void setMedia_state_list(String media_state) {
+        List<String> media_state_list = new ArrayList<>();
+        media_state_list.add(media_state);
+        this.media_state_list = media_state_list;
     }
 
     @Override
@@ -40,7 +49,7 @@ public class TablePage extends Page {
         return "TablePage{" +
                 "user_id=" + user_id +
                 ", category_id=" + category_id +
-                ", media_state='" + media_state + '\'' +
-                '}' + super.toString();
+                ", media_state_list=" + media_state_list +
+                '}';
     }
 }
