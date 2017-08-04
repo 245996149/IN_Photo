@@ -49,7 +49,7 @@
             <c:forEach items="${category}" var="c">
                 <c:if test="${tablePage.category_id==c.categoryId}">
                     <h1> ${c.categoryName}
-                        <small>${c.categoryNote}</small>
+                        <small>您现在在 ${c.categoryName} 媒体数据管理。</small>
                     </h1>
                 </c:if>
             </c:forEach>
@@ -77,35 +77,19 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                     <li><a href="javascript:void(0);" onclick="downloadImgZip();">下载</a></li>
-                                    <li><a href="javascript:void(0);" onclick="delete_batch()">移到回收站</a></li>
                                 </ul>
                             </div>
                         </td>
                         <td>缩略图</td>
                         <td>创建日期</td>
                         <td>提取码</td>
+                        <td>状态</td>
                         <td>操作</td>
                     </tr>
                     </thead>
                     <tbody>
-                    <%--<tr>--%>
-                    <%--<td><input type="checkbox"><span>12345678934</span></td>--%>
-                    <%--<td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">--%>
-                    <%--<img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">--%>
-                    <%--</a></td>--%>
-                    <%--<td>2017-12-30 24:00:00</td>--%>
-                    <%--<td>123455</td>--%>
-                    <%--<td>--%>
-                    <%--<div class="btn-group-sm" role="group" aria-label="...">--%>
-                    <%--<button type="button" class="btn btn-danger">删除</button>--%>
-                    <%--<button type="button" class="btn btn-primary btn-lg">查看--%>
-                    <%--</button>--%>
-                    <%--<button type="button" class="btn btn-info">下载</button>--%>
-                    <%--</div>--%>
-                    <%--</td>--%>
-                    <%--</tr>--%>
                     <c:forEach items="${mediaDataList}" var="m">
-                        <tr>
+                        <tr <c:if test="${m.mediaState==3}">class="danger" </c:if>>
                             <td><input type="checkbox" name="media_data_checkbox"
                                        onclick="checkAllCheck();" value="${m.mediaId}"><span>${m.mediaName}</span></td>
                             <td width="5%"><a href="javascript:void(0);" onclick="open_modal(${m.mediaName});"
@@ -124,10 +108,17 @@
                                 </c:forEach>
                             </td>
                             <td>
+                                <c:choose>
+                                    <c:when test="${m.mediaState==0}">
+                                        正常
+                                    </c:when>
+                                    <c:when test="${m.mediaState==3}">待删除<br/>
+                                        <fmt:formatDate value="${m.deleteTime}" pattern="yyyy年MM月dd日"/>移动到回收站中
+                                    </c:when>
+                                </c:choose>
+                            </td>
+                            <td>
                                 <div class="btn-group-sm" role="group" aria-label="...">
-                                    <button type="button" class="btn btn-danger" onclick="delete_media(${m.mediaId});">
-                                        删除
-                                    </button>
                                     <button type="button" class="btn btn-primary" onclick="open_modal(${m.mediaName});">
                                         查看
                                     </button>
@@ -140,7 +131,7 @@
                     </tbody>
                     <tfoot>
                     <tr>
-                        <td colspan="5" style="text-align: center;">
+                        <td colspan="6" style="text-align: center;">
                             <nav aria-label="Page navigation">
                                 <ul class="pagination">
                                     <c:choose>
@@ -153,7 +144,7 @@
                                         </c:when>
                                         <c:otherwise>
                                             <li>
-                                                <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${tablePage.currentPage-1}"
+                                                <a href="${pageContext.request.contextPath}/admin/clientManage/toClientMedia.do?user_id=${tablePage.user_id}&category_id=${tablePage.category_id}&currentPage=${tablePage.currentPage-1}"
                                                    aria-label="Previous">
                                                     <span aria-hidden="true">&laquo;</span>
                                                 </a>
@@ -162,7 +153,7 @@
                                     </c:choose>
                                     <c:if test="${tablePage.totalPage>5 && tablePage.currentPage>3}">
                                         <li>
-                                            <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=1">1</a>
+                                            <a href="${pageContext.request.contextPath}/admin/clientManage/toClientMedia.do?user_id=${tablePage.user_id}&category_id=${tablePage.category_id}&currentPage=1">1</a>
                                         </li>
                                         <li><a href="javascript:void(0);">...</a></li>
                                     </c:if>
@@ -180,7 +171,7 @@
                                                         </c:when>
                                                         <c:otherwise>
                                                             <li>
-                                                                <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
+                                                                <a href="${pageContext.request.contextPath}/admin/clientManage/toClientMedia.do?user_id=${tablePage.user_id}&category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
                                                             </li>
                                                         </c:otherwise>
                                                     </c:choose>
@@ -195,7 +186,7 @@
                                                         </c:when>
                                                         <c:otherwise>
                                                             <li>
-                                                                <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
+                                                                <a href="${pageContext.request.contextPath}/admin/clientManage/toClientMedia.do?user_id=${tablePage.user_id}&category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
                                                             </li>
                                                         </c:otherwise>
                                                     </c:choose>
@@ -205,15 +196,16 @@
 
                                         <%-- 总页数小于等于5张 --%>
                                         <c:when test="${tablePage.currentPage>=(tablePage.totalPage-2)}">
-                                            <c:forEach begin="${tablePage.totalPage-5}" end="${tablePage.totalPage}"
+                                            <c:forEach begin="${tablePage.totalPage-4}" end="${tablePage.totalPage}"
                                                        var="i">
                                                 <c:choose>
+                                                    <%--<c:when test="${i==0}"></c:when>--%>
                                                     <c:when test="${i==tablePage.currentPage}">
                                                         <li class="active"><a href="javascript:void(0);">${i}</a></li>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <li>
-                                                            <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
+                                                            <a href="${pageContext.request.contextPath}/admin/clientManage/toClientMedia.do?user_id=${tablePage.user_id}&category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
                                                         </li>
                                                     </c:otherwise>
                                                 </c:choose>
@@ -229,7 +221,7 @@
                                                     </c:when>
                                                     <c:otherwise>
                                                         <li>
-                                                            <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
+                                                            <a href="${pageContext.request.contextPath}/admin/clientManage/toClientMedia.do?user_id=${tablePage.user_id}&category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
                                                         </li>
                                                     </c:otherwise>
                                                 </c:choose>
@@ -241,7 +233,7 @@
                                     <c:if test="${tablePage.totalPage>5 && tablePage.currentPage<(tablePage.totalPage-2)}">
                                         <li><a href="javascript:void(0);">...</a></li>
                                         <li>
-                                            <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${tablePage.totalPage}">${tablePage.totalPage}</a>
+                                            <a href="${pageContext.request.contextPath}/admin/clientManage/toClientMedia.do?user_id=${tablePage.user_id}&category_id=${tablePage.category_id}&currentPage=${tablePage.totalPage}">${tablePage.totalPage}</a>
                                         </li>
                                     </c:if>
 
@@ -255,7 +247,7 @@
                                         </c:when>
                                         <c:otherwise>
                                             <li>
-                                                <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${tablePage.currentPage+1}"
+                                                <a href="${pageContext.request.contextPath}/admin/clientManage/toClientMedia.do?user_id=${tablePage.user_id}&category_id=${tablePage.category_id}&currentPage=${tablePage.currentPage+1}"
                                                    aria-label="Next">
                                                     <span aria-hidden="true">&raquo;</span>
                                                 </a>
@@ -322,7 +314,7 @@
             <div class="modal-footer">
                 <a tabindex="0" class="btn btn-success" role="button" data-toggle="popover" id="share_button"
                    data-trigger="focus" title="扫描二维码分享图片">分享</a>
-                <button type="button" class="btn btn-danger" onclick="modal_delete();">删除</button>
+                <%--<button type="button" class="btn btn-danger" onclick="modal_delete();">删除</button>--%>
                 <button type="button" class="btn btn-primary" onclick="modal_download();">下载</button>
             </div>
         </div>
@@ -335,10 +327,10 @@
 
     $(function () {
         /*加载数据表单*/
-        getClick_7();
-        getShare_7();
-        getSystemInfo();
-        getRecycleInfo();
+//        getClick_7();
+//        getShare_7();
+//        getSystemInfo();
+//        getRecycleInfo();
         $('#share_button').popover({
             container: 'body',
             html: true,
@@ -366,7 +358,7 @@
         //获取带"/"的项目名，如：/uimcardprj
         var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
 
-        var s = localhostPaht + projectName + "/mobile/toPage.do?user_id=${sessionScope.loginUser.userId}&category_id=${tablePage.category_id}&media_id=" + carousel_obj.attr("alt");
+        var s = localhostPaht + projectName + "/mobile/toPage.do?user_id=${tablePage.user_id}&category_id=${tablePage.category_id}&media_id=" + carousel_obj.attr("alt");
 
         var aa = projectName + "/get/getQR.do?url=" + encodeURIComponent(s);
 

@@ -613,10 +613,14 @@ public class ClientController {
             }
         }
 
+//        System.out.println(tablePage.getMedia_state_list().isEmpty());
+
         // 判断页面数据对象中是否有相应数据，没有给予初始值
-        if (tablePage.getMedia_state_list().size() == 0) {
+        if (tablePage.getMedia_state_list() == null || tablePage.getMedia_state_list().isEmpty()) {
             tablePage.setMedia_state_list(Arrays.asList(MediaData.MEDIA_STATE_NORMAL, MediaData.MEDIA_STATE_WILL_DELETE));
         }
+
+
 
         tablePage.setRows(mediaDataDao.countByUser_idAndCategory_idAndMedia_state(user.getUserId(), tablePage.getCategory_id(), tablePage.getMedia_state_list()));
 
@@ -624,6 +628,9 @@ public class ClientController {
 
         List<MediaCode> mediaCodeList = mediaCodeDao.findByUser_idAndCategory_id(user.getUserId(), tablePage.getCategory_id());
 
+        List<Category> categoryList = categoryDao.findAll();
+
+        model.addAttribute("category", categoryList);
         model.addAttribute("mediaDataList", mediaDataList);
         model.addAttribute("mediaCodeList", mediaCodeList);
         model.addAttribute("tablePage", tablePage);

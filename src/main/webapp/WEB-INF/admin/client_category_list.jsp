@@ -69,7 +69,10 @@
                     </thead>
                     <tbody>
                     <c:forEach items="${userCategoryList}" var="uc">
-                        <tr>
+                        <tr <c:choose>
+                            <c:when test="${uc.userCategoryState==1}">class="danger"</c:when>
+                            <c:when test="${uc.userCategoryState==2}">class="warning"</c:when>
+                        </c:choose> >
                             <td>${uc.userCategoryId}</td>
                             <td>
                                 <c:forEach items="${category}" var="c">
@@ -99,7 +102,8 @@
                                             </c:if>
                                         </c:forEach>
                                     </td>
-                                    <td>
+                                    <td><a class="btn btn-info btn-xs"
+                                           href="${pageContext.request.contextPath}/admin/clientManage/toClientMedia.do?user_id=${uc.userId}&category_id=${uc.categoryId}">查看媒体数据</a>
                                         <a class="btn btn-success btn-xs"
                                            href="${pageContext.request.contextPath}/admin/clientManage/toUpdateCategory.do?userCategory_id=${uc.userCategoryId}">修改套餐信息</a>
                                         <c:forEach items="${category}" var="c">
