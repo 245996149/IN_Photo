@@ -38,11 +38,11 @@
                     <c:if test="${m.moduleId==2}">
                         <c:choose>
                             <c:when test="${currentModule==2}">
-                                <li class="active"><a href="${pageContext.request.contextPath}/admin/index.do">套餐管理</a>
+                                <li class="active"><a href="${pageContext.request.contextPath}/admin/categoryManage/toCategory.do">套餐管理</a>
                                 </li>
                             </c:when>
                             <c:otherwise>
-                                <li><a href="${pageContext.request.contextPath}/admin/index.do">套餐管理</a></li>
+                                <li><a href="${pageContext.request.contextPath}/admin/categoryManage/toCategory.do">套餐管理</a></li>
                             </c:otherwise>
                         </c:choose>
                     </c:if>

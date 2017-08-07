@@ -98,7 +98,7 @@ public class ClientController {
         model.addAttribute("userList", users);
         model.addAttribute("userPage", userPage);
 
-        return "admin/client_list";
+        return "admin/client/client_list";
     }
 
     /**
@@ -219,7 +219,7 @@ public class ClientController {
         model.addAttribute("user", user);
         model.addAttribute("categoryList", categoryList);
 
-        return "admin/client_category_add";
+        return "admin/client/client_category_add";
 
     }
 
@@ -367,7 +367,7 @@ public class ClientController {
         model.addAttribute("tempMap", tempMap);
         model.addAttribute("userCategoryList", userCategoryList);
 
-        return "admin/client_category_list";
+        return "admin/client/client_category_list";
     }
 
     /**
@@ -483,7 +483,7 @@ public class ClientController {
         model.addAttribute("categoryList", categoryList);
         model.addAttribute("userCategory", userCategory);
 
-        return "admin/client_category_update";
+        return "admin/client/client_category_update";
     }
 
     /**
@@ -621,7 +621,6 @@ public class ClientController {
         }
 
 
-
         tablePage.setRows(mediaDataDao.countByUser_idAndCategory_idAndMedia_state(user.getUserId(), tablePage.getCategory_id(), tablePage.getMedia_state_list()));
 
         List<MediaData> mediaDataList = mediaDataDao.findByPage(tablePage);
@@ -635,7 +634,7 @@ public class ClientController {
         model.addAttribute("mediaCodeList", mediaCodeList);
         model.addAttribute("tablePage", tablePage);
 
-        return "admin/client_media_list";
+        return "admin/client/client_media_list";
     }
 
 }
