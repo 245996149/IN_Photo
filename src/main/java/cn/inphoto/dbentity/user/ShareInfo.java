@@ -23,6 +23,7 @@ public class ShareInfo {
 
     @Id
     @Column(name = "share_info_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long getShareInfoId() {
         return shareInfoId;
     }

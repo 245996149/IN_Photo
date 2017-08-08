@@ -214,7 +214,7 @@ public class ClientController {
             }
         }
 
-        List<Category> categoryList = adminDao.findCategoryByAdmin(user.getAdminId());
+        List<Category> categoryList = new ArrayList<>(adminInfo.getCategorySet());
 
         model.addAttribute("user", user);
         model.addAttribute("categoryList", categoryList);
@@ -477,7 +477,7 @@ public class ClientController {
             return "no_power";
         }
 
-        List<Category> categoryList = adminDao.findCategoryByAdmin(user.getAdminId());
+        List<Category> categoryList = new ArrayList<>(adminInfo.getCategorySet());
 
         model.addAttribute("user", user);
         model.addAttribute("categoryList", categoryList);

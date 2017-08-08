@@ -34,6 +34,7 @@ public class ShareData {
 
     @Id
     @Column(name = "share_data_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long getShareDataId() {
         return shareDataId;
     }

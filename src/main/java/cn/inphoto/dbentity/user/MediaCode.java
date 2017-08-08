@@ -17,7 +17,7 @@ public class MediaCode {
 
     @Id
     @Column(name = "media_code_id")
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long getMediaCodeId() {
         return mediaCodeId;
     }

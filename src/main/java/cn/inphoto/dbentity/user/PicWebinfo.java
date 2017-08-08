@@ -31,6 +31,7 @@ public class PicWebinfo {
 
     @Id
     @Column(name = "pic_webinfo_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long getPicWebinfoId() {
         return picWebinfoId;
     }

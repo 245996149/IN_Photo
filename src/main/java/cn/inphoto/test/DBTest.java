@@ -1,9 +1,7 @@
 package cn.inphoto.test;
 
-import cn.inphoto.dao.AdminDao;
-import cn.inphoto.dao.ClientDao;
-import cn.inphoto.dao.MediaDataDao;
-import cn.inphoto.dao.UserDao;
+import cn.inphoto.dao.*;
+import cn.inphoto.dbentity.admin.AdminInfo;
 import cn.inphoto.dbentity.admin.ModuleInfo;
 import cn.inphoto.dbentity.admin.RoleInfo;
 import cn.inphoto.dbentity.page.UserPage;
@@ -26,15 +24,8 @@ public class DBTest {
     ClientDao clientDao = ctx.getBean(ClientDao.class);
     UserDao userDao = ctx.getBean(UserDao.class);
     MediaDataDao mediaDataDao = ctx.getBean(MediaDataDao.class);
+    RoleDao roleDao = ctx.getBean(RoleDao.class);
 
-    @Test
-    public void a() {
-        List<ModuleInfo> a = adminDao.findModulesByAdmin(1);
-        for (ModuleInfo m : a
-                ) {
-            System.out.println(m.toString());
-        }
-    }
 
     @Test
     public void b() {
@@ -55,7 +46,34 @@ public class DBTest {
         list.add(MediaData.MEDIA_STATE_WILL_DELETE);
 //        int a = mediaDataDao.countByUser_idAndCategory_idAndMedia_state2(1L, 1, list);
 //        System.out.println(a);
-        
+
+    }
+
+    @Test
+    public void d() {
+        AdminInfo adminInfo = adminDao.findByAdmin_name("ming123");
+
+        System.out.println(adminInfo.toString());
+
+    }
+
+    @Test
+    public void e() {
+        List<RoleInfo> roleInfo = roleDao.findAllRole();
+
+        for (RoleInfo r : roleInfo
+                ) {
+
+            System.out.println(r.toString());
+        }
+
+    }
+
+    @Test
+    public void f() {
+
+        System.out.println(roleDao.deleteRole(2));
+
     }
 
 }

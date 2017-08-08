@@ -42,6 +42,7 @@ public class CodeWebInfo {
 
     @Id
     @Column(name = "code_webinfo_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long getCodeWebinfoId() {
         return codeWebinfoId;
     }

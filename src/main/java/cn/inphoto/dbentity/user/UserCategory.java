@@ -32,6 +32,7 @@ public class UserCategory implements Serializable {
 
     @Id
     @Column(name = "user_category_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long getUserCategoryId() {
         return userCategoryId;
     }

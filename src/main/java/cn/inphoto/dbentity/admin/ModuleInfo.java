@@ -1,6 +1,7 @@
 package cn.inphoto.dbentity.admin;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Created by ming on 17-7-13.
@@ -10,9 +11,21 @@ import javax.persistence.*;
 public class ModuleInfo {
     private int moduleId;
     private String name;
+    private Set<RoleInfo> roleInfoSet;
+
+    /*模块映射*/
+    @ManyToMany(mappedBy = "moduleInfoSet", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public Set<RoleInfo> getRoleInfoSet() {
+        return roleInfoSet;
+    }
+
+    public void setRoleInfoSet(Set<RoleInfo> roleInfoSet) {
+        this.roleInfoSet = roleInfoSet;
+    }
 
     @Id
     @Column(name = "module_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getModuleId() {
         return moduleId;
     }
@@ -56,6 +69,7 @@ public class ModuleInfo {
         return "ModuleInfo{" +
                 "moduleId=" + moduleId +
                 ", name='" + name + '\'' +
+//                ", roleInfoSet=" + roleInfoSet +
                 '}';
     }
 }

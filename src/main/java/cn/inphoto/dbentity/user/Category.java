@@ -1,6 +1,10 @@
 package cn.inphoto.dbentity.user;
 
+import cn.inphoto.dbentity.admin.AdminInfo;
+import cn.inphoto.dbentity.admin.ModuleInfo;
+
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Created by kaxia on 2017/6/5.
@@ -14,9 +18,21 @@ public class Category {
     private byte madeGif;
     private byte gifTransparency;
     private String categoryNote;
+    private Set<AdminInfo> adminInfoSet;
+
+    /*套餐映射*/
+    @ManyToMany(mappedBy = "categorySet", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public Set<AdminInfo> getAdminInfoSet() {
+        return adminInfoSet;
+    }
+
+    public void setAdminInfoSet(Set<AdminInfo> adminInfoSet) {
+        this.adminInfoSet = adminInfoSet;
+    }
 
     @Id
     @Column(name = "category_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getCategoryId() {
         return categoryId;
     }

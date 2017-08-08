@@ -112,7 +112,7 @@ CREATE TABLE `admin_role` (
 
 LOCK TABLES `admin_role` WRITE;
 /*!40000 ALTER TABLE `admin_role` DISABLE KEYS */;
-INSERT INTO `admin_role` VALUES (1,1);
+INSERT INTO `admin_role` VALUES (1,1),(1,2);
 /*!40000 ALTER TABLE `admin_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -127,7 +127,7 @@ CREATE TABLE `admin_role_info` (
   `role_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -136,7 +136,7 @@ CREATE TABLE `admin_role_info` (
 
 LOCK TABLES `admin_role_info` WRITE;
 /*!40000 ALTER TABLE `admin_role_info` DISABLE KEYS */;
-INSERT INTO `admin_role_info` VALUES (1,'管理员');
+INSERT INTO `admin_role_info` VALUES (1,'管理员'),(5,'312312'),(6,'7867');
 /*!40000 ALTER TABLE `admin_role_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -480,4 +480,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-08-07 15:44:12
+-- Dump completed on 2017-08-08 18:05:57

@@ -21,6 +21,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,9 +131,22 @@ public class AdminLoginController {
             result.put("url", request.getContextPath() + "/admin/index.do");
         }
 
-        List<ModuleInfo> moduleList = adminDao.findModulesByAdmin(adminEntity.getAdminId());
+        /*获取该用户的角色信息*/
+        List<RoleInfo> roleInfos = new ArrayList<>(adminEntity.getRoleInfoSet());
 
-        List<RoleInfo> roleInfos = clientDao.findRoleByAdminId(adminEntity.getAdminId());
+        /*获取该用户所有可访问模块信息*/
+        List<ModuleInfo> moduleList = new ArrayList<>();
+
+        for (RoleInfo r : roleInfos
+                ) {
+            List<ModuleInfo> moduleInfos = new ArrayList<>(r.getModuleInfoSet());
+            if (moduleList.isEmpty()) {
+                moduleList = moduleInfos;
+            } else {
+                moduleList.removeAll(moduleInfos);
+                moduleList.addAll(moduleInfos);
+            }
+        }
 
         /*
         判断是否有管理员权限

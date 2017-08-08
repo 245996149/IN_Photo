@@ -1,7 +1,10 @@
 package cn.inphoto.dbentity.admin;
 
+import cn.inphoto.dbentity.user.Category;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Set;
 
 /**
  * Created by ming on 17-7-13.
@@ -9,13 +12,6 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "admin_info", schema = "IN_Photo", catalog = "")
 public class AdminInfo {
-    private int adminId;
-    private String adminName;
-    private String password;
-    private String phone;
-    private String email;
-    private Timestamp createTime;
-    private String adminStatu;
 
     /*用户名登录*/
     public static final int LOGIN_ADMIN_NAME = 0;
@@ -24,8 +20,45 @@ public class AdminInfo {
     /*邮箱登录*/
     public static final int LOGIN_EMAIL = 2;
 
+    private int adminId;
+    private String adminName;
+    private String password;
+    private String phone;
+    private String email;
+    private Timestamp createTime;
+    private String adminStatu;
+    private Set<RoleInfo> roleInfoSet;
+    private Set<Category> categorySet;
+
+    /*套餐主映射*/
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "admin_category",
+            joinColumns = @JoinColumn(name = "admin_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    public Set<Category> getCategorySet() {
+        return categorySet;
+    }
+
+    public void setCategorySet(Set<Category> categorySet) {
+        this.categorySet = categorySet;
+    }
+
+    /*角色主映射*/
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "admin_role",
+            joinColumns = @JoinColumn(name = "admin_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    public Set<RoleInfo> getRoleInfoSet() {
+        return roleInfoSet;
+    }
+
+    public void setRoleInfoSet(Set<RoleInfo> roleInfoSet) {
+        this.roleInfoSet = roleInfoSet;
+    }
+
     @Id
     @Column(name = "admin_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getAdminId() {
         return adminId;
     }
@@ -122,5 +155,32 @@ public class AdminInfo {
         result = 31 * result + (createTime != null ? createTime.hashCode() : 0);
         result = 31 * result + (adminStatu != null ? adminStatu.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder roleInfoStr = new StringBuilder();
+        for (RoleInfo r :
+                roleInfoSet) {
+            roleInfoStr.append(r.toString());
+        }
+
+        StringBuilder categoryStr = new StringBuilder();
+        for (Category c: categorySet
+             ) {
+            categoryStr.append(c.toString());
+        }
+
+        return "AdminInfo{" +
+                "adminId=" + adminId +
+                ", adminName='" + adminName + '\'' +
+                ", password='" + password + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", createTime=" + createTime +
+                ", adminStatu='" + adminStatu + '\'' +
+                ", roleInfoSet=" + roleInfoStr +
+                '}';
     }
 }

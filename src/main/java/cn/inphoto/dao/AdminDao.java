@@ -35,20 +35,4 @@ public interface AdminDao {
      */
     AdminInfo findByEmail(String Email);
 
-    /**
-     * 根据admin_id查询该管理员所有模块
-     *
-     * @param admin_id
-     * @return
-     */
-    List<ModuleInfo> findModulesByAdmin(int admin_id);
-
-    /**
-     * 根据admin_id查询该管理员可以管理的所有模块
-     *
-     * @param admin_id
-     * @return
-     */
-    List<Category> findCategoryByAdmin(int admin_id);
-
 }
