@@ -186,4 +186,14 @@ public class AdminLoginController {
 
     }
 
+    /**
+     * 前往错误页
+     *
+     * @return 页面
+     */
+    @RequestMapping("/error.do")
+    public String errorPage() {
+        return "error";
+    }
+
 }

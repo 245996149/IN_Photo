@@ -51,11 +51,7 @@ public class UserDaoImpl extends SuperDao implements UserDao {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from User where userId= :user_id");
-
-            query.setParameter("user_id", user_id);
-
-            return (User) query.uniqueResult();
+            return session.get(User.class,user_id);
         }
     }
 

@@ -55,7 +55,7 @@ CREATE TABLE `admin_info` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `admin_statu` char(2) DEFAULT NULL,
   PRIMARY KEY (`admin_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -64,7 +64,7 @@ CREATE TABLE `admin_info` (
 
 LOCK TABLES `admin_info` WRITE;
 /*!40000 ALTER TABLE `admin_info` DISABLE KEYS */;
-INSERT INTO `admin_info` VALUES (1,'ming123','C01C624C6E877C2782B7435EFD0290C8','18817774173','245996149@qq.com','2017-07-10 16:00:00','0');
+INSERT INTO `admin_info` VALUES (1,'ming123','C01C624C6E877C2782B7435EFD0290C8','18817774173','245996149@qq.com','2017-07-10 16:00:00','0'),(2,'inshow123','C01C624C6E877C2782B7435EFD0290C8','17087950984','chen.ming@in-show.com.cn','2017-07-10 16:00:00','0');
 /*!40000 ALTER TABLE `admin_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -112,7 +112,7 @@ CREATE TABLE `admin_role` (
 
 LOCK TABLES `admin_role` WRITE;
 /*!40000 ALTER TABLE `admin_role` DISABLE KEYS */;
-INSERT INTO `admin_role` VALUES (1,1),(1,2);
+INSERT INTO `admin_role` VALUES (1,1),(1,7),(2,1),(2,7);
 /*!40000 ALTER TABLE `admin_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -136,7 +136,7 @@ CREATE TABLE `admin_role_info` (
 
 LOCK TABLES `admin_role_info` WRITE;
 /*!40000 ALTER TABLE `admin_role_info` DISABLE KEYS */;
-INSERT INTO `admin_role_info` VALUES (1,'管理员'),(5,'312312'),(6,'7867');
+INSERT INTO `admin_role_info` VALUES (1,'管理员'),(7,'技师');
 /*!40000 ALTER TABLE `admin_role_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -160,7 +160,7 @@ CREATE TABLE `admin_role_module` (
 
 LOCK TABLES `admin_role_module` WRITE;
 /*!40000 ALTER TABLE `admin_role_module` DISABLE KEYS */;
-INSERT INTO `admin_role_module` VALUES (1,1),(1,2),(1,3),(1,4);
+INSERT INTO `admin_role_module` VALUES (1,1),(1,2),(1,3),(1,4),(7,2),(7,3),(7,4);
 /*!40000 ALTER TABLE `admin_role_module` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -480,4 +480,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-08-08 18:05:57
+-- Dump completed on 2017-08-09 13:54:35

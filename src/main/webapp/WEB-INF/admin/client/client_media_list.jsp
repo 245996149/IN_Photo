@@ -362,7 +362,7 @@
 
         var aa = projectName + "/get/getQR.do?url=" + encodeURIComponent(s);
 
-        var a = '<img src="' + aa + '" alt="${m.mediaId}" width="200px">';
+        var a = '<img src="' + aa + '"  width="200px">';
 
         return a;
 //            $(this).popover({

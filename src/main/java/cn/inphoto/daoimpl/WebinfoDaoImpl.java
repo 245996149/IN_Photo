@@ -51,12 +51,7 @@ public class WebinfoDaoImpl extends SuperDao implements WebinfoDao {
     public PicWebinfo findPicByPic_id(Long pic_web_info_id) {
 
         try (Session session = sessionFactory.openSession()) {
-
-            Query query = session.createQuery("from PicWebinfo where picWebinfoId = :pic_web_info_id ");
-
-            query.setParameter("pic_web_info_id", pic_web_info_id);
-
-            return (PicWebinfo) query.uniqueResult();
+            return session.get(PicWebinfo.class, pic_web_info_id);
         }
     }
 
@@ -64,23 +59,15 @@ public class WebinfoDaoImpl extends SuperDao implements WebinfoDao {
     public CodeWebInfo findCodeByCode_id(Long code_web_info_id) {
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from CodeWebInfo where codeWebinfoId= :code_web_info_id ");
+            return session.get(CodeWebInfo.class, code_web_info_id);
 
-            query.setParameter("code_web_info_id", code_web_info_id);
-
-            return (CodeWebInfo) query.uniqueResult();
         }
     }
 
     @Override
     public ShareInfo findShareByShare_id(Long share_info_id) {
         try (Session session = sessionFactory.openSession()) {
-
-            Query query = session.createQuery("from ShareInfo where shareInfoId = :share_info_id ");
-
-            query.setParameter("share_info_id", share_info_id);
-
-            return (ShareInfo) query.uniqueResult();
+            return session.get(ShareInfo.class, share_info_id);
         }
     }
 

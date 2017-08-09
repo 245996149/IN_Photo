@@ -18,10 +18,8 @@ public class RoleInfo {
     private String name;
     private Set<AdminInfo> adminInfoSet;
     private Set<ModuleInfo> moduleInfoSet;
+    /*用于获取页面上的传参*/
     private List<Integer> moduleIds;
-
-    @Resource
-    ModuleDao moduleDao;
 
     @Transient
     public List<Integer> getModuleIds() {
@@ -29,17 +27,6 @@ public class RoleInfo {
     }
 
     public void setModuleIds(List<Integer> moduleIds) {
-        System.out.println("进入。。。。。。。。。。。。2");
-        for (int i:moduleIds
-             ) {
-            System.out.println(i);
-        }
-        List<ModuleInfo> moduleInfoList = moduleDao.findByModuleIds(moduleIds);
-        for (ModuleInfo m : moduleInfoList
-                ) {
-            System.out.println(m.toString());
-        }
-        setModuleInfoSet(new HashSet<>(moduleInfoList));
         this.moduleIds = moduleIds;
     }
 
@@ -110,15 +97,16 @@ public class RoleInfo {
     @Override
     public String toString() {
         StringBuilder moduleInfoStr = new StringBuilder();
-        for (ModuleInfo m : moduleInfoSet
-                ) {
-            moduleInfoStr.append(m.toString());
+        if (moduleInfoSet != null && !moduleInfoSet.isEmpty()) {
+            for (ModuleInfo m : moduleInfoSet
+                    ) {
+                moduleInfoStr.append(m.toString());
+            }
         }
         return "RoleInfo{" +
                 "roleId=" + roleId +
                 ", name='" + name + '\'' +
-//                ", adminInfoSet=" + adminInfoSet +
-                ", moduleInfos=" + moduleInfoStr +
+                ", moduleInfoSet=" + moduleInfoStr +
                 '}';
     }
 

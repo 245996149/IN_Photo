@@ -84,12 +84,12 @@
                             <td>
                                 <c:if test="${rl.roleId!=1}">
                                     <div class="btn-group-sm" role="group" aria-label="...">
-                                        <button type="button" class="btn btn-primary"
-                                                onclick="">
+                                        <a class="btn btn-primary"
+                                           href="${pageContext.request.contextPath}/admin/roleManage/toUpdateRole.do?role_id=${rl.roleId}">
                                             更新信息
-                                        </button>
+                                        </a>
                                         <button type="button" class="btn btn-danger"
-                                                onclick="">
+                                                onclick="deleteRole(${rl.roleId});">
                                             删除
                                         </button>
                                     </div>
@@ -106,79 +106,26 @@
 
 <script type="text/javascript">
 
-    function changeMakeGIF() {
+    function deleteRole(role_id) {
 
-        var makeGIF = $("input[name='makeGIF']:checked").val();
-
-        if (makeGIF == 'true') {
-            $('#tran_div').show();
-        } else {
-            $('#tran_div').hide();
-        }
-
-    }
-
-    function checkForm() {
-        var forms = $("#addFrom");
-        if (!judgeNull(forms)) {
-            alert("有必填项为空！");
+        if (!confirm("请确认您要删除编号为：" + role_id + " 的角色")) {
             return false;
-        }
-
-        var code = $("#categoryCode");
-
-        var reg = /^[a-z0-9]+$/;
-
-        if (!code.val().match(reg)) {
-
-            alert("套餐简码只能是小写字母跟数字");
-            code.val("");
-            return false;
-        }
-
-
-        var makeGIF = $("input[name='makeGIF']:checked").val();
-
-        var GIFtran;
-
-        if (makeGIF == 'false') {
-            GIFtran = false;
-        } else {
-            GIFtran = $("input[name='GIFtran']:checked").val();
         }
 
         $.post(
-            "addCategory.do",
+            "deleteRole.do",
             {
-                "name": $("#categoryName").val(),
-                "code": code.val(),
-                "note": $("#categoryNote").val(),
-                "makeGIF": makeGIF,
-                "gif_tran": GIFtran
+                "role_id": role_id
             },
             function (res) {
                 if (res.success) {
-                    alert(res.message);
+                    window.location.reload();
                 } else {
                     alert(res.message);
                 }
-
-            });
-
-    }
-
-    /*判断表单中是否有空*/
-    function judgeNull(a) {
-        var forms = a.find('input');
-        //alert(forms.length);
-        for (var i = 0; i < forms.length; i++) {
-            if (forms[i].value == "") {
-                forms[i].focus();
-                //alert("有选项为空");
-                return false;
             }
-        }
-        return true;
+        );
+
     }
 
 </script>

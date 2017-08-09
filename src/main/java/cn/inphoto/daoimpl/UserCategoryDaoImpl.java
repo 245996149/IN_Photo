@@ -42,11 +42,8 @@ public class UserCategoryDaoImpl extends SuperDao implements UserCategoryDao {
     public UserCategory findByUser_category_id(Long userCategory_id) {
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery(" from UserCategory where userCategoryId = :userCategory_id");
+            return session.get(UserCategory.class,userCategory_id);
 
-            query.setParameter("userCategory_id", userCategory_id);
-
-            return (UserCategory) query.uniqueResult();
         }
     }
 

@@ -124,11 +124,8 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from MediaData where mediaId = :media_id");
+            return session.get(MediaData.class, media_id);
 
-            query.setParameter("media_id", media_id);
-
-            return (MediaData) query.uniqueResult();
         }
     }
 

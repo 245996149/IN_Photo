@@ -29,14 +29,8 @@ public class DBTest {
 
     @Test
     public void b() {
-        UserPage userPage = new UserPage();
-//        userPage.setUserName("ming");
-        userPage.setPhone("18817774173");
-        List<User> a = userDao.findByPage(userPage);
-        for (User m : a
-                ) {
-            System.out.println(m.toString());
-        }
+        User user = userDao.findByUser_id(1L);
+        System.out.println(user.toString());
     }
 
     @Test
@@ -73,6 +67,20 @@ public class DBTest {
     public void f() {
 
         System.out.println(roleDao.deleteRole(2));
+
+    }
+
+    @Test
+    public void g() {
+
+        List<AdminInfo> adminInfos = roleDao.findAdminByRole_id(1);
+
+        System.out.println(adminInfos.size());
+
+        for (AdminInfo a: adminInfos
+             ) {
+            System.out.println(a);
+        }
 
     }
 

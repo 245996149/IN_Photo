@@ -33,11 +33,7 @@ public class CategoryDaoImpl extends SuperDao implements CategoryDao {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from Category where categoryId = :category_id");
-
-            query.setParameter("category_id", category_id);
-
-            return (Category) query.uniqueResult();
+            return session.get(Category.class, category_id);
         }
 
     }
