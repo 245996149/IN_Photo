@@ -2,10 +2,16 @@ package cn.inphoto.daoimpl;
 
 import cn.inphoto.dao.SuperDao;
 import cn.inphoto.dao.UserDao;
+import cn.inphoto.dbentity.admin.AdminInfo;
 import cn.inphoto.dbentity.page.UserPage;
 import cn.inphoto.dbentity.user.User;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -51,7 +57,7 @@ public class UserDaoImpl extends SuperDao implements UserDao {
 
         try (Session session = sessionFactory.openSession()) {
 
-            return session.get(User.class,user_id);
+            return session.get(User.class, user_id);
         }
     }
 
@@ -72,46 +78,28 @@ public class UserDaoImpl extends SuperDao implements UserDao {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query;
+            User user = new User();
 
-            String hql = "from User ";
+            user.setAdminId(userPage.getAdminId());
+            user.setUserId(userPage.getUser_id());
+            user.setUserName(userPage.getUserName());
+            user.setPhone(userPage.getPhone());
+            user.setEmail(userPage.getEmail());
+            user.setUserState(userPage.getUserState());
 
-            if (userPage.getAdminId() != 0) {
-                hql = hql + " where adminId = " + userPage.getAdminId();
-            } else {
-                hql = hql + " where adminId != " + userPage.getAdminId();
-            }
+            Example example = Example.create(user);
 
-            if (userPage.getUser_id() != null && userPage.getUser_id() != 0) {
-                hql = hql + " and userId = " + userPage.getUser_id();
-            }
+            DetachedCriteria criteria = DetachedCriteria.forClass(User.class)
+                    .add(example)
+                    .addOrder(Order.asc("userId"))
+                    .setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
 
-            if (userPage.getEmail() != null) {
-                hql = hql + " and email = \'" + userPage.getEmail() + "\'";
-            }
+            Criteria cri = criteria.getExecutableCriteria(session);
 
-            if (userPage.getPhone() != null) {
-                hql = hql + " and phone = \'" + userPage.getPhone() + "\'";
-            }
+            cri.setFirstResult(userPage.getBegin());
+            cri.setMaxResults(userPage.getPageSize());
 
-            if (userPage.getUserName() != null) {
-                hql = hql + " and userName = \'" + userPage.getUserName() + "\'";
-            }
-
-            if (userPage.getUserState() != null) {
-                hql = hql + " and userState = \'" + userPage.getUserState() + "\'";
-            }
-
-            hql = hql + " order by userId";
-
-//            System.out.println(hql);
-
-            query = session.createQuery(hql);
-
-            query.setFirstResult(userPage.getBegin());
-            query.setMaxResults(userPage.getPageSize());
-
-            return query.list();
+            return cri.list();
         }
 
     }
@@ -121,43 +109,24 @@ public class UserDaoImpl extends SuperDao implements UserDao {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query;
+            User user = new User();
 
-            String hql = "select count(*) from User";
+            user.setAdminId(userPage.getAdminId());
+            user.setUserId(userPage.getUser_id());
+            user.setUserName(userPage.getUserName());
+            user.setPhone(userPage.getPhone());
+            user.setEmail(userPage.getEmail());
+            user.setUserState(userPage.getUserState());
 
-            if (userPage.getAdminId() == 0) {
-                hql = hql + " where adminId != " + userPage.getAdminId();
-            } else {
-                hql = hql + " where adminId = " + userPage.getAdminId();
-            }
+            Example example = Example.create(user);
 
-            if (userPage.getUser_id() != null) {
-                hql = hql + " and userId = " + userPage.getUser_id();
-            }
+            DetachedCriteria criteria = DetachedCriteria.forClass(User.class)
+                    .add(example)
+                    .addOrder(Order.asc("userId"))
+                    .setProjection(Projections.rowCount())
+                    .setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
 
-            if (userPage.getEmail() != null) {
-                hql = hql + " and email = \'" + userPage.getEmail() + "\'";
-            }
-
-            if (userPage.getPhone() != null) {
-                hql = hql + " and phone = \'" + userPage.getPhone() + "\'";
-            }
-
-            if (userPage.getUserName() != null) {
-                hql = hql + " and userName = \'" + userPage.getUserName() + "\'";
-            }
-
-            if (userPage.getUserState() != null) {
-                hql = hql + " and userState = \'" + userPage.getUserState() + "\'";
-            }
-
-            hql = hql + " order by userId";
-
-//            System.out.println(hql);
-
-            query = session.createQuery(hql);
-
-            return ((Long) query.uniqueResult()).intValue();
+            return ((Long) criteria.getExecutableCriteria(session).uniqueResult()).intValue();
         }
 
     }

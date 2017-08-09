@@ -20,6 +20,13 @@ public class AdminInfo {
     /*邮箱登录*/
     public static final int LOGIN_EMAIL = 2;
 
+    /*正常生效*/
+    public static final String ADMIN_STATE_NORMAL = "0";
+    /*暂停状态*/
+    public static final String ADMIN_STATE_PAUSE = "1";
+    /*停用状态*/
+    public static final String ADMIN_STATE_DISABLE = "2";
+
     private int adminId;
     private String adminName;
     private String password;
@@ -161,15 +168,19 @@ public class AdminInfo {
     public String toString() {
 
         StringBuilder roleInfoStr = new StringBuilder();
-        for (RoleInfo r :
-                roleInfoSet) {
-            roleInfoStr.append(r.toString());
+        if (roleInfoSet != null && !roleInfoSet.isEmpty()) {
+            for (RoleInfo r :
+                    roleInfoSet) {
+                roleInfoStr.append(r.toString());
+            }
         }
 
         StringBuilder categoryStr = new StringBuilder();
-        for (Category c: categorySet
-             ) {
-            categoryStr.append(c.toString());
+        if (categorySet != null && !categorySet.isEmpty()) {
+            for (Category c : categorySet
+                    ) {
+                categoryStr.append(c.toString());
+            }
         }
 
         return "AdminInfo{" +

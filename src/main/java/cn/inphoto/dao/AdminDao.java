@@ -2,7 +2,10 @@ package cn.inphoto.dao;
 
 import cn.inphoto.dbentity.admin.AdminInfo;
 import cn.inphoto.dbentity.admin.ModuleInfo;
+import cn.inphoto.dbentity.page.AdminPage;
+import cn.inphoto.dbentity.page.UserPage;
 import cn.inphoto.dbentity.user.Category;
+import cn.inphoto.dbentity.user.User;
 
 import java.util.List;
 
@@ -35,4 +38,19 @@ public interface AdminDao {
      */
     AdminInfo findByEmail(String Email);
 
+    /**
+     * 根据表格分页对象查询用户对象列表
+     *
+     * @param adminPage 表格分页对象
+     * @return 用户对象列表
+     */
+    List<AdminInfo> findByPage(AdminPage adminPage);
+
+    /**
+     * 根据表格分页对象统计用户对象列表
+     *
+     * @param adminPage 表格分页对象
+     * @return 用户对象列表总数
+     */
+    int countByPage(AdminPage adminPage);
 }

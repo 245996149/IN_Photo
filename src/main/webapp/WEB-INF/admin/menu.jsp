@@ -49,11 +49,11 @@
                     <c:if test="${m.moduleId==3}">
                         <c:choose>
                             <c:when test="${currentModule==3}">
-                                <li class="active"><a href="${pageContext.request.contextPath}/admin/roleManage/toRole.do">用户管理</a>
+                                <li class="active"><a href="${pageContext.request.contextPath}/admin/userManage/toUser.do">用户管理</a>
                                 </li>
                             </c:when>
                             <c:otherwise>
-                                <li><a href="${pageContext.request.contextPath}/admin/roleManage/toRole.do">用户管理</a></li>
+                                <li><a href="${pageContext.request.contextPath}/admin/userManage/toUser.do">用户管理</a></li>
                             </c:otherwise>
                         </c:choose>
                     </c:if>

@@ -31,9 +31,6 @@ public class ClientController {
     private CategoryDao categoryDao;
 
     @Resource
-    private ClientDao clientDao;
-
-    @Resource
     private UserDao userDao;
 
     @Resource
@@ -80,9 +77,7 @@ public class ClientController {
         boolean isAdmin = (boolean) session.getAttribute("isAdmin");
 
         // 判断是否有管理员权限
-        if (isAdmin) {
-            userPage.setAdminId(0);
-        } else {
+        if (!isAdmin) {
             userPage.setAdminId(adminInfo.getAdminId());
         }
 

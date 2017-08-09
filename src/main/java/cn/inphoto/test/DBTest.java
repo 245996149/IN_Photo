@@ -4,6 +4,7 @@ import cn.inphoto.dao.*;
 import cn.inphoto.dbentity.admin.AdminInfo;
 import cn.inphoto.dbentity.admin.ModuleInfo;
 import cn.inphoto.dbentity.admin.RoleInfo;
+import cn.inphoto.dbentity.page.AdminPage;
 import cn.inphoto.dbentity.page.UserPage;
 import cn.inphoto.dbentity.user.MediaData;
 import cn.inphoto.dbentity.user.User;
@@ -77,11 +78,32 @@ public class DBTest {
 
         System.out.println(adminInfos.size());
 
-        for (AdminInfo a: adminInfos
-             ) {
+        for (AdminInfo a : adminInfos
+                ) {
             System.out.println(a);
         }
 
+    }
+
+    @Test
+    public void h() {
+
+        AdminPage adminPage = new AdminPage();
+
+//        adminPage.setPhone("18817774173");
+        adminPage.setPageSize(2);
+
+        System.out.println(adminPage.toString());
+
+        List<AdminInfo> adminInfos = adminDao.findByPage(adminPage);
+
+        for (AdminInfo a : adminInfos
+                ) {
+            System.out.println(a.toString());
+        }
+
+        System.out.println(adminInfos.size());
+        System.out.println(adminDao.countByPage(adminPage));
     }
 
 }

@@ -12,6 +12,13 @@ import java.sql.Timestamp;
 @Table(name = "users", schema = "IN_Photo", catalog = "")
 public class User {
 
+    /*用户名登录*/
+    public static final int LOGIN_USER_NAME = 0;
+    /*手机号登录*/
+    public static final int LOGIN_PHONE = 1;
+    /*邮箱登录*/
+    public static final int LOGIN_EMAIL = 2;
+
     /*正常生效*/
     public static final String USER_STATE_NORMAL = "0";
     /*暂停状态*/
