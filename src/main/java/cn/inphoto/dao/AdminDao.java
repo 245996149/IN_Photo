@@ -15,7 +15,15 @@ import java.util.List;
 public interface AdminDao {
 
     /**
-     * 根据user_name查询管理员对象
+     * 根据admin_id查询管理员对象
+     *
+     * @param admin_id 用户名
+     * @return 用户对象
+     */
+    AdminInfo findByAdmin_id(int admin_id);
+
+    /**
+     * 根据admin_name查询管理员对象
      *
      * @param admin_name 用户名
      * @return 用户对象

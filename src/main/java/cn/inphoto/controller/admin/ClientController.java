@@ -83,6 +83,8 @@ public class ClientController {
 
         userPage.setRows(userDao.countByPage(userPage));
 
+//        System.out.println(userPage.toString());
+
         List<User> users = userDao.findByPage(userPage);
 
 //        for (User u : users

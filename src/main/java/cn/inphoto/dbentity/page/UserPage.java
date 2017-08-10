@@ -5,7 +5,7 @@ package cn.inphoto.dbentity.page;
  */
 public class UserPage extends Page {
 
-    private Long user_id;
+    private long user_id;
 
     private String userName;
 
@@ -17,11 +17,11 @@ public class UserPage extends Page {
 
     private String userState;
 
-    public Long getUser_id() {
+    public long getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(Long user_id) {
+    public void setUser_id(long user_id) {
         this.user_id = user_id;
     }
 
@@ -75,6 +75,6 @@ public class UserPage extends Page {
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 ", userState='" + userState + '\'' +
-                '}';
+                '}' + super.toString();
     }
 }

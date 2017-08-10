@@ -22,10 +22,8 @@ public class AdminInfo {
 
     /*正常生效*/
     public static final String ADMIN_STATE_NORMAL = "0";
-    /*暂停状态*/
-    public static final String ADMIN_STATE_PAUSE = "1";
     /*停用状态*/
-    public static final String ADMIN_STATE_DISABLE = "2";
+    public static final String ADMIN_STATE_STOP = "1";
 
     private int adminId;
     private String adminName;

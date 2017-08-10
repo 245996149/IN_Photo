@@ -237,6 +237,47 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">添加管理员</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="${pageContext.request.contextPath}/admin/clientManage/toAddClient.do"
+                      id="addFrom">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon" id="email_span">邮箱</span>
+                        <input type="text" class="form-control" placeholder="Email" aria-describedby="Email_span"
+                               id="email" name="email">
+                    </div>
+                    <br/>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="user_state" checked value="true">启用该管理员账号
+                                </label>
+                                <label>
+                                    <input type="radio" name="user_state" value="false">禁用该管理员账号
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <button type="button" class="btn btn-primary" onclick="checkForm();">下一步</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
 
     function checkForm() {
@@ -258,19 +299,30 @@
 
         }
 
+        //获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
+        var curWwwPath = window.document.location.href;
+        //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+        var pathName = window.document.location.pathname;
+        var pos = curWwwPath.indexOf(pathName);
+        //获取主机地址，如： http://localhost:8083
+        var localhostPaht = curWwwPath.substring(0, pos);
+        //获取带"/"的项目名，如：/uimcardprj
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+
+        var url = localhostPaht + projectName + "/admin/checkEmail.do";
+
         $.post(
-            "checkEmail.do",
+            url,
             {"email": email.val()},
             function (res) {
                 if (res.success) {
-                    forms.submit();
+                    alert(res.message);
+//                    forms.submit();
                 } else {
                     alert(res.message);
                     email.val("");
                 }
-
             });
-
     }
 
     /*判断表单中是否有空*/

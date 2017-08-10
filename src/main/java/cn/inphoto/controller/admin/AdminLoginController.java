@@ -119,6 +119,12 @@ public class AdminLoginController {
             return result;
         }
 
+        if (!AdminInfo.ADMIN_STATE_NORMAL.equals(adminEntity.getAdminStatu())) {
+            result.put("success", false);
+            result.put("message", "该用户现在处于停用状态，请联系管理员");
+            return result;
+        }
+
         if (!getMD5(password).equals(adminEntity.getPassword())) {
             result.put("success", false);
             result.put("message", "密码错误，请重新输入密码!");

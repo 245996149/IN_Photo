@@ -8,10 +8,7 @@ import cn.inphoto.dbentity.user.User;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Example;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.*;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -78,21 +75,33 @@ public class UserDaoImpl extends SuperDao implements UserDao {
 
         try (Session session = sessionFactory.openSession()) {
 
-            User user = new User();
-
-            user.setAdminId(userPage.getAdminId());
-            user.setUserId(userPage.getUser_id());
-            user.setUserName(userPage.getUserName());
-            user.setPhone(userPage.getPhone());
-            user.setEmail(userPage.getEmail());
-            user.setUserState(userPage.getUserState());
-
-            Example example = Example.create(user);
-
             DetachedCriteria criteria = DetachedCriteria.forClass(User.class)
-                    .add(example)
                     .addOrder(Order.asc("userId"))
                     .setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+
+            if (userPage.getUser_id() != 0) {
+                criteria.add(Restrictions.eq("userId", userPage.getUser_id()));
+            }
+
+            if (userPage.getUserName() != null && "".equals(userPage.getUserName())) {
+                criteria.add(Restrictions.eq("userName", userPage.getUserName()));
+            }
+
+            if (userPage.getPhone() != null && "".equals(userPage.getPhone())) {
+                criteria.add(Restrictions.eq("phone", userPage.getPhone()));
+            }
+
+            if (userPage.getEmail() != null && "".equals(userPage.getEmail())) {
+                criteria.add(Restrictions.eq("email", userPage.getEmail()));
+            }
+
+            if (userPage.getUserState() != null && "".equals(userPage.getUserState())) {
+                criteria.add(Restrictions.eq("userState", userPage.getUserState()));
+            }
+
+            if (userPage.getAdminId() != 0) {
+                criteria.add(Restrictions.eq("adminId", userPage.getAdminId()));
+            }
 
             Criteria cri = criteria.getExecutableCriteria(session);
 
@@ -109,22 +118,34 @@ public class UserDaoImpl extends SuperDao implements UserDao {
 
         try (Session session = sessionFactory.openSession()) {
 
-            User user = new User();
-
-            user.setAdminId(userPage.getAdminId());
-            user.setUserId(userPage.getUser_id());
-            user.setUserName(userPage.getUserName());
-            user.setPhone(userPage.getPhone());
-            user.setEmail(userPage.getEmail());
-            user.setUserState(userPage.getUserState());
-
-            Example example = Example.create(user);
-
             DetachedCriteria criteria = DetachedCriteria.forClass(User.class)
-                    .add(example)
                     .addOrder(Order.asc("userId"))
                     .setProjection(Projections.rowCount())
                     .setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+
+            if (userPage.getUser_id() != 0) {
+                criteria.add(Restrictions.eq("userId", userPage.getUser_id()));
+            }
+
+            if (userPage.getUserName() != null && "".equals(userPage.getUserName())) {
+                criteria.add(Restrictions.eq("userName", userPage.getUserName()));
+            }
+
+            if (userPage.getPhone() != null && "".equals(userPage.getPhone())) {
+                criteria.add(Restrictions.eq("phone", userPage.getPhone()));
+            }
+
+            if (userPage.getEmail() != null && "".equals(userPage.getEmail())) {
+                criteria.add(Restrictions.eq("email", userPage.getEmail()));
+            }
+
+            if (userPage.getUserState() != null && "".equals(userPage.getUserState())) {
+                criteria.add(Restrictions.eq("userState", userPage.getUserState()));
+            }
+
+            if (userPage.getAdminId() != 0) {
+                criteria.add(Restrictions.eq("adminId", userPage.getAdminId()));
+            }
 
             return ((Long) criteria.getExecutableCriteria(session).uniqueResult()).intValue();
         }
