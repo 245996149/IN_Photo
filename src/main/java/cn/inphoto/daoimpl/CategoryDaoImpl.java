@@ -39,6 +39,19 @@ public class CategoryDaoImpl extends SuperDao implements CategoryDao {
     }
 
     @Override
+    public List<Category> findByCategoryIds(List<Integer> categoryIds) {
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery("from Category where categoryId in (:categoryIds)");
+
+            query.setParameter("categoryIds", categoryIds);
+
+            return query.list();
+
+        }
+    }
+
+    @Override
     public List<Category> findAll() {
 
         try (Session session = sessionFactory.openSession()) {

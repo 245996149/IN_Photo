@@ -24,38 +24,69 @@
 <jsp:include page="/WEB-INF/admin/menu.jsp"/>
 
 <h1>你好，管理员！</h1>
-<canvas id="myChart" width="400" height="100"></canvas>
+
+<!-- Modal -->
+<div class="modal fade" id="nameModal" tabindex="-1" role="dialog" aria-labelledby="nameModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <%--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>--%>
+                <%--</button>--%>
+                <h4 class="modal-title" id="myModalLabel">请填写管理员用户名</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="${pageContext.request.contextPath}/admin/clientManage/toAddClient.do"
+                      id="addFrom">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon" id="categoryName_span">用户名</span>
+                        <input type="text" class="form-control" aria-describedby="categoryName_span"
+                               id="adminName" name="adminName" pattern="[a-zA-Z]\w{5,17}$/">
+                    </div>
+                    <br/>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="checkAdminName();">确认</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
-<script src="${pageContext.request.contextPath}/js/Chart.js"></script>
 <script type="text/javascript">
 
-    var ctx = document.getElementById("myChart").getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-            datasets: [{
-                label: '# 点击量',
-                data: [12, 19, 3, 5, 2, 3],
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255,99,132,1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
+    $(function () {
+        var admin = '${sessionScope.adminUser.adminName}';
+        if (admin == null || admin == "") {
+            $('#nameModal').modal({
+                show: true,
+                backdrop: 'static'
+            });
         }
     });
+
+    function checkAdminName() {
+
+        var adminName = $("#adminName");
+
+        if (adminName.val() == null || adminName.val() == "") {
+            alert("用户名不能为空");
+            adminName.focus();
+            return false;
+        }
+
+        var nameReg = /^[a-zA-Z]\w{5,17}$/;
+
+        if (!adminName.val().match(nameReg)) {
+            alert("用户名只能为6-18位的字母开头，包含数字、字母、下划线的组合");
+            adminName.focus();
+            adminName.val("");
+            return false;
+        }
+    }
 
 </script>
 </body>

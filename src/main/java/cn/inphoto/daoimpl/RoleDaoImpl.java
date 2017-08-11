@@ -83,6 +83,19 @@ public class RoleDaoImpl extends SuperDao implements RoleDao {
     }
 
     @Override
+    public List<RoleInfo> findByRoleIds(List<Integer> roleIds) {
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery("from RoleInfo where roleId in (:roleIds)");
+
+            query.setParameter("roleIds", roleIds);
+
+            return query.list();
+
+        }
+    }
+
+    @Override
     public boolean updateRole(RoleInfo roleInfo) {
 
         boolean flag;

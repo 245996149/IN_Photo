@@ -67,7 +67,7 @@ public class MD5Util {
 
     @Test
     public void MD5Test() throws UnsupportedEncodingException {
-        String a = "inshowa";
+        String a = "inshow";
         String b = getMD5(a);
         System.out.println(b);
         BASE64Encoder encoder = new BASE64Encoder();

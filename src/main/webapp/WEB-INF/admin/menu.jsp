@@ -27,80 +27,72 @@
                     <c:if test="${m.moduleId==1}">
                         <c:choose>
                             <c:when test="${currentModule==1}">
-                                <li class="active"><a href="${pageContext.request.contextPath}/admin/clientManage/toClient.do">客户管理</a>
+                                <li class="active"><a
+                                        href="${pageContext.request.contextPath}/admin/clientManage/toClient.do">客户管理</a>
                                 </li>
                             </c:when>
                             <c:otherwise>
-                                <li><a href="${pageContext.request.contextPath}/admin/clientManage/toClient.do">客户管理</a></li>
+                                <li><a href="${pageContext.request.contextPath}/admin/clientManage/toClient.do">客户管理</a>
+                                </li>
                             </c:otherwise>
                         </c:choose>
                     </c:if>
                     <c:if test="${m.moduleId==2}">
                         <c:choose>
                             <c:when test="${currentModule==2}">
-                                <li class="active"><a href="${pageContext.request.contextPath}/admin/categoryManage/toCategory.do">套餐管理</a>
+                                <li class="active"><a
+                                        href="${pageContext.request.contextPath}/admin/categoryManage/toCategory.do">套餐管理</a>
                                 </li>
                             </c:when>
                             <c:otherwise>
-                                <li><a href="${pageContext.request.contextPath}/admin/categoryManage/toCategory.do">套餐管理</a></li>
+                                <li>
+                                    <a href="${pageContext.request.contextPath}/admin/categoryManage/toCategory.do">套餐管理</a>
+                                </li>
                             </c:otherwise>
                         </c:choose>
                     </c:if>
                     <c:if test="${m.moduleId==3}">
                         <c:choose>
                             <c:when test="${currentModule==3}">
-                                <li class="active"><a href="${pageContext.request.contextPath}/admin/userManage/toUser.do">用户管理</a>
+                                <li class="active"><a
+                                        href="${pageContext.request.contextPath}/admin/adminManage/toAdmin.do">管理员账户管理</a>
                                 </li>
                             </c:when>
                             <c:otherwise>
-                                <li><a href="${pageContext.request.contextPath}/admin/userManage/toUser.do">用户管理</a></li>
+                                <li>
+                                    <a href="${pageContext.request.contextPath}/admin/adminManage/toAdmin.do">管理员账户管理</a>
+                                </li>
                             </c:otherwise>
                         </c:choose>
                     </c:if>
                     <c:if test="${m.moduleId==4}">
                         <c:choose>
                             <c:when test="${currentModule==4}">
-                                <li class="active"><a href="${pageContext.request.contextPath}/admin/roleManage/toRole.do">角色管理</a>
+                                <li class="active"><a
+                                        href="${pageContext.request.contextPath}/admin/roleManage/toRole.do">角色管理</a>
                                 </li>
                             </c:when>
                             <c:otherwise>
-                                <li><a href="${pageContext.request.contextPath}/admin/roleManage/toRole.do">角色管理</a></li>
+                                <li><a href="${pageContext.request.contextPath}/admin/roleManage/toRole.do">角色管理</a>
+                                </li>
                             </c:otherwise>
                         </c:choose>
                     </c:if>
                 </c:forEach>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <c:choose>
-                    <c:when test="${nav_code==0}">
-                        <li class="dropdown active"><a href="javascript:void(0);" class="dropdown-toggle"
-                                                       data-toggle="dropdown"
-                                                       role="button"
-                                                       aria-haspopup="true"
-                                                       aria-expanded="false">${sessionScope.loginUser.userName}<span
-                                class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">用户资料</a></li>
-                                <li><a href="#">安全设置</a></li>
-                                <li><a href="#">退出</a></li>
-                            </ul>
-                        </li>
-                    </c:when>
-                    <c:otherwise>
-                        <li class="dropdown"><a href="javascript:void(0);" class="dropdown-toggle"
-                                                data-toggle="dropdown"
-                                                role="button"
-                                                aria-haspopup="true"
-                                                aria-expanded="false">${sessionScope.loginUser.userName}<span
-                                class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">用户资料</a></li>
-                                <li><a href="#">安全设置</a></li>
-                                <li><a href="${pageContext.request.contextPath}/login/signOut.do">退出</a></li>
-                            </ul>
-                        </li>
-                    </c:otherwise>
-                </c:choose>
+                <li class="dropdown "><a href="javascript:void(0);" class="dropdown-toggle"
+                                         data-toggle="dropdown"
+                                         role="button"
+                                         aria-haspopup="true"
+                                         aria-expanded="false">${sessionScope.adminUser.adminName}<span
+                        class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">用户资料</a></li>
+                        <li><a href="#">安全设置</a></li>
+                        <li><a href="#">退出</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
         <!-- /.navbar-collapse -->

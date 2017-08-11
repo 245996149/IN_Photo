@@ -39,6 +39,14 @@ public interface RoleDao {
     RoleInfo findByRole_id(int role_id);
 
     /**
+     * 根据id队列查询角色
+     *
+     * @param roleIds id队列
+     * @return 对象
+     */
+    List<RoleInfo> findByRoleIds(List<Integer> roleIds);
+
+    /**
      * 更新角色对象
      *
      * @param roleInfo 角色对象

@@ -21,6 +21,7 @@ import java.util.*;
 import static cn.inphoto.util.DateUtil.getTodayDate;
 import static cn.inphoto.util.MD5Util.getMD5;
 import static cn.inphoto.util.MailUtil.sendMail;
+import static cn.inphoto.util.PasswordUtil.getRandomPassword;
 
 @Controller
 @RequestMapping("/admin/clientManage")
@@ -47,12 +48,6 @@ public class ClientController {
 
     @Resource
     private MediaCodeDao mediaCodeDao;
-
-    static char[] str = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
-            'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w',
-            'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
-            'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
-            'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
     /*
     注册邮件中的IN Photo管理中心地址
@@ -134,30 +129,17 @@ public class ClientController {
 
         AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
 
-        System.out.println(user.toString());
-        System.out.println(category);
+//        System.out.println(user.toString());
+//        System.out.println(category);
 
-        final int maxNum = 62;
-        int i; // 生成的随机数
-        int count = 0; // 生成的密码的长度
+        String pwd = getRandomPassword(10);
 
-        StringBuilder pwd = new StringBuilder("");
-        Random r = new Random();
-        while (count < 10) {
-            // 生成随机数，取绝对值，防止生成负数，
-            i = Math.abs(r.nextInt(maxNum)); // 生成的数最大为36-1
-            if (i >= 0 && i < str.length) {
-                pwd.append(str[i]);
-                count++;
-            }
-        }
-
-        user.setPassword(getMD5(pwd.toString()));
+        user.setPassword(getMD5(pwd));
         user.setAdminId(adminInfo.getAdminId());
         user.setUserState("0");
 
-        System.out.println(pwd.toString());
-        System.out.println("加密后密码：" + getMD5(pwd.toString()));
+//        System.out.println(pwd);
+//        System.out.println("加密后密码：" + getMD5(pwd));
 
         if (utilDao.save(user)) {
 
@@ -168,16 +150,17 @@ public class ClientController {
                         "<div>尊敬的" + user.getEmail() + "您好！ 感谢您成功注册IN Photo的会员。</div>" +
                                 "<div><includetail><p>我们将为您提供最贴心的服务，祝您使用愉快！</p>" +
                                 "<p>您在IN Photo管理中心的登录帐号：</p><p>帐号：" + user.getEmail() + "</p>" +
-                                "<p>密码：" + pwd.toString() + "</p><p>请您及时登录系统更改密码。</p>" +
+                                "<p>密码：" + pwd + "</p><p>请您及时登录系统填写用户名，更改密码。</p>" +
                                 "<p><a href='" + emailManageAdd + "'>点击前往IN Photo管理中心</a></p>" +
                                 "<p>此邮件为系统自动发送，请勿直接回复该邮件</p></includetail></div>");
             }
 
         } else {
 
-        }
+            // 保存失败，跳转到错误页面
+            return "redirect:/admin/login/error.do";
 
-        System.out.println(user.toString());
+        }
 
         // 判断是否现在添加套餐
         if (category) {

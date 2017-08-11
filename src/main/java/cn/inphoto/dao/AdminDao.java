@@ -2,6 +2,7 @@ package cn.inphoto.dao;
 
 import cn.inphoto.dbentity.admin.AdminInfo;
 import cn.inphoto.dbentity.admin.ModuleInfo;
+import cn.inphoto.dbentity.admin.RoleInfo;
 import cn.inphoto.dbentity.page.AdminPage;
 import cn.inphoto.dbentity.page.UserPage;
 import cn.inphoto.dbentity.user.Category;
@@ -61,4 +62,12 @@ public interface AdminDao {
      * @return 用户对象列表总数
      */
     int countByPage(AdminPage adminPage);
+
+    /**
+     * 更新对象
+     *
+     * @param adminInfo 对象
+     * @return 是否成功
+     */
+    boolean updateAdmin(AdminInfo adminInfo);
 }

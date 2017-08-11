@@ -36,8 +36,8 @@
 <div class="row">
     <div class="col-md-12">
         <div class="page-header">
-            <h1>用户管理
-                <small>用户管理</small>
+            <h1>管理员账户管理
+                <small>管理员账户管理</small>
             </h1>
         </div>
     </div>
@@ -49,7 +49,7 @@
             <div class="panel-heading">
                 <h3 class="panel-title">数据列表
                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
-                        添加用户
+                        添加管理员
                     </button>
                 </h3>
             </div>
@@ -59,13 +59,13 @@
                        style="font-size: large;text-align: center;">
                     <thead>
                     <tr>
-                        <td>用户编号</td>
-                        <td>用户名</td>
+                        <td>管理员编号</td>
+                        <td>管理员名</td>
                         <td>手机号</td>
                         <td>邮箱</td>
                         <td>创建日期</td>
-                        <td>用户状态</td>
-                        <td>操作</td>
+                        <td>管理员状态</td>
+                        <td></td>
                     </tr>
                     </thead>
                     <tbody>
@@ -91,7 +91,7 @@
                                             删除
                                         </button>
                                         <button type="button" class="btn btn-primary"
-                                                onclick="location='toCategoryList.do?user_id=${u.userId}'">
+                                                onclick="location='toUpdateAdmin.do?admin_id=${a.adminId}'">
                                             更新用户资料
                                         </button>
                                     </div>
@@ -116,7 +116,7 @@
                                         </c:when>
                                         <c:otherwise>
                                             <li>
-                                                <a href="${pageContext.request.contextPath}/admin/userManage/toUser.do?currentPage=${adminPage.currentPage-1}"
+                                                <a href="${pageContext.request.contextPath}/admin/adminManage/toAdmin.do?currentPage=${adminPage.currentPage-1}"
                                                    aria-label="Previous">
                                                     <span aria-hidden="true">&laquo;</span>
                                                 </a>
@@ -125,7 +125,7 @@
                                     </c:choose>
                                     <c:if test="${adminPage.totalPage>5 && adminPage.currentPage>3}">
                                         <li>
-                                            <a href="${pageContext.request.contextPath}/admin/userManage/toUser.do?currentPage=1">1</a>
+                                            <a href="${pageContext.request.contextPath}/admin/adminManage/toAdmin.do?currentPage=1">1</a>
                                         </li>
                                         <li><a href="javascript:void(0);">...</a></li>
                                     </c:if>
@@ -143,7 +143,7 @@
                                                         </c:when>
                                                         <c:otherwise>
                                                             <li>
-                                                                <a href="${pageContext.request.contextPath}/admin/userManage/toUser.do?currentPage=${i}">${i}</a>
+                                                                <a href="${pageContext.request.contextPath}/admin/adminManage/toAdmin.do?currentPage=${i}">${i}</a>
                                                             </li>
                                                         </c:otherwise>
                                                     </c:choose>
@@ -158,7 +158,7 @@
                                                         </c:when>
                                                         <c:otherwise>
                                                             <li>
-                                                                <a href="${pageContext.request.contextPath}/admin/userManage/toUser.do?currentPage=${i}">${i}</a>
+                                                                <a href="${pageContext.request.contextPath}/admin/adminManage/toAdmin.do?currentPage=${i}">${i}</a>
                                                             </li>
                                                         </c:otherwise>
                                                     </c:choose>
@@ -176,7 +176,7 @@
                                                     </c:when>
                                                     <c:otherwise>
                                                         <li>
-                                                            <a href="${pageContext.request.contextPath}/admin/userManage/toUser.do?currentPage=${i}">${i}</a>
+                                                            <a href="${pageContext.request.contextPath}/admin/adminManage/toAdmin.do?currentPage=${i}">${i}</a>
                                                         </li>
                                                     </c:otherwise>
                                                 </c:choose>
@@ -192,7 +192,7 @@
                                                     </c:when>
                                                     <c:otherwise>
                                                         <li>
-                                                            <a href="${pageContext.request.contextPath}/admin/userManage/toUser.do?currentPage=${i}">${i}</a>
+                                                            <a href="${pageContext.request.contextPath}/admin/adminManage/toAdmin.do?currentPage=${i}">${i}</a>
                                                         </li>
                                                     </c:otherwise>
                                                 </c:choose>
@@ -204,7 +204,7 @@
                                     <c:if test="${adminPage.totalPage>5 && adminPage.currentPage<(adminPage.totalPage-2)}">
                                         <li><a href="javascript:void(0);">...</a></li>
                                         <li>
-                                            <a href="${pageContext.request.contextPath}/admin/userManage/toUser.do?currentPage=${adminPage.totalPage}">${adminPage.totalPage}</a>
+                                            <a href="${pageContext.request.contextPath}/admin/adminManage/toAdmin.do?currentPage=${adminPage.totalPage}">${adminPage.totalPage}</a>
                                         </li>
                                     </c:if>
 
@@ -218,7 +218,7 @@
                                         </c:when>
                                         <c:otherwise>
                                             <li>
-                                                <a href="${pageContext.request.contextPath}/admin/userManage/toUser.do?currentPage=${adminPage.currentPage+1}"
+                                                <a href="${pageContext.request.contextPath}/admin/adminManage/toAdmin.do?currentPage=${adminPage.currentPage+1}"
                                                    aria-label="Next">
                                                     <span aria-hidden="true">&raquo;</span>
                                                 </a>
@@ -247,7 +247,7 @@
                 <h4 class="modal-title" id="myModalLabel">添加管理员</h4>
             </div>
             <div class="modal-body">
-                <form method="post" action="${pageContext.request.contextPath}/admin/clientManage/toAddClient.do"
+                <form method="post" action="${pageContext.request.contextPath}/admin/adminManage/toAddAdmin.do"
                       id="addFrom">
                     <div class="input-group input-group-lg">
                         <span class="input-group-addon" id="email_span">邮箱</span>
@@ -316,8 +316,8 @@
             {"email": email.val()},
             function (res) {
                 if (res.success) {
-                    alert(res.message);
-//                    forms.submit();
+//                    alert(res.message);
+                    forms.submit();
                 } else {
                     alert(res.message);
                     email.val("");

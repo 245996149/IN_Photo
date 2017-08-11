@@ -31,7 +31,7 @@ public class CheckAdminInterceptor implements HandlerInterceptor {
                 currentModule = 1;
             } else if (url.contains("categoryManage")) {
                 currentModule = 2;
-            } else if (url.contains("userManage")) {
+            } else if (url.contains("adminManage")) {
                 currentModule = 3;
             } else if (url.contains("roleManage")) {
                 currentModule = 4;

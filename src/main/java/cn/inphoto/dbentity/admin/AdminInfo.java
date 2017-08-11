@@ -4,6 +4,7 @@ import cn.inphoto.dbentity.user.Category;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -34,6 +35,28 @@ public class AdminInfo {
     private String adminStatu;
     private Set<RoleInfo> roleInfoSet;
     private Set<Category> categorySet;
+
+    /*用于获取页面上的传参*/
+    private List<Integer> roleIds;
+    private List<Integer> categoryIds;
+
+    @Transient
+    public List<Integer> getRoleIds() {
+        return roleIds;
+    }
+
+    public void setRoleIds(List<Integer> roleIds) {
+        this.roleIds = roleIds;
+    }
+
+    @Transient
+    public List<Integer> getCategoryIds() {
+        return categoryIds;
+    }
+
+    public void setCategoryIds(List<Integer> categoryIds) {
+        this.categoryIds = categoryIds;
+    }
 
     /*套餐主映射*/
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -189,7 +212,8 @@ public class AdminInfo {
                 ", email='" + email + '\'' +
                 ", createTime=" + createTime +
                 ", adminStatu='" + adminStatu + '\'' +
-                ", roleInfoSet=" + roleInfoStr +
+                ", roleInfoSet=" + roleInfoStr + '\'' +
+                ", categorySet=" + categoryStr +
                 '}';
     }
 }
