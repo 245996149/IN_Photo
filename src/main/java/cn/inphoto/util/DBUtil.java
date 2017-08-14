@@ -2,7 +2,11 @@ package cn.inphoto.util;
 
 import cn.inphoto.dao.*;
 import cn.inphoto.dbentity.user.*;
+import cn.inphoto.util.dbUtil.ClientUtil;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -14,8 +18,35 @@ import java.util.List;
 /**
  * Created by kaxia on 2017/6/12.
  */
+@Component
 public class DBUtil {
 
+    @Resource
+    private ShareDataDao shareDataDao;
+
+    @Resource
+    private MediaCodeDao mediaCodeDao;
+
+    @Resource
+    private UtilDao utilDao;
+
+    @Resource
+    private CategoryDao categoryDao;
+
+    private static DBUtil dbUtil;
+
+    public static void setDbUtil(DBUtil dbUtil) {
+        DBUtil.dbUtil = dbUtil;
+    }
+
+    @PostConstruct
+    public void init() {
+        dbUtil = this;
+        dbUtil.shareDataDao = this.shareDataDao;
+        dbUtil.mediaCodeDao = this.mediaCodeDao;
+        dbUtil.utilDao = this.utilDao;
+        dbUtil.categoryDao = this.categoryDao;
+    }
 
     /**
      * 判断媒体验证码是否存在，存在则更新，不存在则创建
@@ -23,20 +54,20 @@ public class DBUtil {
      * @param mediaCodeEntity 媒体验证码
      * @return 更新、创建是否成功
      */
-    public static boolean judgeMediaCode(MediaCodeDao mediaCodeDao, UtilDao utilDao, MediaCode mediaCodeEntity) {
+    public static boolean judgeMediaCode(MediaCode mediaCodeEntity) {
 
         // 查询媒体验证码对象
-        MediaCode mediaCode = mediaCodeDao.findByUser_idAndCategory_idAndMedia_code(
+        MediaCode mediaCode = dbUtil.mediaCodeDao.findByUser_idAndCategory_idAndMedia_code(
                 mediaCodeEntity.getUserId(), mediaCodeEntity.getCategoryId(), mediaCodeEntity.getMediaCode());
 
         // 判断媒体验证码对象是否有效
         if (mediaCode == null) {
             // 无效，新增一个媒体验证码对象
-            return utilDao.save(mediaCodeEntity);
+            return dbUtil.utilDao.save(mediaCodeEntity);
         } else {
             // 有效，给媒体验证码对象赋予新的值，并更新数据库
             mediaCode.setMediaId(mediaCodeEntity.getMediaId());
-            return utilDao.update(mediaCode);
+            return dbUtil.utilDao.update(mediaCode);
         }
 
     }
@@ -47,7 +78,7 @@ public class DBUtil {
      * @param session session
      * @param user    用户对象
      */
-    public static void selectTodayData(ShareDataDao shareDataDao, HttpSession session, User user) {
+    public static void selectTodayData(HttpSession session, User user) {
 
 
         // 创建日历对象
@@ -66,9 +97,9 @@ public class DBUtil {
         Date end = calendar.getTime();
 
         // 查询数据
-        int click_num = shareDataDao.countByTimeTotal(user.getUserId(), begin, end, ShareData.SHARE_TYPE_WEB_CLICK);
-        int chats_num = shareDataDao.countByTimeTotal(user.getUserId(), begin, end, ShareData.SHARE_TYPE_WECHAT_SHARE_CHATS);
-        int moments_num = shareDataDao.countByTimeTotal(user.getUserId(), begin, end, ShareData.SHARE_TYPE_WECHAT_SHARE_MOMENTS);
+        int click_num = dbUtil.shareDataDao.countByTimeTotal(user.getUserId(), begin, end, ShareData.SHARE_TYPE_WEB_CLICK);
+        int chats_num = dbUtil.shareDataDao.countByTimeTotal(user.getUserId(), begin, end, ShareData.SHARE_TYPE_WECHAT_SHARE_CHATS);
+        int moments_num = dbUtil.shareDataDao.countByTimeTotal(user.getUserId(), begin, end, ShareData.SHARE_TYPE_WECHAT_SHARE_MOMENTS);
 
         session.setAttribute("click_num", click_num);
         session.setAttribute("chats_num", chats_num);
@@ -81,7 +112,7 @@ public class DBUtil {
      *
      * @return 套餐系统信息
      */
-    public static List<Category> judgeCategory(CategoryDao categoryDao, HttpServletRequest request) {
+    public static List<Category> judgeCategory(HttpServletRequest request) {
 
         // 获取application对象
         ServletContext application = request.getSession().getServletContext();
@@ -93,7 +124,7 @@ public class DBUtil {
         if (categoryList == null) {
 
             // 将套餐系统信息赋给套餐系统信息队列对象
-            categoryList = categoryDao.findAll();
+            categoryList = dbUtil.categoryDao.findAll();
 
             application.setAttribute("category", categoryList);
 

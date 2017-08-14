@@ -21,10 +21,8 @@ public class User {
 
     /*正常生效*/
     public static final String USER_STATE_NORMAL = "0";
-    /*暂停状态*/
-    public static final String USER_STATE_PAUSE = "1";
     /*停用状态*/
-    public static final String USER_STATE_DISABLE = "2";
+    public static final String USER_STATE_STOP = "1";
 
     private long userId;
     private String userName;

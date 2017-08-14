@@ -42,7 +42,20 @@ public class UserCategoryDaoImpl extends SuperDao implements UserCategoryDao {
     public UserCategory findByUser_category_id(Long userCategory_id) {
         try (Session session = sessionFactory.openSession()) {
 
-            return session.get(UserCategory.class,userCategory_id);
+            return session.get(UserCategory.class, userCategory_id);
+
+        }
+    }
+
+    @Override
+    public List<UserCategory> findByUser_category_ids(List<Long> userCategory_ids) {
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery(" from UserCategory where userCategoryId in (:userCategory_ids)");
+
+            query.setParameter("userCategory_ids", userCategory_ids);
+
+            return query.list();
 
         }
     }

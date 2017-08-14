@@ -27,6 +27,14 @@ public interface UserDao {
     User findByEmail(String email);
 
     /**
+     * 根据phone查询用户对象
+     *
+     * @param phone 手机号
+     * @return 用户对象
+     */
+    User findByPhone(String phone);
+
+    /**
      * 根据user_id查询用户对象
      *
      * @param user_id 用户id号

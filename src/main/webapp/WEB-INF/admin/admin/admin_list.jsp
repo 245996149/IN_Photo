@@ -70,7 +70,7 @@
                     </thead>
                     <tbody>
                     <c:forEach items="${adminList}" var="a">
-                        <tr>
+                        <tr <c:if test="${a.adminStatu=='1'}">class="danger"</c:if>>
                             <td>${a.adminId}</td>
                             <td>${a.adminName}</td>
                             <td>${a.phone}</td>
@@ -79,22 +79,36 @@
                             <td>
                                 <c:choose>
                                     <c:when test="${a.adminStatu=='0'}">正常</c:when>
-                                    <c:when test="${a.adminStatu=='1'}">暂停</c:when>
-                                    <c:when test="${a.adminStatu=='2'}">停用</c:when>
+                                    <c:when test="${a.adminStatu=='1'}">停用</c:when>
                                     <c:otherwise>未知</c:otherwise>
                                 </c:choose>
                             </td>
                             <td>
                                 <c:if test="${a.adminId!=1}">
-                                    <div class="btn-group-sm" role="group" aria-label="...">
-                                        <button type="button" class="btn btn-danger" onclick="">
-                                            删除
-                                        </button>
-                                        <button type="button" class="btn btn-primary"
-                                                onclick="location='toUpdateAdmin.do?admin_id=${a.adminId}'">
-                                            更新用户资料
-                                        </button>
-                                    </div>
+                                    <c:if test="${a.adminStatu=='1'}">
+                                        <div class="btn-group-sm" role="group">
+                                            <button type="button" class="btn btn-success"
+                                                    onclick="enableAdmin(${a.adminId});">
+                                                启用
+                                            </button>
+                                            <button type="button" class="btn btn-primary"
+                                                    onclick="location='toUpdateAdmin.do?admin_id=${a.adminId}'">
+                                                更新用户资料
+                                            </button>
+                                        </div>
+                                    </c:if>
+                                    <c:if test="${a.adminStatu=='0'}">
+                                        <div class="btn-group-sm" role="group">
+                                            <button type="button" class="btn btn-danger"
+                                                    onclick="stopAdmin(${a.adminId});">
+                                                停用
+                                            </button>
+                                            <button type="button" class="btn btn-primary"
+                                                    onclick="location='toUpdateAdmin.do?admin_id=${a.adminId}'">
+                                                更新用户资料
+                                            </button>
+                                        </div>
+                                    </c:if>
                                 </c:if>
                             </td>
                         </tr>
@@ -337,6 +351,35 @@
             }
         }
         return true;
+    }
+
+    function stopAdmin(admin_id) {
+        changeAdminState(admin_id, '1');
+    }
+
+    function enableAdmin(admin_id) {
+        changeAdminState(admin_id, '0');
+    }
+
+    function changeAdminState(admin_id, admin_state) {
+
+        $.post(
+            "changeAdminState.do",
+            {
+                "admin_id": admin_id,
+                "admin_state": admin_state
+            },
+            function (res) {
+                if (res.success) {
+                    alert(res.message);
+                    window.location.reload();
+                } else {
+                    alert(res.message);
+                    window.location.reload();
+                }
+            }
+        )
+
     }
 
 </script>

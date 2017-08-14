@@ -34,25 +34,27 @@ public class TableController {
     private static Logger logger = Logger.getLogger(TableController.class);
 
     @Resource
-    MediaDataDao mediaDataDao;
+    private MediaDataDao mediaDataDao;
 
     @Resource
-    MediaCodeDao mediaCodeDao;
+    private MediaCodeDao mediaCodeDao;
 
     @Resource
-    UserCategoryDao userCategoryDao;
+    private UserCategoryDao userCategoryDao;
 
     @Resource
-    ShareDataDao shareDataDao;
+    private ShareDataDao shareDataDao;
 
     @Resource
-    UtilDao utilDao;
+    private UtilDao utilDao;
 
     /**
-     * @param model
-     * @param session
-     * @param tablePage
-     * @return
+     * 前往数据管理页面
+     *
+     * @param model     页面数据缓存
+     * @param session   服务器缓存
+     * @param tablePage 页面分页对象
+     * @return 数据管理页面
      */
     @RequestMapping("/toTable.do")
     public String toTable(Model model, HttpSession session, TablePage tablePage) {
@@ -61,7 +63,7 @@ public class TableController {
         tablePage.setUser_id(user.getUserId());
 
         // 判断页面数据对象中是否有相应数据，没有给予初始值
-        if (tablePage.getMedia_state_list().size() == 0) {
+        if (tablePage.getMedia_state_list() == null || tablePage.getMedia_state_list().isEmpty()) {
             tablePage.setMedia_state_list(Arrays.asList(MediaData.MEDIA_STATE_NORMAL, MediaData.MEDIA_STATE_WILL_DELETE));
         }
 
@@ -80,6 +82,14 @@ public class TableController {
         return "user/table";
     }
 
+    /**
+     * 前往回收站
+     *
+     * @param model     页面缓存数据
+     * @param session   服务器缓存
+     * @param tablePage 页面分页对象
+     * @return 回收站页面
+     */
     @RequestMapping("/toRecycle.do")
     public String toRecycle(Model model, HttpSession session, TablePage tablePage) {
 
@@ -171,7 +181,6 @@ public class TableController {
                     result.put("num", a);
 
                     // 将map对象添加到队列中
-                    // infos.add(result);
                     maps[i - 1] = result;
 
                     // 日期减少一天
@@ -197,7 +206,6 @@ public class TableController {
                     result.put("moments_num", moments_num);
 
                     // 将map对象添加到队列中
-                    // infos.add(result);
                     maps[i - 1] = result;
 
                     // 日期减少一天
@@ -238,12 +246,8 @@ public class TableController {
         int media_num = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
                 user.getUserId(), category_id, Collections.singletonList(MediaData.MEDIA_STATE_NORMAL));
 
-        // System.out.println(userCategory);
-
         result.put("use", media_num);
         result.put("remaining", (userCategory.getMediaNumber() - media_num));
-
-        // System.out.println(result.get("remaining"));
 
         return result;
 
@@ -593,7 +597,7 @@ public class TableController {
 
         // 判断数据库中该系统草滩媒体数据总量是否超过套餐总量
         if (mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                user.getUserId(), mediaData.getCategoryId(), Arrays.asList(MediaData.MEDIA_STATE_NORMAL))
+                user.getUserId(), mediaData.getCategoryId(), Collections.singletonList(MediaData.MEDIA_STATE_NORMAL))
                 >= userCategory.getMediaNumber()) {
 
             result.put("success", false);

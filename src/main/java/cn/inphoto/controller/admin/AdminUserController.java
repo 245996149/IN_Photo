@@ -24,6 +24,7 @@ import java.util.Map;
 import static cn.inphoto.util.MD5Util.getMD5;
 import static cn.inphoto.util.MailUtil.sendMail;
 import static cn.inphoto.util.PasswordUtil.getRandomPassword;
+import static cn.inphoto.util.ResultMapUtil.createResult;
 
 @RequestMapping("/admin/adminManage")
 @Controller
@@ -72,39 +73,53 @@ public class AdminUserController {
     }
 
     /**
-     * 停用用户
+     * 更新管理员账户状态
      *
-     * @param admin_id 停用的用户id
+     * @param admin_id 管理员id
      * @return 是否成功
      */
-    @RequestMapping("/stopAdmin.do")
+    @RequestMapping("/changeAdminState.do")
     @ResponseBody
-    public Map stopAdmin(Integer admin_id) {
-        Map<String, Object> result = new HashMap<>();
+    public Map changeAdminState(Integer admin_id, String admin_state) {
 
+        // 判断传入的是否是管理员
         if (admin_id == 1) {
-            result.put("success", false);
-            result.put("message", "该管理员不能操作");
-            return result;
+            return createResult(false, "该管理员不能操作");
         }
 
+        // 查找对象
         AdminInfo adminInfo = adminDao.findByAdmin_id(admin_id);
 
-        adminInfo.setAdminStatu(AdminInfo.ADMIN_STATE_STOP);
-
-        if (utilDao.update(adminInfo)) {
-            result.put("success", true);
-            result.put("message", "操作成功");
-        } else {
-            result.put("success", false);
-            result.put("message", "在更新数据时发生了错误，请稍候重试");
+        if (adminInfo == null) {
+            return createResult(false, "传入的参数不正确");
         }
 
-        return result;
+        // 更新数据
+        if (AdminInfo.ADMIN_STATE_NORMAL.equals(admin_state)) {
+            adminInfo.setAdminStatu(AdminInfo.ADMIN_STATE_NORMAL);
+        } else if (AdminInfo.ADMIN_STATE_STOP.equals(admin_state)) {
+            adminInfo.setAdminStatu(AdminInfo.ADMIN_STATE_STOP);
+        } else {
+            return createResult(false, "传入的参数不正确");
+        }
+
+        // 写入数据
+        if (!utilDao.update(adminInfo)) {
+            return createResult(true, "在更新数据时发生了错误，请稍候重试");
+        }
+
+        return createResult(true, "操作成功");
     }
 
+    /**
+     * 前往添加管理员页面
+     *
+     * @param adminInfo  对象
+     * @param user_state 状态
+     * @return 页面
+     */
     @RequestMapping("/toAddAdmin.do")
-    public String toAddAdmin(AdminInfo adminInfo, boolean user_state) throws Exception {
+    public String toAddAdmin(AdminInfo adminInfo, boolean user_state) {
 
         // 设置管理员状态
         if (user_state) {
@@ -120,16 +135,21 @@ public class AdminUserController {
 
         if (utilDao.save(adminInfo)) {
 
-            //TODO 添加发送邮件逻辑
             // 发送邮件
             if (sendEmail) {
-                sendMail(adminInfo.getEmail(), "IN Photo注册邮件",
-                        "<div>尊敬的" + adminInfo.getEmail() + "您好！ 感谢您成为IN Photo管理员中的一员。</div>" +
-                                "<div><includetail><p>我们将为您提供最贴心的服务，祝您使用愉快！</p>" +
-                                "<p>您在IN Photo管理中心的登录帐号：</p><p>帐号：" + adminInfo.getEmail() + "</p>" +
-                                "<p>密码：" + pwd + "</p><p>请您及时登录系统填写用户名，更改密码。</p>" +
-                                "<p><a href='" + emailManageAdd + "'>点击前往IN Photo管理员系统</a></p>" +
-                                "<p>此邮件为系统自动发送，请勿直接回复该邮件</p></includetail></div>");
+                try {
+                    sendMail(adminInfo.getEmail(), "IN Photo注册邮件",
+                            "<div>尊敬的" + adminInfo.getEmail() + "您好！ 感谢您成为IN Photo管理员中的一员。</div>" +
+                                    "<div><includetail><p>我们将为您提供最贴心的服务，祝您使用愉快！</p>" +
+                                    "<p>您在IN Photo管理中心的登录帐号：</p><p>帐号：" + adminInfo.getEmail() + "</p>" +
+                                    "<p>密码：" + pwd + "</p><p>请您及时登录系统填写用户名，更改密码。</p>" +
+                                    "<p><a href='" + emailManageAdd + "'>点击前往IN Photo管理员系统</a></p>" +
+                                    "<p>此邮件为系统自动发送，请勿直接回复该邮件</p></includetail></div>");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    // 保存失败，跳转到错误页面
+                    return "redirect:/admin/login/error.do";
+                }
             }
 
         } else {
@@ -142,6 +162,13 @@ public class AdminUserController {
         return "redirect:toUpdateAdmin.do?admin_id=" + adminInfo.getAdminId();
     }
 
+    /**
+     * 前往更新管理员页面
+     *
+     * @param admin_id 管理员id
+     * @param model    页面数据缓存
+     * @return 页面
+     */
     @RequestMapping("/toUpdateAdmin.do")
     public String toUpdateAdmin(Integer admin_id, Model model) {
 
@@ -158,6 +185,12 @@ public class AdminUserController {
         return "admin/admin/admin_update";
     }
 
+    /**
+     * 更新管理员数据
+     *
+     * @param adminInfo 管理员对象
+     * @return 成功与否页面
+     */
     @RequestMapping("updateAdmin.do")
     public String updateAdmin(AdminInfo adminInfo) {
 
@@ -166,15 +199,18 @@ public class AdminUserController {
             return "no_power";
         }
 
+        // 查找对象
         AdminInfo a = adminDao.findByAdmin_id(adminInfo.getAdminId());
 
-        System.out.println(a.toString());
+        if (a == null) {
+            return "redirect:/admin/login/error.do";
+        }
 
+        // 更新数据
         a.setCategorySet(new HashSet<>(categoryDao.findByCategoryIds(adminInfo.getCategoryIds())));
         a.setRoleInfoSet(new HashSet<>(roleDao.findByRoleIds(adminInfo.getRoleIds())));
 
-        System.out.println(a.toString());
-
+        // 写入数据
         if (adminDao.updateAdmin(a)) {
             return "redirect:toAdmin.do";
         } else {

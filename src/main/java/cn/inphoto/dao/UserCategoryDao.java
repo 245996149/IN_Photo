@@ -22,10 +22,19 @@ public interface UserCategoryDao {
 
     /**
      * 根据userCategory_id查询用户套餐系统对象
-     * @param userCategory_id
-     * @return
+     *
+     * @param userCategory_id 用户套餐系统id
+     * @return 用户套餐系统对象
      */
     UserCategory findByUser_category_id(Long userCategory_id);
+
+    /**
+     * 根据userCategory_id查询用户套餐系统对象
+     *
+     * @param userCategory_ids 用户套餐系统id队列
+     * @return 用户套餐系统对象队列
+     */
+    List<UserCategory> findByUser_category_ids(List<Long> userCategory_ids);
 
     /**
      * 根据user_id、category_id查询该用户所有套餐系统对象

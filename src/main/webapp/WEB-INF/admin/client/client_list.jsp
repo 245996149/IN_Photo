@@ -84,35 +84,40 @@
                     </thead>
                     <tbody>
                     <c:forEach items="${userList}" var="u">
-                        <tr>
-                            <td><%--<input type="checkbox" name="media_data_checkbox"
+                        <tr <c:if test="${u.userState=='1'}">class="danger"</c:if></tr>
+                        <td><%--<input type="checkbox" name="media_data_checkbox"
                                        onclick="checkAllCheck();" value="${u.userId}">--%><span>${u.userId}</span></td>
-                            <td>${u.userName}</td>
-                            <td><fmt:formatDate value="${u.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-                            <td>${u.phone}</td>
-                            <td>${u.email}</td>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${u.userState=='0'}">正常</c:when>
-                                    <c:when test="${u.userState=='1'}">暂停</c:when>
-                                    <c:when test="${u.userState=='2'}">停用</c:when>
-                                    <c:otherwise>未知</c:otherwise>
-                                </c:choose>
-                            </td>
-                            <td><c:if test="${sessionScope.isAdmin==true}">${u.adminId}</c:if></td>
-                            <td>
-                                <div class="btn-group-sm" role="group" aria-label="...">
-                                    <button type="button" class="btn btn-danger" onclick="">
-                                        删除
+                        <td>${u.userName}</td>
+                        <td><fmt:formatDate value="${u.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                        <td>${u.phone}</td>
+                        <td>${u.email}</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${u.userState=='0'}">正常</c:when>
+                                <c:when test="${u.userState=='1'}">停用</c:when>
+                                <c:otherwise>未知</c:otherwise>
+                            </c:choose>
+                        </td>
+                        <td><c:if test="${sessionScope.isAdmin==true}">${u.adminId}</c:if></td>
+                        <td>
+                            <div class="btn-group-sm" role="group" aria-label="...">
+                                <c:if test="${u.userState=='0'}">
+                                    <button type="button" class="btn btn-danger"
+                                            onclick="stopUser(${u.userId},'${u.userName}')">
+                                        停用
                                     </button>
                                     <button type="button" class="btn btn-primary"
                                             onclick="location='toCategoryList.do?user_id=${u.userId}'">
                                         套餐管理
                                     </button>
-                                    <button type="button" class="btn btn-info" onclick="">下载
+                                </c:if>
+                                <c:if test="${u.userState=='1'}">
+                                    <button type="button" class="btn btn-success" onclick="enableUser(${u.userId});">
+                                        启用
                                     </button>
-                                </div>
-                            </td>
+                                </c:if>
+                            </div>
+                        </td>
                         </tr>
                     </c:forEach>
                     </tbody>
@@ -299,6 +304,26 @@
     </div>
 </div>
 
+<!-- Danger Modal -->
+<div class="modal fade" id="dangerModal" tabindex="-1" role="dialog" aria-labelledby="dangerModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="dangerModalLabel">危险操作提醒</h4>
+            </div>
+            <div class="modal-body" style="text-align: center">
+                <span id="danger_modal_span"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消操作</button>
+                <button type="button" class="btn btn-danger" onclick="confirmStopUserCategory();">确认操作</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
 
     function checkForm() {
@@ -347,6 +372,66 @@
             }
         }
         return true;
+    }
+
+    var userId;
+
+    /*提交停止申请，弹出确认模态框*/
+    function stopUser(user_id, user_name) {
+
+        userId = user_id;
+
+        $("#danger_modal_span").html("此操作属于危险操作，请确认您真的要使以下的用户失效吗？<br/>" +
+            "<strong>用户id： " + user_id + " ，用户名： " + user_name +
+            "<br/>用户的所有套餐将会同时失效，相应的媒体数据会进入待删除状态。</strong><br/>" +
+            "待删除状态下，7天内没有相应的套餐生效，媒体数据将会进入回收站。" +
+            "7天内，如果有相应的套餐生效，则待删除状态的媒体数据在下一个数据更新周期将会重新进入正常状态。");
+        $("#dangerModal").modal(
+            {backdrop: 'static'}
+        );
+
+    }
+
+    /*确认停止申请*/
+    function confirmStopUserCategory() {
+
+        $.post(
+            "changeUserState.do",
+            {
+                "user_id": userId,
+                "user_state": '1'
+            },
+            function (res) {
+                if (res.success) {
+                    alert(res.message);
+                    window.location.reload();
+                } else {
+                    alert(res.message);
+                    window.location.reload();
+                }
+            }
+        )
+
+    }
+
+    /*提交停止申请，弹出确认模态框*/
+    function enableUser(user_id) {
+        $.post(
+            "changeUserState.do",
+            {
+                "user_id": user_id,
+                "user_state": '0'
+            },
+            function (res) {
+                if (res.success) {
+                    alert(res.message);
+                    window.location.reload();
+                } else {
+                    alert(res.message);
+                    window.location.reload();
+                }
+            }
+        )
     }
 
 </script>

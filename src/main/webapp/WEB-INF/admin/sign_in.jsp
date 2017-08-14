@@ -40,7 +40,7 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="${pageContext.request.contextPath}/js/ie10-viewport-bug-workaround.js"></script>
 
-    <script src="${pageContext.request.contextPath}/js/admin/sign_in.js"></script>
+    <script src="${pageContext.request.contextPath}/js/sign_in.js"></script>
 
 </head>
 
@@ -56,7 +56,7 @@
 <br/>
 <div class="container">
     <div class="alert alert-danger" role="alert" style="display: none" id="error_message">...</div>
-    <form class="form-signin" id="signin_form" <%--action="login.do"--%> method="post">
+    <form class="form-signin" id="signin_form" method="post">
         <h2 class="form-signin-heading">IN Photo管理员系统</h2>
         <div class="input-group input-group-lg">
             <div class="input-group-btn">
@@ -91,14 +91,9 @@
         <input type="password" id="inputPassword" class="form-control input-lg" placeholder="Password" required
                name="password" value="${password}">
         <div class="checkbox">
-            <c:choose>
-                <c:when test="${remLogin=='0'}">
-                    <label> <input type="checkbox" id="remLogin" value="remember-me" checked> 记住登录状态 </label>
-                </c:when>
-                <c:otherwise>
-                    <label> <input type="checkbox" id="remLogin" value="remember-me"> 记住登录状态 </label>
-                </c:otherwise>
-            </c:choose>
+            <label> <input type="checkbox" id="remLogin" value="remember-me"
+            <c:if test="${remLogin=='0'}"> checked </c:if>
+            > 记住登录状态 </label>
         </div>
         <button type="button" class="btn btn-lg btn-primary btn-block" onclick="check_admin();">登&nbsp;陆</button>
     </form>

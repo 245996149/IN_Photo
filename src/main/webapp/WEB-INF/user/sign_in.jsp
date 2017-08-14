@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -9,9 +10,12 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="${pageContext.request.contextPath}/images/logo.png">
-    <title>Signin Template for Bootstrap</title>
+    <title>IN Photo管理系统</title>
 
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="${pageContext.request.contextPath}/js/jquery-3.2.1.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 
     <!-- Bootstrap core CSS -->
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
@@ -32,77 +36,62 @@
     <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="${pageContext.request.contextPath}/js/ie10-viewport-bug-workaround.js"></script>
+
+    <script src="${pageContext.request.contextPath}/js/sign_in.js"></script>
+
 </head>
 
 <body>
 <div class="container">
     <div class="alert alert-danger" role="alert" style="display: none" id="error_message">...</div>
-    <form class="form-signin" id="signin_form" action="login.do" method="post">
+    <form class="form-signin" id="signin_form" method="post">
         <h2 class="form-signin-heading">IN Photo管理系统</h2>
-        <label for="inputUsername" class="sr-only">User name</label>
-        <input type="text" id="inputUsername" class="form-control" placeholder="User name" required autofocus
-               name="user_name">
+        <div class="input-group input-group-lg">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false" id="inputButton">
+                    <c:choose>
+                        <c:when test="${login_type=='1'}">手机号</c:when>
+                        <c:when test="${login_type=='2'}">邮箱</c:when>
+                        <c:otherwise>用户名</c:otherwise>
+                    </c:choose>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="javascript:void(0);" onclick="selectType(0,'用户名');">用户名</a></li>
+                    <li><a href="javascript:void(0);" onclick="selectType(1,'手机号')">手机号</a></li>
+                    <li><a href="javascript:void(0);" onclick="selectType(2,'邮箱')">邮箱</a></li>
+                </ul>
+            </div><!-- /btn-group -->
+            <input type="text" hidden id="login_type" name="login_type"
+            <c:choose>
+            <c:when test="${login_type!=''}">
+                   value="${login_type}"
+            </c:when>
+            <c:otherwise>
+                   value="0"
+            </c:otherwise>
+            </c:choose>>
+            <input type="text" class="form-control" name="input_text" id="input_text" placeholder="下拉选择登录方式"
+                   value="${input_text}">
+        </div><!-- /input-group -->
+        <br/>
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
+        <input type="password" id="inputPassword" class="form-control input-lg" placeholder="Password" required
+               name="password" value="${password}">
         <div class="checkbox">
-            <label>
-                <input type="checkbox" value="remember-me" checked="checked">
-                记住登录状态 </label>
-            <label style="float: right;">
-                <a href="#">忘记密码?</a>
-            </label>
+            <label> <input type="checkbox" id="remLogin" value="remember-me"
+            <c:if test="${remLogin=='0'}"> checked </c:if>
+            > 记住登录状态 </label>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" onclick="check_user();">登&nbsp;陆</button>
+        <button type="button" class="btn btn-lg btn-primary btn-block" onclick="check_user();">登&nbsp;陆</button>
     </form>
 </div>
 <!-- /container -->
 
-<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<script src="${pageContext.request.contextPath}/js/ie10-viewport-bug-workaround.js"></script>
-<script type="text/javascript">
-
-    function check_user() {
-        var user_name = $("#inputUsername").val();
-        var password = $("#inputPassword").val();
-        var error_message = $("#error_message");
-        var signin_form = $("#signin_form");
-
-        $.post(
-            "checkUser.do",
-            {
-                "user_name": user_name,
-                "password": password
-            },
-            function (res) {
-                if (res.success) {
-                    error_message.text("user_name = " + user_name + " password = " + password + " 登陆成功");
-                    error_message.show();
-                    setTimeout(function () {
-                        $("#error_message").hide();
-                    }, 2000);
-
-                    //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
-                    var pathName = window.document.location.pathname;
-                    //获取带"/"的项目名，如：/uimcardprj
-                    var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
-
-                    signin_form.src = "login.do";
-                    signin_form.submit();
-
-                } else {
-                    error_message.text("user_name = " + user_name + " " + res.message);
-                    error_message.show();
-                    setTimeout(function () {
-                        $("#error_message").hide();
-                    }, 5000);
-                }
-            }
-        );
-
-
-    }
-
-</script>
 </body>
 </html>
 

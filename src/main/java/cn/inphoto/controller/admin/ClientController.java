@@ -5,6 +5,7 @@ import cn.inphoto.dbentity.admin.AdminInfo;
 import cn.inphoto.dbentity.page.TablePage;
 import cn.inphoto.dbentity.page.UserPage;
 import cn.inphoto.dbentity.user.*;
+import cn.inphoto.util.dbUtil.ClientUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ import static cn.inphoto.util.DateUtil.getTodayDate;
 import static cn.inphoto.util.MD5Util.getMD5;
 import static cn.inphoto.util.MailUtil.sendMail;
 import static cn.inphoto.util.PasswordUtil.getRandomPassword;
+import static cn.inphoto.util.ResultMapUtil.createResult;
 
 @Controller
 @RequestMapping("/admin/clientManage")
@@ -78,14 +80,7 @@ public class ClientController {
 
         userPage.setRows(userDao.countByPage(userPage));
 
-//        System.out.println(userPage.toString());
-
         List<User> users = userDao.findByPage(userPage);
-
-//        for (User u : users
-//                ) {
-//            System.out.println(u.toString());
-//        }
 
         model.addAttribute("userList", users);
         model.addAttribute("userPage", userPage);
@@ -102,19 +97,14 @@ public class ClientController {
     @RequestMapping("checkEmail.do")
     @ResponseBody
     public Map checkEmail(String email) {
-        Map<String, Object> result = new HashMap<>();
 
         User user = userDao.findByEmail(email);
 
         if (user != null) {
-            result.put("success", false);
-            result.put("message", "已经存在该email");
-            return result;
+            return createResult(false, "已经存在该email");
         }
 
-        result.put("success", true);
-        result.put("message", "通过email验证");
-        return result;
+        return createResult(true, "通过email验证");
     }
 
     /**
@@ -170,6 +160,60 @@ public class ClientController {
         }
     }
 
+
+    /**
+     * 更改客户状态
+     *
+     * @param user_id    客户
+     * @param user_state 变更的状态
+     * @param session    服务器缓存
+     * @return 是否成功
+     */
+    @RequestMapping("/changeUserState.do")
+    @ResponseBody
+    public Map changeUserState(Long user_id, String user_state, HttpSession session) {
+
+        AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
+        boolean isAdmin = (boolean) session.getAttribute("isAdmin");
+
+        User user = userDao.findByUser_id(user_id);
+
+        // 判断是否有管理员权限
+        if (!isAdmin) {
+            //没有管理员权限，判断是否有管理权限
+            if (user.getAdminId() != adminInfo.getAdminId()) {
+                return createResult(false, "您没有权限操作该用户");
+            }
+        }
+
+        if (User.USER_STATE_STOP.equals(user_state)) {
+            user.setUserState(User.USER_STATE_STOP);
+        } else if (User.USER_STATE_NORMAL.equals(user_state)) {
+            user.setUserState(User.USER_STATE_NORMAL);
+        } else {
+            return createResult(false, "请输入正确的参数");
+        }
+
+        if (!utilDao.update(user)) {
+            return createResult(false, "更新数据时发生了错误，请稍候再试");
+        }
+
+        if (User.USER_STATE_STOP.equals(user_state)) {
+            List<UserCategory> userCategoryList = userCategoryDao.findByUser_idAndState(user_id, UserCategory.USER_CATEGORY_STATE_NORMAL);
+            List<Long> userCategoryIds = new ArrayList<>();
+            for (UserCategory uc : userCategoryList
+                    ) {
+                userCategoryIds.add(uc.getUserCategoryId());
+            }
+            if (!userCategoryIds.isEmpty()) {
+                return ClientUtil.stopUserCategory(userCategoryIds);
+            }
+        }
+
+        return createResult(true, "更新成功");
+
+    }
+
     /**
      * 前往添加套餐页面
      *
@@ -218,7 +262,6 @@ public class ClientController {
     public Map addCategory(Long user_id, Integer category_id,
                            @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date,
                            @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date, Integer number) {
-        Map<String, Object> result = new HashMap<>();
 
         List<UserCategory> userCategoryList = userCategoryDao.findByUser_idAndCategory_id(user_id, category_id);
 
@@ -228,7 +271,6 @@ public class ClientController {
 
             UserCategory uc = userCategoryList.get(i);
 
-//            System.out.println(uc.toString());
             if (UserCategory.USER_CATEGORY_STATE_OVER.equals(uc.getUserCategoryState())) {
                 userCategoryList.remove(i);
                 i--;
@@ -262,12 +304,11 @@ public class ClientController {
 
         if (beginTimeFlag || endTimeFlag) {
 
-            result.put("success", false);
-            result.put("message", "该时间段内存在相同的套餐");
-            return result;
+            return createResult(false, "该时间段内存在相同的套餐");
 
         }
 
+        // 更新数据
         UserCategory userCategory = new UserCategory();
         userCategory.setUserId(user_id);
         userCategory.setCategoryId(category_id);
@@ -280,19 +321,12 @@ public class ClientController {
             userCategory.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_NOT_START);
         }
 
-//        System.out.println(userCategory.toString());
-
-        if (utilDao.save(userCategory)) {
-            result.put("success", true);
-            result.put("message", "添加成功，请等待跳转");
-
-        } else {
-            result.put("success", false);
-            result.put("message", "写入数据时发生了点小意外，请稍后再试");
-
+        // 写入数据
+        if (!utilDao.save(userCategory)) {
+            return createResult(false, "写入数据时发生了点小意外，请稍后再试");
         }
 
-        return result;
+        return createResult(true, "添加成功，请等待跳转");
     }
 
     /**
@@ -353,34 +387,30 @@ public class ClientController {
     /**
      * 停止客户的某一套餐
      *
-     * @param user_id         客户
      * @param userCategory_id 套餐
      * @param session         服务器缓存
      * @return 是否成功
      */
     @RequestMapping("/stopUserCategory.do")
     @ResponseBody
-    public Map stopUserCategory(Long user_id, Long userCategory_id, HttpSession session) {
-
-        Map<String, Object> result = new HashMap<>();
+    public Map stopUserCategory(Long userCategory_id, HttpSession session) {
 
         AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
         boolean isAdmin = (boolean) session.getAttribute("isAdmin");
 
-        User user = userDao.findByUser_id(user_id);
+        // 查找对应的用户套餐
+        UserCategory userCategory = userCategoryDao.findByUser_category_id(userCategory_id);
+
+        // 查找对应的用户
+        User user = userDao.findByUser_id(userCategory.getUserId());
 
         // 判断是否有管理员权限
         if (!isAdmin) {
             //没有管理员权限，判断是否有管理权限
             if (user.getAdminId() != adminInfo.getAdminId()) {
-                result.put("success", false);
-                result.put("message", "您没有权限操作该用户");
-                return result;
+                return createResult(false, "您没有权限操作该用户");
             }
         }
-
-        // 查找对应的用户套餐
-        UserCategory userCategory = userCategoryDao.findByUser_category_id(userCategory_id);
 
         // 更新用户套餐
         userCategory.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_OVER);
@@ -390,40 +420,12 @@ public class ClientController {
         if (!utilDao.update(userCategory)) {
 
             // 更新失败
-            result.put("success", false);
-            result.put("message", "更新对应的用户套餐时发生了错误，请稍后再试。");
-            return result;
+            return createResult(false, "更新对应的用户套餐时发生了错误，请稍后再试。");
 
         }
 
-        // 查找对应的媒体数据
-        List<MediaData> mediaDataList = mediaDataDao.findByUser_idAndCategory_idAndState(
-                user_id, userCategory.getCategoryId(), MediaData.MEDIA_STATE_NORMAL);
-
-        // 判断是否有对应的媒体数据，没有媒体数据跳过更新媒体数据状态
-        if (mediaDataList.size() != 0) {
-
-            // 更新查找到的媒体数据状态
-            for (MediaData m : mediaDataList
-                    ) {
-                m.setMediaState(MediaData.MEDIA_STATE_WILL_DELETE);
-            }
-
-            // 更新数据库中的媒体数据
-            if (!mediaDataDao.updateMediaList(mediaDataList)) {
-
-                // 更新失败
-                result.put("success", true);
-                result.put("message", "更新用户套餐成功，但是在更新对应的媒体数据是发生了错误，媒体数据将在下一个更新周期自动更新状态。");
-                return result;
-
-            }
-
-        }
-
-        result.put("success", true);
-        result.put("message", "更新用户套餐成功，更新对应的媒体数据成功");
-        return result;
+        return createResult(true,
+                "更新用户套餐成功，媒体数据将在下一个更新周期自动更新状态。");
 
     }
 
@@ -481,7 +483,6 @@ public class ClientController {
     public Map updateCategory(Long user_category_id, HttpSession session,
                               @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date,
                               @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date, Integer number) {
-        Map<String, Object> result = new HashMap<>();
 
         AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
         boolean isAdmin = (boolean) session.getAttribute("isAdmin");
@@ -494,16 +495,12 @@ public class ClientController {
         if (!isAdmin) {
             //没有管理员权限，判断是否有管理权限
             if (user.getAdminId() != adminInfo.getAdminId()) {
-                result.put("success", false);
-                result.put("message", "您没有权限操作该数据");
-                return result;
+                return createResult(false, "您没有权限操作该数据");
             }
         }
 
         if (UserCategory.USER_CATEGORY_STATE_OVER.equals(userCategory.getUserCategoryState())) {
-            result.put("success", false);
-            result.put("message", "用户套餐已经过期，无法对其进行数据修改");
-            return result;
+            return createResult(false, "用户套餐已经过期，无法对其进行数据修改");
         }
 
         List<UserCategory> userCategoryList = userCategoryDao.findByUser_idAndCategory_id(
@@ -515,7 +512,6 @@ public class ClientController {
 
             UserCategory uc = userCategoryList.get(i);
 
-// System.out.println(uc.toString());
             // 清楚过期以及自身的用户套餐
             if (UserCategory.USER_CATEGORY_STATE_OVER.equals(uc.getUserCategoryState())
                     || uc.getUserCategoryId() == userCategory.getUserCategoryId()) {
@@ -551,31 +547,34 @@ public class ClientController {
 
         if (beginTimeFlag || endTimeFlag) {
 
-            result.put("success", false);
-            result.put("message", "该时间段内存在相同的套餐");
-            return result;
+            return createResult(false, "该时间段内存在相同的套餐");
 
         }
 
+        // 更新数据
         userCategory.setEndTime(new Timestamp(inputEndTime));
         userCategory.setMediaNumber(number);
         if (getTodayDate().getTime() / 1000 == begin_date.getTime() / 1000) {
             userCategory.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_NORMAL);
         }
 
-        if (utilDao.update(userCategory)) {
-            result.put("success", true);
-            result.put("message", "修改套餐数据成功，请等待跳转");
-
-        } else {
-            result.put("success", false);
-            result.put("message", "写入数据时发生了点小意外，请稍后再试");
+        // 写入数据
+        if (!utilDao.update(userCategory)) {
+            return createResult(false, "写入数据时发生了点小意外，请稍后再试");
         }
 
-        return result;
+        return createResult(true, "修改套餐数据成功，请等待跳转");
 
     }
 
+    /**
+     * 前往查看媒体数据页面
+     *
+     * @param session   服务器缓存
+     * @param model     页面数据缓存
+     * @param tablePage 页面分页对象
+     * @return 页面
+     */
     @RequestMapping("/toClientMedia.do")
     public String toClientMedia(HttpSession session, Model model,
                                 TablePage tablePage) {
@@ -592,8 +591,6 @@ public class ClientController {
                 return "no_power";
             }
         }
-
-//        System.out.println(tablePage.getMedia_state_list().isEmpty());
 
         // 判断页面数据对象中是否有相应数据，没有给予初始值
         if (tablePage.getMedia_state_list() == null || tablePage.getMedia_state_list().isEmpty()) {

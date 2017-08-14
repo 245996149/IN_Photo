@@ -14,14 +14,14 @@ import javax.servlet.http.HttpSession;
  * @author Ming.C
  * @date 17-3-7 上午11:18
  */
-public class CheckLoginInterceptor implements HandlerInterceptor {
+public class CheckUserLoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         HttpSession session = httpServletRequest.getSession();
         User user = (User) session.getAttribute("loginUser");
         if (user == null) {
-            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/login/toLogin.do");
+            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/user/login/toLogin.do");
             return false;
         } else {
             return true;

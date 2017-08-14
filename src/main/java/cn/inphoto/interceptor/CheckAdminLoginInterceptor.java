@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
  * @author Ming.C
  * @date 17-3-7 上午11:18
  */
-public class CheckAdminInterceptor implements HandlerInterceptor {
+public class CheckAdminLoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {

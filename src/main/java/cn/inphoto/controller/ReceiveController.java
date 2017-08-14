@@ -323,7 +323,7 @@ public class ReceiveController {
             System.out.println(mediaCode.toString());
 
             // 更新、新增验证码表，并返回是否成功
-            if (!judgeMediaCode(mediaCodeDao, utilDao, mediaCode)) {
+            if (!judgeMediaCode(mediaCode)) {
 
                 result.put("success", false);
                 result.put("code", 108);
@@ -353,6 +353,8 @@ public class ReceiveController {
             result.put("success", true);
             result.put("code", 200);
             result.put("message", "数据写入系统成功");
+            result.put("url", request.getScheme() + "://" + request.getServerName() + request.getContextPath() +
+                    "/mobile/toPage.do?user_id=" + user_id + "&category_id=" + category_id + "&media_id=" + mediaData.getMediaId());
             logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id="
                     + category_id + "，返回的信息为：" + result.toString());
             return result;

@@ -43,9 +43,6 @@ public class AdminLoginController {
     @Resource
     AdminDao adminDao;
 
-    @Resource
-    ClientDao clientDao;
-
     @RequestMapping("/toLogin.do")
     public String toLogin(HttpServletRequest request, Model model) throws IOException {
         Cookie[] cookies = request.getCookies();

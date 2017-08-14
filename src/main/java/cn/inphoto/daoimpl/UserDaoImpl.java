@@ -50,6 +50,20 @@ public class UserDaoImpl extends SuperDao implements UserDao {
     }
 
     @Override
+    public User findByPhone(String phone) {
+
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery("from User where phone= :phone");
+
+            query.setParameter("phone", phone);
+
+            return (User) query.uniqueResult();
+        }
+
+    }
+
+    @Override
     public User findByUser_id(Long user_id) {
 
         try (Session session = sessionFactory.openSession()) {
