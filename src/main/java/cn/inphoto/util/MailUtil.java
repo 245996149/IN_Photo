@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import java.util.Date;
 import java.util.Properties;
@@ -22,20 +21,20 @@ public class MailUtil {
     // 发件人邮箱的 SMTP 服务器地址, 必须准确, 不同邮件服务器地址不同, 一般格式为: smtp.xxx.com
     private static String myEmailSMTPHost = "smtp.exmail.qq.com";
 
-//    @Value("#{properties['EmailAccount']}")
-//    public static void setMyEmailAccount(String myEmailAccount) {
-//        MailUtil.myEmailAccount = myEmailAccount;
-//    }
-//
-//    @Value("#{properties['EmailPassword']}")
-//    public static void setMyEmailPassword(String myEmailPassword) {
-//        MailUtil.myEmailPassword = myEmailPassword;
-//    }
-//
-//    @Value("#{properties['EmailSMTPHost']}")
-//    public static void setMyEmailSMTPHost(String myEmailSMTPHost) {
-//        MailUtil.myEmailSMTPHost = myEmailSMTPHost;
-//    }
+    @Value("#{properties['EmailAccount']}")
+    public static void setMyEmailAccount(String myEmailAccount) {
+        MailUtil.myEmailAccount = myEmailAccount;
+    }
+
+    @Value("#{properties['EmailPassword']}")
+    public static void setMyEmailPassword(String myEmailPassword) {
+        MailUtil.myEmailPassword = myEmailPassword;
+    }
+
+    @Value("#{properties['EmailSMTPHost']}")
+    public static void setMyEmailSMTPHost(String myEmailSMTPHost) {
+        MailUtil.myEmailSMTPHost = myEmailSMTPHost;
+    }
 
     public static void sendMail(String receiveMailAccount, String total, String text) throws Exception {
         // 1. 创建参数配置, 用于连接邮件服务器的参数配置

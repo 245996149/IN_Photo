@@ -166,6 +166,12 @@
             <version>1.4</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.aliyun.mns</groupId>
+            <artifactId>aliyun-sdk-mns</artifactId>
+            <version>1.1.8</version>
+            <classifier>jar-with-dependencies</classifier>
+        </dependency>
 
         <!--<dependency>-->
         <!--<groupId>xuggle</groupId>-->

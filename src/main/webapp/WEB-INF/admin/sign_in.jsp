@@ -94,6 +94,9 @@
             <label> <input type="checkbox" id="remLogin" value="remember-me"
             <c:if test="${remLogin=='0'}"> checked </c:if>
             > 记住登录状态 </label>
+            <label style="float: right;">
+                <a href="#">忘记密码?</a>
+            </label>
         </div>
         <button type="button" class="btn btn-lg btn-primary btn-block" onclick="check_admin();">登&nbsp;陆</button>
     </form>
