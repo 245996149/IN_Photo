@@ -216,6 +216,10 @@ public class MobileController {
                 if (mediaData == null || !MediaData.MEDIA_STATE_NORMAL.equals(mediaData.getMediaState()))
                     return MOBILE_404;
 
+                // 获取图片尾缀
+                String tempFileName[] = mediaData.getFilePath().split("\\.");
+
+                model.addAttribute("image_type", tempFileName[1]);
                 model.addAttribute("media_id", mediaData.getMediaId());
             }
 

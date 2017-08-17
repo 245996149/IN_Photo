@@ -66,7 +66,7 @@ public class DownloadController {
      * @param thumbnail 是否压缩
      * @throws IOException 抛出IO错误
      */
-    @RequestMapping("getMedia.do")
+    @RequestMapping("/getMedia.do")
     public void getMedia(HttpServletResponse response, HttpServletRequest request,
                          Long id, int type, boolean thumbnail, boolean download) throws IOException {
 

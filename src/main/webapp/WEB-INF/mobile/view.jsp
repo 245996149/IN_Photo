@@ -156,7 +156,7 @@
 
             <div style="position: absolute;top: ${picWebinfo.pictureTop}%;bottom: ${picWebinfo.pictureBottom}%;
                     left: ${picWebinfo.pictureLeft}%;right: ${picWebinfo.pictureRight}%;z-index: 10;">
-                <img src="${pageContext.request.contextPath}/get/getMedia.do?type=1&id=${media_id}"
+                <img src="${pageContext.request.contextPath}/get/getMedia.do?type=1&id=${media_id}&download=true&image_type=.${image_type}"
                      style="height: 100%;width: 100%">
             </div>
         </c:when>

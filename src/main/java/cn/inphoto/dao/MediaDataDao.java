@@ -51,6 +51,25 @@ public interface MediaDataDao {
     MediaData findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(Long user_id, int category_id, String media_state);
 
     /**
+     * 根据user_id、category_id、media_state查询时间最前的一个media
+     *
+     * @param user_id     用户id
+     * @param category_id 套餐系统id
+     * @param media_state 媒体状态
+     * @param number      查找的数量
+     * @return
+     */
+    List<MediaData> findByUser_idAndCategory_idAndMedia_stateOrderByCreate_time(Long user_id, int category_id, String media_state, int number);
+
+    /**
+     * 根据媒体状态找到该状态的所有媒体
+     *
+     * @param media_state 媒体状态
+     * @return 媒体队列
+     */
+    List<MediaData> findByState(String media_state);
+
+    /**
      * 根据media_id查询媒体对象
      *
      * @param media_id 媒体id

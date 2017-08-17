@@ -85,6 +85,18 @@ public class UserDaoImpl extends SuperDao implements UserDao {
     }
 
     @Override
+    public List<User> findByState(String user_state) {
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery("from User where userState = :user_state");
+
+            query.setParameter("user_state", user_state);
+
+            return query.list();
+        }
+    }
+
+    @Override
     public List<User> findByPage(UserPage userPage) {
 
         try (Session session = sessionFactory.openSession()) {

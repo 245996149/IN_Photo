@@ -291,11 +291,11 @@ public class ClientController {
             long ucBeginTime = uc.getBeginTime().getTime();
             long ucEndTime = uc.getEndTime().getTime();
 
-            if (inputBeginTime > ucBeginTime && inputBeginTime < ucEndTime) {
+            if (inputBeginTime >= ucBeginTime && inputBeginTime <= ucEndTime) {
                 // 输入的开始时间在这个套餐的时间范围内
                 beginTimeFlag = true;
                 break;
-            } else if (inputEndTime > ucBeginTime && inputEndTime < ucEndTime) {
+            } else if (inputEndTime >= ucBeginTime && inputEndTime <= ucEndTime) {
                 // 输入的结束时间在这个套餐的时间范围内
                 endTimeFlag = true;
                 break;

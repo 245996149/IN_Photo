@@ -30,7 +30,7 @@ public class CheckModuleInterceptor implements HandlerInterceptor {
         }
         //没有当前访问模块的权限
         httpServletResponse.sendRedirect(
-                httpServletRequest.getContextPath() + "/login/nopower.do");
+                httpServletRequest.getContextPath() + "/admin/index/noPower.do");
         return false;
     }
 

@@ -147,7 +147,7 @@
          style="height: auto;width: 100%;z-index: 0">
 
     <div style="position: absolute;top: 21.8%;bottom: 61.6%;left: 14.1%;right: 14.1%;z-index: 10;">
-        <img src="${pageContext.request.contextPath}/get/getMedia.do?type=1&id=${media_id}"
+        <img src="${pageContext.request.contextPath}/get/getMedia.do?type=1&id=${media_id}&download=true&image_type=.${image_type}"
              style="height: 100%;width: 100%">
     </div>
 

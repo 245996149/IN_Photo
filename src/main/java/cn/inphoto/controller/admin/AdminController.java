@@ -20,7 +20,7 @@ import static cn.inphoto.util.SMSUtil.sendSMS;
  * Created by root on 17-7-11.
  */
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/admin/index")
 public class AdminController {
 
     @Resource

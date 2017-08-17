@@ -4,6 +4,8 @@ import cn.inphoto.dbentity.user.CodeWebInfo;
 import cn.inphoto.dbentity.user.PicWebinfo;
 import cn.inphoto.dbentity.user.ShareInfo;
 
+import java.util.List;
+
 /**
  * Created by kaxia on 2017/6/5.
  */
@@ -57,4 +59,9 @@ public interface WebinfoDao {
      */
     ShareInfo findShareByUser_idAndCategory(Long user_id, Integer category_id);
 
+    List<PicWebinfo> findPicAllByUser_id(Long user_id);
+
+    List<CodeWebInfo> findCodeAllByUser_id(Long user_id);
+
+    List<ShareInfo> findShareAllByUser_id(Long user_id);
 }

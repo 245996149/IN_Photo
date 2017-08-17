@@ -96,7 +96,7 @@ function show_click() {
     forms.ajaxSubmit(
         {
             type: 'post',
-            url: "/IN_Photo/setting/perView.do",
+            url: "/IN_Photo/user/setting/perView.do",
 
             //data:  //注意只要是写在表单里面的，都不需要加这个属性。在controller中可以根据@RequestParam String str获取到属性值。
             contentType: "application/x-www-form-urlencoded; charset=utf-8",
@@ -244,7 +244,7 @@ function code_click() {
     forms.ajaxSubmit(
         {
             type: 'post',
-            url: "/IN_Photo/setting/perCode.do",
+            url: "/IN_Photo/user/setting/perCode.do",
 
             //data:  //注意只要是写在表单里面的，都不需要加这个属性。在controller中可以根据@RequestParam String str获取到属性值。
             contentType: "application/x-www-form-urlencoded; charset=utf-8",
@@ -292,7 +292,7 @@ function validate_share() {
     forms.ajaxSubmit(
         {
             type: 'post',
-            url: "/IN_Photo/setting/setShareInfo.do",
+            url: "/IN_Photo/user/setting/setShareInfo.do",
 
             //data:  //注意只要是写在表单里面的，都不需要加这个属性。在controller中可以根据@RequestParam String str获取到属性值。
             contentType: "application/x-www-form-urlencoded; charset=utf-8",

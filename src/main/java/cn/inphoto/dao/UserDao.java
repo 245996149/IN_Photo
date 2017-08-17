@@ -50,6 +50,13 @@ public interface UserDao {
     List<User> findAll();
 
     /**
+     * 查询所有用户对象
+     *
+     * @return 用户对象
+     */
+    List<User> findByState(String user_state);
+
+    /**
      * 根据表格分页对象查询客户对象列表
      *
      * @param userPage 表格分页对象

@@ -9,6 +9,8 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Created by kaxia on 2017/6/13.
  */
@@ -81,6 +83,42 @@ public class WebinfoDaoImpl extends SuperDao implements WebinfoDao {
             query.setParameter("category_id", category_id);
 
             return (ShareInfo) query.uniqueResult();
+        }
+    }
+
+    @Override
+    public List<PicWebinfo> findPicAllByUser_id(Long user_id) {
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery("from PicWebinfo where userId = :user_id");
+
+            query.setParameter("user_id", user_id);
+
+            return query.list();
+        }
+    }
+
+    @Override
+    public List<CodeWebInfo> findCodeAllByUser_id(Long user_id) {
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery("from CodeWebInfo where userId = :user_id");
+
+            query.setParameter("user_id", user_id);
+
+            return query.list();
+        }
+    }
+
+    @Override
+    public List<ShareInfo> findShareAllByUser_id(Long user_id) {
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery("from ShareInfo where userId = :user_id");
+
+            query.setParameter("user_id", user_id);
+
+            return query.list();
         }
     }
 }
