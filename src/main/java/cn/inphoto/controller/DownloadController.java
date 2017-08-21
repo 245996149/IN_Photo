@@ -135,7 +135,7 @@ public class DownloadController {
                 file_path = request.getSession().getServletContext().getRealPath("/images/error.png");
             }
 
-            logger.info("接收到读取图片文件请求，请求id为：" + id + "，type为：" + type + "，thumbnail为：" + thumbnail + "的图片文件路径为：" + file_path);
+//            logger.info("接收到读取图片文件请求，请求id为：" + id + "，type为：" + type + "，thumbnail为：" + thumbnail + "的图片文件路径为：" + file_path);
 
             // 判断是否压缩
             if (thumbnail) {
@@ -170,7 +170,7 @@ public class DownloadController {
         } catch (Exception e) {
 
             e.printStackTrace();
-            logger.info("id为：" + id + "的media读取错误，错误信息为：" + getErrorInfoFromException(e));
+//            logger.info("id为：" + id + "的media读取错误，错误信息为：" + getErrorInfoFromException(e));
 
         } finally {
             if (fis != null) {

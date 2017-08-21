@@ -12,7 +12,11 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import static cn.inphoto.util.DirUtil.getConfigInfo;
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
+
+import static cn.inphoto.util.ResultMapUtil.createResult;
 
 
 /**
@@ -55,19 +59,19 @@ public class SMSUtil {
      */
     public static boolean sendSMS(String phone, String code, String product, String templateCode) {
         boolean flag = false;
-        /**
-         * Step 1. get topic reference
+        /*
+          Step 1. get topic reference
          */
         CloudAccount account = new CloudAccount(aliyunAccessId, aliyunAccessKey, aliyunMNSEndpoint);
         MNSClient client = account.getMNSClient();
         CloudTopic topic = client.getTopicRef("sms.topic-cn-hangzhou");
-        /**
-         * Step 2. set SMS message body ( required )
+        /*
+          Step 2. set SMS message body ( required )
          */
         RawTopicMessage msg = new RawTopicMessage();
         msg.setMessageBody("sms-message");
-        /**
-         * Step 3. generate SMS message attributes
+        /*
+          Step 3. generate SMS message attributes
          */
         MessageAttributes messageAttributes = new MessageAttributes();
         BatchSmsAttributes batchSmsAttributes = new BatchSmsAttributes();
@@ -84,8 +88,8 @@ public class SMSUtil {
         //batchSmsAttributes.addSmsReceiver("$YourReceiverPhoneNumber2", smsReceiverParams);
         messageAttributes.setBatchSmsAttributes(batchSmsAttributes);
         try {
-            /**
-             * Step 4. publish SMS message
+            /*
+              Step 4. publish SMS message
              */
             TopicMessage ret = topic.publishMessage(msg, messageAttributes);
             logger.info("发送短信，回执MessageId: " + ret.getMessageId());
@@ -101,4 +105,41 @@ public class SMSUtil {
         client.close();
         return flag;
     }
+
+    public static Map<String, Object> sendSMSLimit(String phone, String code, String product, String templateCode, String sessionName, HttpSession session) {
+
+        // 从session中取出发送次数
+        Map<String, Integer> phoneNum = (Map<String, Integer>) session.getAttribute(sessionName);
+
+        // 判断发送次数
+        if (phoneNum != null) {
+
+            Integer num = phoneNum.get(phone);
+
+            if (num == null) {
+                num = 1;
+            } else {
+                num++;
+            }
+
+            if (num > 3) {
+                return createResult(false, "今天已经超过发送限制了哦！");
+            }
+            phoneNum.put(phone, num);
+        } else {
+            phoneNum = new HashMap<>();
+            phoneNum.put(phone, 1);
+        }
+
+
+        if (!sendSMS(phone, code, product, templateCode)) {
+            return createResult(false, "发送失败，请联系管理员查看短信服务器状态");
+        }
+
+        session.setMaxInactiveInterval(24 * 60 * 60);
+        session.setAttribute(sessionName, phoneNum);
+
+        return createResult(true, "发送成功");
+    }
+
 }

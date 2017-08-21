@@ -90,7 +90,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="#">用户资料</a></li>
                         <li><a href="#">安全设置</a></li>
-                        <li><a href="#">退出</a></li>
+                        <li><a href="${pageContext.request.contextPath}/admin/login/logout.do">退出</a></li>
                     </ul>
                 </li>
             </ul>

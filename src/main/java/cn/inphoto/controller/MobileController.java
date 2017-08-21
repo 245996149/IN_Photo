@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static cn.inphoto.util.DirUtil.getErrorInfoFromException;
+import static cn.inphoto.util.ResultMapUtil.createResult;
 
 /**
  * 移动端h5页面控制器
@@ -146,11 +147,18 @@ public class MobileController {
 
         } else {
 
+            MediaData mediaData = mediaDataDao.findByMedia_id(mediaCode.getMediaId());
+
+            if (mediaData == null || MediaData.MEDIA_STATE_RECYCLE.equals(mediaData.getMediaState()) || MediaData.MEDIA_STATE_DELETE.equals(mediaData.getMediaState())) {
+                return createResult(false, "数据已经过期！");
+            }
+
             StringBuffer url = request.getRequestURL();
 
             String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length())
-                    .append(request.getContextPath())
-                    .append("/mobile/toPage.do?user_id=" + user_id + "&category_id=" + category_id + "&media_id=" + mediaCode.getMediaId()).toString();
+                    .append(request.getContextPath()).append("/mobile/toPage.do?user_id=")
+                    .append(user_id).append("&category_id=").append(category_id)
+                    .append("&media_id=").append(mediaCode.getMediaId()).toString();
 
             result.put("success", true);
             result.put("url", tempContextUrl);
@@ -266,7 +274,7 @@ public class MobileController {
     @ResponseBody
     public Map<String, String> weChat(HttpServletResponse response, HttpServletRequest request, String url) {
 
-        logger.info("接收到生成获取微信jssdk的请求---------->请求的url为：" + url);
+//        logger.info("接收到生成获取微信jssdk的请求---------->请求的url为：" + url);
 
         return WXConfig(request, response, url);
 
@@ -305,12 +313,12 @@ public class MobileController {
 
             signature = Sha1.getSha1(str);
 
-            logger.info("获取微信jssdk参数---------->合成的字符串为：" + str + "；签名后的字符串为：" + signature);
+//            logger.info("获取微信jssdk参数---------->合成的字符串为：" + str + "；签名后的字符串为：" + signature);
 
         } catch (Exception e) {
 
             e.printStackTrace();
-            logger.info("获取微信jssdk参数---------->发生未知错误，错误信息为：" + getErrorInfoFromException(e));
+//            logger.info("获取微信jssdk参数---------->发生未知错误，错误信息为：" + getErrorInfoFromException(e));
 
         }
 
@@ -321,7 +329,7 @@ public class MobileController {
         res.put("timestamp", time);
         res.put("signature", signature);
 
-        logger.info("获取微信jssdk参数---------->返回的参数为：" + res.toString());
+//        logger.info("获取微信jssdk参数---------->返回的参数为：" + res.toString());
 
         return res;
 

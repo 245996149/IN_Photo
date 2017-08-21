@@ -119,17 +119,11 @@ public class ClientController {
 
         AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
 
-//        System.out.println(user.toString());
-//        System.out.println(category);
-
         String pwd = getRandomPassword(10);
 
         user.setPassword(getMD5(pwd));
         user.setAdminId(adminInfo.getAdminId());
         user.setUserState("0");
-
-//        System.out.println(pwd);
-//        System.out.println("加密后密码：" + getMD5(pwd));
 
         if (utilDao.save(user)) {
 
@@ -143,6 +137,8 @@ public class ClientController {
                                 "<p>密码：" + pwd + "</p><p>请您及时登录系统填写用户名，更改密码。</p>" +
                                 "<p><a href='" + emailManageAdd + "'>点击前往IN Photo管理中心</a></p>" +
                                 "<p>此邮件为系统自动发送，请勿直接回复该邮件</p></includetail></div>");
+            } else {
+                System.out.println(pwd);
             }
 
         } else {
@@ -612,6 +608,58 @@ public class ClientController {
         model.addAttribute("tablePage", tablePage);
 
         return "admin/client/client_media_list";
+    }
+
+    /**
+     * 重置密码
+     *
+     * @param user_id 用户id
+     * @param session 服务器缓存
+     * @return 是否成功
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/resetPassword.do")
+    public Map resetPassword(Long user_id, HttpSession session) throws Exception {
+
+        AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
+        boolean isAdmin = (boolean) session.getAttribute("isAdmin");
+
+        User user = userDao.findByUser_id(user_id);
+
+        // 判断是否有管理员权限
+        if (!isAdmin) {
+            //没有管理员权限，判断是否有管理权限
+            if (user.getAdminId() != adminInfo.getAdminId()) {
+                return createResult(false, "您没有权限操作该数据");
+            }
+        }
+
+        String pwd = getRandomPassword(10);
+
+        user.setPassword(getMD5(pwd));
+
+        if (!utilDao.save(user)) {
+
+            return createResult(false, "在写入数据时发生了错误，请稍候再试");
+
+        }
+
+        // 发送邮件
+        if (sendEmail) {
+            sendMail(user.getEmail(), "IN Photo注册邮件",
+                    "<div>尊敬的" + user.getEmail() + "您好！ </div>" +
+                            "<div><includetail><p>我们将为您提供最贴心的服务，祝您使用愉快！</p>" +
+                            "<p>您在IN Photo管理中心的登录帐号：</p><p>帐号：" + user.getEmail() + "</p>" +
+                            "<p>密码：" + pwd + "</p><p>请您及时登录系统填写用户名，更改密码。</p>" +
+                            "<p><a href='" + emailManageAdd + "'>点击前往IN Photo管理中心</a></p>" +
+                            "<p>此邮件为系统自动发送，请勿直接回复该邮件</p></includetail></div>");
+        } else {
+            System.out.println(pwd);
+        }
+
+        return createResult(true, "重置密码成功，密码已经发送至客户绑定的邮箱中");
+
     }
 
 }

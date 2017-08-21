@@ -55,11 +55,11 @@
             </div>
             <!-- Table -->
             <div class="table-responsive">
-                <table class="table <%--table-bordered--%> table-hover <%--dataTable--%>"
+                <table class="table  table-hover "
                        style="font-size: large;text-align: center;">
                     <thead>
                     <tr>
-                        <td><%--<input type="checkbox" id="media_data_all_checkbox" onclick="DoCheck();">--%><span>客户编号</span>
+                        <td><span>客户编号</span>
                             <div class="dropdown" id="media_data_operation" style="display: none;">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
                                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -109,6 +109,10 @@
                                     <button type="button" class="btn btn-primary"
                                             onclick="location='toCategoryList.do?user_id=${u.userId}'">
                                         套餐管理
+                                    </button>
+                                    <button type="button" class="btn btn-warning"
+                                            onclick="resetPassword(${u.userId});">
+                                        重置密码
                                     </button>
                                 </c:if>
                                 <c:if test="${u.userState=='1'}">
@@ -434,6 +438,15 @@
         )
     }
 
+    function resetPassword(user_id) {
+
+        if (!confirm("确定要重置该客户的密码吗？点击确认后，系统会将新的密码发送至客户邮箱")) {
+            return false;
+        }
+
+        alert(user_id);
+
+    }
 </script>
 
 </body>

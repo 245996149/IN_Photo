@@ -4,6 +4,7 @@ import cn.inphoto.dao.AdminDao;
 import cn.inphoto.dao.UtilDao;
 import cn.inphoto.dbentity.admin.AdminInfo;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -14,7 +15,9 @@ import java.util.Map;
 import java.util.Random;
 
 import static cn.inphoto.util.ResultMapUtil.createResult;
+import static cn.inphoto.util.ResultMapUtil.getSuccess;
 import static cn.inphoto.util.SMSUtil.sendSMS;
+import static cn.inphoto.util.SMSUtil.sendSMSLimit;
 
 /**
  * Created by root on 17-7-11.
@@ -133,28 +136,6 @@ public class AdminController {
             return createResult(false, "该手机号已被使用");
         }
 
-        // 从session中取出发送次数
-        Map<String, Integer> phoneNum = (Map<String, Integer>) session.getAttribute("addPhoneNum");
-
-        // 判断发送次数
-        if (phoneNum != null) {
-
-            Integer num = phoneNum.get(phone);
-
-            if (num == null) {
-                num = 1;
-            } else {
-                num++;
-            }
-
-            if (num > 3) {
-                return createResult(false, "今天已经超过发送限制了哦！");
-            }
-            phoneNum.put(phone, num);
-        } else {
-            phoneNum = new HashMap<>();
-            phoneNum.put(phone, 1);
-        }
 
         // 创建6位验证码字符串对象
         StringBuilder codeTemp = new StringBuilder();
@@ -169,17 +150,15 @@ public class AdminController {
 
         codeMap.put(phone, codeTemp.toString());
 
-        session.setAttribute("addPhoneCode", codeMap);
-
-        session.setAttribute("addPhoneNum", phoneNum);
-
-        System.out.println(codeMap.toString());
+        session.setAttribute("addAdminPhoneCode", codeMap);
 
         // TODO 添加发送短信逻辑
-//        if (!sendSMS(phone, codeTemp.toString(), "IN PHOTO管理员系统绑定手机号", "SMS_61155105")) {
-//
-//            return createResult(false, "发送失败，请联系管理员查看短信服务器状态");
-//        }
+        if (!getSuccess(sendSMSLimit(
+                phone, codeTemp.toString(), "IN PHOTO管理员系统绑定手机号",
+                "SMS_61155105", "addAdminPhone", session))) {
+
+            return createResult(false, "发送失败，请联系管理员查看短信服务器状态");
+        }
 
         return createResult(true, "发送成功");
     }
@@ -196,7 +175,7 @@ public class AdminController {
     @ResponseBody
     public Map checkPhoneCode(String phone, String code, HttpSession session) {
 
-        Map<String, String> codeMap = (Map<String, String>) session.getAttribute("addPhoneCode");
+        Map<String, String> codeMap = (Map<String, String>) session.getAttribute("addAdminPhoneCode");
 
         String sessionCode = codeMap.get(phone);
 

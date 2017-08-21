@@ -311,7 +311,7 @@ public class ReceiveController {
 
             }
 
-            System.out.println(mediaData.toString());
+//            System.out.println(mediaData.toString());
 
             // 创建验证码对象用于更新、新增验证码表
             MediaCode mediaCode = new MediaCode();
@@ -349,8 +349,6 @@ public class ReceiveController {
                 // 更新该数据库中该数据信息
                 utilDao.update(mediaDataEntity);
             }
-
-
 
             result.put("success", true);
             result.put("code", 200);
