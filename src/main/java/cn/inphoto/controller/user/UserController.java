@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Random;
 
 import static cn.inphoto.util.ResultMapUtil.createResult;
+import static cn.inphoto.util.ResultMapUtil.getSuccess;
+import static cn.inphoto.util.SMSUtil.sendSMSLimit;
 
 /**
  * Created by kaxia on 2017/6/6.
@@ -116,28 +118,6 @@ public class UserController {
             return createResult(false, "该手机号已被使用");
         }
 
-        // 从session中取出发送次数
-        Map<String, Integer> phoneNum = (Map<String, Integer>) session.getAttribute("addUserPhoneNum");
-
-        // 判断发送次数
-        if (phoneNum != null) {
-
-            Integer num = phoneNum.get(phone);
-
-            if (num == null) {
-                num = 1;
-            } else {
-                num++;
-            }
-
-            if (num > 3) {
-                return createResult(false, "今天已经超过发送限制了哦！");
-            }
-            phoneNum.put(phone, num);
-        } else {
-            phoneNum = new HashMap<>();
-            phoneNum.put(phone, 1);
-        }
 
         // 创建6位验证码字符串对象
         StringBuilder codeTemp = new StringBuilder();
@@ -154,15 +134,17 @@ public class UserController {
 
         session.setAttribute("addUserPhoneCode", codeMap);
 
-        session.setAttribute("addUserPhoneNum", phoneNum);
-
-        System.out.println(codeMap.toString());
+//        System.out.println(codeMap.toString());
 
         // TODO 添加发送短信逻辑
 //        if (!sendSMS(phone, codeTemp.toString(), "IN PHOTO管理员系统绑定手机号", "SMS_61155105")) {
-//
-//            return createResult(false, "发送失败，请联系管理员查看短信服务器状态");
-//        }
+
+        if (!getSuccess(sendSMSLimit(
+                phone, codeTemp.toString(), "IN PHOTO管理系统绑定手机号",
+                "SMS_61155105", "addUserPhone", session))) {
+
+            return createResult(false, "发送失败，请联系管理员查看短信服务器状态");
+        }
 
         return createResult(true, "发送成功");
     }
