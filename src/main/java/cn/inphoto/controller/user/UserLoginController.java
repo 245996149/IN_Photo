@@ -1,14 +1,15 @@
 package cn.inphoto.controller.user;
 
-import cn.inphoto.dao.CategoryDao;
-import cn.inphoto.dao.UserCategoryDao;
-import cn.inphoto.dao.UserDao;
+import cn.inphoto.dao.*;
+import cn.inphoto.dbentity.admin.AdminInfo;
 import cn.inphoto.dbentity.user.Category;
 import cn.inphoto.dbentity.user.User;
 import cn.inphoto.dbentity.user.UserCategory;
 import cn.inphoto.log.UserLog;
+import cn.inphoto.util.ImageUtil;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,24 +17,27 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sun.misc.BASE64Decoder;
 
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static cn.inphoto.util.CookieUtil.cleanCookie;
 import static cn.inphoto.util.CookieUtil.createCookie;
 import static cn.inphoto.util.DBUtil.judgeCategory;
 import static cn.inphoto.util.DBUtil.selectTodayData;
 import static cn.inphoto.util.MD5Util.getMD5;
+import static cn.inphoto.util.MailUtil.sendMail;
 import static cn.inphoto.util.ResultMapUtil.createResult;
+import static cn.inphoto.util.ResultMapUtil.getSuccess;
+import static cn.inphoto.util.SMSUtil.sendSMSLimit;
 
 /**
  * 登陆控制器
@@ -44,6 +48,12 @@ import static cn.inphoto.util.ResultMapUtil.createResult;
 public class UserLoginController {
 
     private static Logger logger = Logger.getLogger(UserLoginController.class);
+
+    @Value("#{properties['sendEmail']}")
+    boolean sendEmail;
+
+    @Resource
+    UtilDao utilDao;
 
     @Resource
     private UserDao userDao;
@@ -116,6 +126,8 @@ public class UserLoginController {
         if (input_text == null || password == null || "".equals(input_text) || "".equals(password)) {
             return createResult(false, "账号、密码不能为空");
         }
+
+        System.out.println(login_type+";"+input_text+";"+password+";"+remLogin);
 
         User user = null;
         String check_type = null;
@@ -278,6 +290,161 @@ public class UserLoginController {
         result.put("category_id", category.getCategoryId());
         return result;
 
+    }
+
+    /**
+     * 忘记密码，跳转到密码重置
+     *
+     * @return 跳转页
+     */
+    @RequestMapping("/forgotPassword.do")
+    public String forgotPassword() {
+
+        return "user/forgot_password";
+
+    }
+
+    /**
+     * 创建页面验证码
+     *
+     * @param response 发送
+     * @param session  服务器缓存
+     * @throws Exception
+     */
+    @RequestMapping("/createImage.do")
+    public void createImage(
+            HttpServletResponse response, HttpSession session)
+            throws Exception {
+        Map<String, BufferedImage> imageMap = ImageUtil.createImage();
+        String code = imageMap.keySet().iterator().next();
+        session.setAttribute("imageCode", code);
+
+        BufferedImage image = imageMap.get(code);
+
+        response.setContentType("image/jpeg");
+        OutputStream ops = response.getOutputStream();
+        ImageIO.write(image, "jpeg", ops);
+        ops.close();
+    }
+
+    /**
+     * 发送重置密码验证信息
+     *
+     * @param input_text 输入内容
+     * @param type       类型
+     * @param code       验证码
+     * @param session    服务器缓存
+     * @return 是否成功
+     * @throws Exception
+     */
+    @RequestMapping("/sendForgotPasswordCode.do")
+    @ResponseBody
+    public Map sendForgotPasswordCode(String input_text, Integer type, String code, HttpSession session) throws Exception {
+
+        String imageCode = (String) session.getAttribute("imageCode");
+        if (code == null
+                || !code.equalsIgnoreCase(imageCode)) {
+            return createResult(false, "验证码错误，请重新输入验证码");
+        }
+
+        User user = null;
+
+        switch (type) {
+            case User.LOGIN_EMAIL:
+                user = userDao.findByEmail(input_text);
+                break;
+            case User.LOGIN_PHONE:
+                user = userDao.findByPhone(input_text);
+                break;
+            default:
+                break;
+        }
+
+        if (user == null) {
+            return createResult(false, "未找到该邮箱/手机号对应的用户");
+        }
+
+        // 创建6位验证码字符串对象
+        StringBuilder codeTemp = new StringBuilder();
+        Random random = new Random();
+
+        // 生成6位随机码
+        for (int i = 0; i < 6; i++) {
+            codeTemp.append(random.nextInt(9));
+        }
+
+        session.setMaxInactiveInterval(10 * 60);
+        session.setAttribute("forgot_password_code", codeTemp);
+        session.setAttribute("forgot_password_user", user);
+
+        switch (type) {
+            case AdminInfo.LOGIN_EMAIL:
+                // 发送邮件
+                if (sendEmail) {
+                    sendMail(user.getEmail(), "IN Photo管理系统验证",
+                            "<div>尊敬的" + user.getEmail() + "您好！ 以下是您的验证码：</div>" +
+                                    "<div><includetail><p><strong style='color:red'>" + codeTemp + "</strong></p>" +
+                                    "<p>我们收到了来自您的重置密码请求，请使用上面的验证码验证您的账号</p>" +
+                                    "<p><strong>请注意：</strong>验证码将在10分钟内过期，请尽快验证</p>" +
+                                    "<p>上海赢秀多媒体科技有限公司</p></includetail></div>");
+                }
+                break;
+            case AdminInfo.LOGIN_PHONE:
+                if (!getSuccess(sendSMSLimit(user.getPhone(), codeTemp.toString(), "IN PHOTO管理系统验证", "SMS_61155105", "forgotAdminPassword", session))) {
+                    return createResult(false, "发送失败，请联系管理员查看短信服务器状态");
+                }
+                break;
+            default:
+                break;
+        }
+
+        return createResult(true, "验证码已经成功发送，请查看验证码");
+
+    }
+
+
+    /**
+     * 前往重置密码页
+     *
+     * @return 页面
+     */
+    @RequestMapping("/toResetPassword.do")
+    public String toResetPassword() {
+        return "user/reset_password";
+    }
+
+    /**
+     * 重置密码
+     *
+     * @return 页面
+     */
+    @RequestMapping("/resetPassword.do")
+    @ResponseBody
+    public Map resetPassword(String password, String code, HttpSession session) {
+
+        StringBuilder session_code = (StringBuilder) session.getAttribute("forgot_password_code");
+
+        if (session_code == null || !code.equals(session_code.toString())) {
+            return createResult(false, "未找到正确的验证码");
+        }
+
+        User user = (User) session.getAttribute("forgot_password_user");
+
+        user = userDao.findByUser_id(user.getUserId());
+
+        if (user == null) {
+            return createResult(false, "未在数据库中找到用户");
+        }
+
+        // 更新数据
+        user.setPassword(getMD5(password));
+
+        // 写入数据
+        if (!utilDao.update(user)) {
+            return createResult(false, "将数据写入数据库时发生了错误，请稍候重试");
+        }
+
+        return createResult(true, "重置成功");
     }
 
 }

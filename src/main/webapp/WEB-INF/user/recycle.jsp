@@ -152,7 +152,7 @@
                                         </c:when>
                                         <c:otherwise>
                                             <li>
-                                                <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${tablePage.currentPage-1}"
+                                                <a href="${pageContext.request.contextPath}/user/table/toRecycle.do?currentPage=${tablePage.currentPage-1}"
                                                    aria-label="Previous">
                                                     <span aria-hidden="true">&laquo;</span>
                                                 </a>
@@ -162,7 +162,7 @@
 
                                     <c:if test="${tablePage.totalPage>5 && tablePage.currentPage>3}">
                                         <li>
-                                            <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=1">1</a>
+                                            <a href="${pageContext.request.contextPath}/user/table/toRecycle.do?currentPage=1">1</a>
                                         </li>
                                         <li><a href="javascript:void(0);">...</a></li>
                                     </c:if>
@@ -180,7 +180,7 @@
                                                         </c:when>
                                                         <c:otherwise>
                                                             <li>
-                                                                <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${i}">${i}</a>
+                                                                <a href="${pageContext.request.contextPath}/user/table/toRecycle.do?currentPage=${i}">${i}</a>
                                                             </li>
                                                         </c:otherwise>
                                                     </c:choose>
@@ -195,7 +195,7 @@
                                                         </c:when>
                                                         <c:otherwise>
                                                             <li>
-                                                                <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${i}">${i}</a>
+                                                                <a href="${pageContext.request.contextPath}/user/table/toRecycle.do?currentPage=${i}">${i}</a>
                                                             </li>
                                                         </c:otherwise>
                                                     </c:choose>
@@ -213,7 +213,7 @@
                                                     </c:when>
                                                     <c:otherwise>
                                                         <li>
-                                                            <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${i}">${i}</a>
+                                                            <a href="${pageContext.request.contextPath}/user/table/toRecycle.do?currentPage=${i}">${i}</a>
                                                         </li>
                                                     </c:otherwise>
                                                 </c:choose>
@@ -229,7 +229,7 @@
                                                     </c:when>
                                                     <c:otherwise>
                                                         <li>
-                                                            <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${i}">${i}</a>
+                                                            <a href="${pageContext.request.contextPath}/user/table/toRecycle.do?currentPage=${i}">${i}</a>
                                                         </li>
                                                     </c:otherwise>
                                                 </c:choose>
@@ -241,7 +241,7 @@
                                     <c:if test="${tablePage.totalPage>5 && tablePage.currentPage<(tablePage.totalPage-2)}">
                                         <li><a href="javascript:void(0);">...</a></li>
                                         <li>
-                                            <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${tablePage.totalPage}">${tablePage.totalPage}</a>
+                                            <a href="${pageContext.request.contextPath}/user/table/toRecycle.do?currentPage=${tablePage.totalPage}">${tablePage.totalPage}</a>
                                         </li>
                                     </c:if>
 
@@ -255,7 +255,7 @@
                                         </c:when>
                                         <c:otherwise>
                                             <li>
-                                                <a href="${pageContext.request.contextPath}/table/toRecycle.do?currentPage=${tablePage.currentPage+1}"
+                                                <a href="${pageContext.request.contextPath}/user/table/toRecycle.do?currentPage=${tablePage.currentPage+1}"
                                                    aria-label="Next">
                                                     <span aria-hidden="true">&raquo;</span>
                                                 </a>

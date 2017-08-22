@@ -221,7 +221,9 @@ public class MobileController {
             } else {
                 // 查询媒体数据，并判断媒体数据是否在正常状态内
                 MediaData mediaData = mediaDataDao.findByMedia_id(media_id);
-                if (mediaData == null || !MediaData.MEDIA_STATE_NORMAL.equals(mediaData.getMediaState()))
+                if (mediaData == null ||
+                        (!MediaData.MEDIA_STATE_NORMAL.equals(mediaData.getMediaState()) &&
+                                !MediaData.MEDIA_STATE_WILL_DELETE.equals(mediaData.getMediaState())))
                     return MOBILE_404;
 
                 // 获取图片尾缀

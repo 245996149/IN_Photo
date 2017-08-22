@@ -33,7 +33,7 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
             // 判断是否有category_id参数
             if (tablePage.getCategory_id() == 0) {
 
-                query = session.createQuery(" from MediaData where userId = :user_id and mediaState in (:media_state) order by deleteTime desc");
+                query = session.createQuery(" from MediaData where userId = :user_id and mediaState in (:media_state) order by mediaId desc");
 
             } else {
 
@@ -76,7 +76,7 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     }
 
     @Override
-    public int countByUser_idAndCategory_idAndMedia_state(Long user_id, Integer category_id, Date beginTime, Date endTime, String media_state) {
+    public int countByUser_idAndCategory_idAndMedia_stateAndOver_time(Long user_id, Integer category_id, Date beginTime, Date endTime, String media_state) {
         try (Session session = sessionFactory.openSession()) {
 
             Query query = null;
@@ -94,6 +94,25 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
                 query.setParameter("category_id", category_id);
             }
 
+            query.setParameter("user_id", user_id);
+            query.setParameter("media_state", media_state);
+            query.setParameter("beginTime", beginTime);
+            query.setParameter("endTime", endTime);
+
+            return ((Long) query.uniqueResult()).intValue();
+        }
+    }
+
+    @Override
+    public int countByUser_idAndCategory_idAndMedia_stateAndCreate_Time(Long user_id, Integer category_id, Date beginTime, Date endTime, String media_state) {
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery(
+                    "select count(*) from MediaData where" +
+                            " userId = :user_id  and mediaState = :media_state and categoryId = :category_id and " +
+                            "createTime between :beginTime and :endTime ");
+
+            query.setParameter("category_id", category_id);
             query.setParameter("user_id", user_id);
             query.setParameter("media_state", media_state);
             query.setParameter("beginTime", beginTime);

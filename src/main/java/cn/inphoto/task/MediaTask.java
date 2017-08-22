@@ -12,10 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static cn.inphoto.util.DateUtil.getSevenDateLater;
 import static cn.inphoto.util.DateUtil.getThirtyDateLater;
@@ -61,7 +58,7 @@ public class MediaTask {
         for (User u : userList
                 ) {
 
-            System.out.println(u.toString());
+//            System.out.println(u.toString());
 
             // 查找该客户所有的正常状态下的媒体
             List<MediaData> mediaDataList = mediaDataDao.findByUser_idAndState(
@@ -115,7 +112,7 @@ public class MediaTask {
 
             }
 
-            System.out.println("..........................................");
+//            System.out.println("..........................................");
 
             // 写入数据
             if (!updateMediaDataList.isEmpty()) {
@@ -125,7 +122,7 @@ public class MediaTask {
                         ) {
                     m.setMediaState(MediaData.MEDIA_STATE_WILL_DELETE);
                     m.setDeleteTime(new Timestamp(getSevenDateLater().getTime()));
-                    System.out.println(m.toString());
+//                    System.out.println(m.toString());
                 }
 
                 mediaDataDao.updateMediaList(updateMediaDataList);
@@ -207,6 +204,84 @@ public class MediaTask {
         }
 
         mediaDataDao.updateMediaList(updateMediaList);
+
+    }
+
+    /**
+     * 判断待删除下媒体是否可以恢复成正常状态，可以则恢复
+     */
+    @Scheduled(cron = "0 45 2 * * ? ")
+    public void changeWillDeleteMediaToNormal() {
+
+        System.out.println("判断待删除下媒体是否可以恢复成正常状态，可以则恢复");
+
+        // 查找所有正常状态的客户
+        List<User> userList = userDao.findByState(User.USER_STATE_NORMAL);
+
+        // 遍历客户
+        for (User u : userList
+                ) {
+
+            // 查找所有待删除状态下的媒体数据
+            List<MediaData> mediaDataList = mediaDataDao.findByUser_idAndState(
+                    u.getUserId(), MediaData.MEDIA_STATE_WILL_DELETE);
+
+            // 判断队列不为空
+            if (mediaDataList.isEmpty()) {
+                break;
+            }
+
+            List<MediaData> updateMediaList = new ArrayList<>();
+
+            // 查找该客户所有的正常状态下的用户套餐
+            List<UserCategory> userCategoryList = userCategoryDao.findByUser_idAndState(
+                    u.getUserId(), UserCategory.USER_CATEGORY_STATE_NORMAL);
+
+            Map<Integer, Long> media_count = new HashMap<>();
+
+            // 循环所有的媒体
+            for (MediaData m : mediaDataList
+                    ) {
+
+                // 判断map中是否有该媒体对应套餐的总数量，没有则从数据库中查询
+                if (!media_count.containsKey(m.getCategoryId())) {
+                    int num = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
+                            u.getUserId(), m.getCategoryId(), Collections.singletonList(MediaData.MEDIA_STATE_NORMAL));
+                    media_count.put(m.getCategoryId(), (long) num);
+                }
+
+                // 循环用户套餐
+                for (UserCategory uc : userCategoryList
+                        ) {
+                    // 如果媒体所属的套餐等于用户套餐系统所属的套餐，则判断数量
+                    if (m.getCategoryId() == uc.getCategoryId()) {
+
+                        // 从map中取出该套餐正常媒体总数
+                        long num = media_count.get(m.getCategoryId());
+                        // 判断正常媒体总数小于用户套餐中规定的数量，则将该媒体移动到待更新队列，将正常媒体总数加1
+                        if (num < uc.getMediaNumber()) {
+                            updateMediaList.add(m);
+                            num++;
+                            media_count.put(m.getCategoryId(), num);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            // 写入数据
+            if (!updateMediaList.isEmpty()) {
+
+                 /*遍历待更新队列，将队列中的媒体数据设置为正常状态*/
+                for (MediaData m : updateMediaList
+                        ) {
+                    m.setMediaState(MediaData.MEDIA_STATE_NORMAL);
+                }
+
+                mediaDataDao.updateMediaList(updateMediaList);
+            }
+
+        }
 
     }
 

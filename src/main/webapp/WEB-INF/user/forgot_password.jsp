@@ -10,7 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="${pageContext.request.contextPath}/images/logo.png">
-    <title>IN Photo管理员系统</title>
+    <title>IN Photo管理系统</title>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="${pageContext.request.contextPath}/js/jquery-3.2.1.js"></script>
@@ -47,18 +47,23 @@
     <div class="alert alert-danger" role="alert" style="display: none" id="error_message">...</div>
     <form class="form-signin" id="signin_form" method="post">
         <h2 class="form-signin-heading">重置密码</h2>
-        <div class="form-group" id="password_div">
-            <input type="password" id="password" class="form-control input-lg" placeholder="请输入密码" required
-                   name="password" oninput="check_password();">
+        <input type="text" id="inputText" class="form-control input-lg" placeholder="请输入登录手机号/邮箱" required
+               name="inputText">
+        <br/>
+        <div class="row">
+            <div class="col-md-6" style="padding: 0;">
+                <input type="text" id="code" class="form-control input-lg" placeholder="验证码" required
+                       name="code">
+            </div>
+            <div class="col-md-6">
+                <img src="createImage.do" alt="验证码" title="点击更换" id="code_image" onclick="change();"
+                     style="height: 45px;"/>
+            </div>
         </div>
-        <div class="form-group" id="password_again_div">
-            <input type="password" id="password_again" class="form-control input-lg" placeholder="请再次输入密码" required
-                   name="password_again" oninput="check_password_again();">
-        </div>
-        <div class="form-group" id="code_div">
-            <input type="text" id="code" class="form-control input-lg" placeholder="验证码" required
-                   name="code">
-        </div>
+        <br/>
+        <a href="javascript:window.history.back()">返回</a>
+        <br/>
+        <br/>
         <button type="button" class="btn btn-lg btn-primary btn-block" onclick="submit_a();">提&nbsp;交</button>
     </form>
 </div>
@@ -76,59 +81,49 @@
         }
     };
 
-    function check_password() {
-
-        var passReg = /^[a-zA-Z]\w{7,17}$/;
-
-        var password = $("#password").val();
-        var password_div = $("#password_div");
-
-        if (!password.match(passReg)) {
-            password_div.removeClass("has-success");
-            password_div.addClass("has-error");
-            return false;
-        } else {
-            password_div.removeClass("has-error");
-            password_div.addClass("has-success");
-            return true;
-        }
-
-    }
-
-    function check_password_again() {
-
-        var password = $("#password").val();
-        var password_again = $("#password_again").val();
-        var password_again_div = $("#password_again_div");
-
-        if (password !== password_again) {
-            password_again_div.removeClass("has-success");
-            password_again_div.addClass("has-error");
-            return false;
-        } else {
-            password_again_div.removeClass("has-error");
-            password_again_div.addClass("has-success");
-            return true;
-        }
-
+    //刷新验证码
+    function change() {
+        $("#code_image").attr("src", "createImage.do?date=" + new Date().getTime());
     }
 
     function submit_a() {
 
-        if (!check_password() || !check_password_again()) {
-            alert("请检查密码是否符合要求");
+        var input_text = $("#inputText");
+        var code = $("#code");
+
+        var emailReg = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        var phoneReg = /^1(3[0-9]|4[57]|5[0-35-9]|7[0135678]|8[0-9])\d{8}$/;
+
+        if (!input_text.val().match(phoneReg) && !input_text.val().match(emailReg)) {
+            alert("请确认手机号、邮箱地址是否正确");
+            return false;
+        }
+
+        if (code.val() === "" || code.val().length !== 4) {
+            alert("请输入正确的验证码");
+            change();
+            return false;
+        }
+
+        var type;
+
+        if (input_text.val().match(phoneReg)) {
+            type = 1;
+        } else if (input_text.val().match(emailReg)) {
+            type = 2;
         }
 
         $.post(
-            "resetPassword.do",
+            "sendForgotPasswordCode.do",
             {
-                "password": $("#password").val(),
-                "code": $("#code").val()
+                "input_text": input_text.val(),
+                "type": type,
+                "code": code.val()
             },
             function (res) {
                 if (res.success) {
                     alert(res.message);
-                    window.location.href = "toLogin.do";
+                    window.location.href = "toResetPassword.do";
                 } else {
                     alert(res.message);
                 }

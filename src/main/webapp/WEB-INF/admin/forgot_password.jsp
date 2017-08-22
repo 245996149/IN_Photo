@@ -61,7 +61,7 @@
             </div>
         </div>
         <br/>
-        <a href="javascript:window.history.back()">返回登录页面</a>
+        <a href="javascript:window.history.back()">返回</a>
         <br/>
         <br/>
         <button type="button" class="btn btn-lg btn-primary btn-block" onclick="submit_a();">提&nbsp;交</button>

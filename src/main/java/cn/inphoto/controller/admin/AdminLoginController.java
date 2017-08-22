@@ -2,6 +2,7 @@ package cn.inphoto.controller.admin;
 
 import cn.inphoto.dao.AdminDao;
 import cn.inphoto.dao.ClientDao;
+import cn.inphoto.dao.UtilDao;
 import cn.inphoto.dbentity.admin.AdminInfo;
 import cn.inphoto.dbentity.admin.ModuleInfo;
 import cn.inphoto.dbentity.admin.RoleInfo;
@@ -53,6 +54,9 @@ public class AdminLoginController {
 
     @Resource
     AdminDao adminDao;
+
+    @Resource
+    UtilDao utilDao;
 
     @RequestMapping("/toLogin.do")
     public String toLogin(HttpServletRequest request, Model model) throws IOException {
@@ -251,12 +255,13 @@ public class AdminLoginController {
     }
 
     /**
+     * 发送重置密码验证信息
      *
-     * @param input_text
-     * @param type
-     * @param code
-     * @param session
-     * @return
+     * @param input_text 输入内容
+     * @param type       类型
+     * @param code       验证码
+     * @param session    服务器缓存
+     * @return 是否成功
      * @throws Exception
      */
     @RequestMapping("/sendForgotPasswordCode.do")
@@ -297,6 +302,7 @@ public class AdminLoginController {
 
         session.setMaxInactiveInterval(10 * 60);
         session.setAttribute("forgot_password_code", codeTemp);
+        session.setAttribute("forgot_password_admin", adminInfo);
 
         switch (type) {
             case AdminInfo.LOGIN_EMAIL:
@@ -304,14 +310,14 @@ public class AdminLoginController {
                 if (sendEmail) {
                     sendMail(adminInfo.getEmail(), "IN Photo管理员验证",
                             "<div>尊敬的" + adminInfo.getEmail() + "您好！ 以下是您的验证码：</div>" +
-                                    "<div><includetail><p>" + codeTemp + "</p>" +
+                                    "<div><includetail><p><strong style=\"color:red\">" + codeTemp + "</strong></p>" +
                                     "<p>我们收到了来自您的重置密码请求，请使用上面的验证码验证您的账号</p>" +
                                     "<p><strong>请注意：</strong>验证码将在10分钟内过期，请尽快验证</p>" +
                                     "<p>上海赢秀多媒体科技有限公司</p></includetail></div>");
                 }
                 break;
             case AdminInfo.LOGIN_PHONE:
-                if (!getSuccess(sendSMSLimit(adminInfo.getPhone(), codeTemp.toString(), "IN PHOTO管理员系统验证", "SMS_61155105", "forgotPassword", session))) {
+                if (!getSuccess(sendSMSLimit(adminInfo.getPhone(), codeTemp.toString(), "IN PHOTO管理员系统验证", "SMS_61155105", "forgotAdminPassword", session))) {
                     return createResult(false, "发送失败，请联系管理员查看短信服务器状态");
                 }
                 break;
@@ -325,13 +331,47 @@ public class AdminLoginController {
 
 
     /**
-     * 前往错误页
+     * 前往重置密码页
      *
      * @return 页面
      */
     @RequestMapping("/toResetPassword.do")
     public String toResetPassword() {
         return "admin/reset_password";
+    }
+
+    /**
+     * 重置密码
+     *
+     * @return 页面
+     */
+    @RequestMapping("/resetPassword.do")
+    @ResponseBody
+    public Map resetPassword(String password, String code, HttpSession session) {
+
+        StringBuilder session_code = (StringBuilder) session.getAttribute("forgot_password_code");
+
+        if (session_code == null || !code.equals(session_code.toString())) {
+            return createResult(false, "未找到正确的验证码");
+        }
+
+        AdminInfo adminInfo = (AdminInfo) session.getAttribute("forgot_password_admin");
+
+        adminInfo = adminDao.findByAdmin_id(adminInfo.getAdminId());
+
+        if (adminInfo == null) {
+            return createResult(false, "未在数据库中找到管理员");
+        }
+
+        // 更新数据
+        adminInfo.setPassword(getMD5(password));
+
+        // 写入数据
+        if (!utilDao.update(adminInfo)) {
+            return createResult(false, "将数据写入数据库时发生了错误，请稍候重试");
+        }
+
+        return createResult(true, "重置成功");
     }
 
     /**

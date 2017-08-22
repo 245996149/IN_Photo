@@ -27,25 +27,26 @@ public class SMSUtil {
 
     private static Logger logger = Logger.getLogger(SMSUtil.class);
 
-    private static String aliyunMNSEndpoint;
+    public static String aliyun_MNSEndpoint;
 
-    private static String aliyunAccessId;
+    public static String aliyun_AccessId;
 
-    private static String aliyunAccessKey;
+    public static String aliyun_AccessKey;
 
     @Value("#{properties['aliyunMNSEndpoint']}")
-    public static void setAliyunMNSEndpoint(String aliyunMNSEndpoint) {
-        SMSUtil.aliyunMNSEndpoint = aliyunMNSEndpoint;
+    public void setAliyunMNSEndpoint(String aliyunMNSEndpoint) {
+        aliyun_MNSEndpoint = aliyunMNSEndpoint;
     }
 
+
     @Value("#{properties['aliyunAccessId']}")
-    public static void setAliyunAccessId(String aliyunAccessId) {
-        SMSUtil.aliyunAccessId = aliyunAccessId;
+    public void setAliyunAccessId(String aliyunAccessId) {
+        aliyun_AccessId = aliyunAccessId;
     }
 
     @Value("#{properties['aliyunAccessKey']}")
-    public static void setAliyunAccessKey(String aliyunAccessKey) {
-        SMSUtil.aliyunAccessKey = aliyunAccessKey;
+    public void setAliyunAccessKey(String aliyunAccessKey) {
+        aliyun_AccessKey = aliyunAccessKey;
     }
 
     /**
@@ -62,7 +63,7 @@ public class SMSUtil {
         /*
           Step 1. get topic reference
          */
-        CloudAccount account = new CloudAccount(aliyunAccessId, aliyunAccessKey, aliyunMNSEndpoint);
+        CloudAccount account = new CloudAccount(aliyun_AccessId, aliyun_AccessKey, aliyun_MNSEndpoint);
         MNSClient client = account.getMNSClient();
         CloudTopic topic = client.getTopicRef("sms.topic-cn-hangzhou");
         /*

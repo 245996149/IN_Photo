@@ -55,7 +55,7 @@
             </div>
             <!-- Table -->
             <div class="table-responsive">
-                <table class="table <%--table-bordered--%> table-hover <%--dataTable--%>"
+                <table class="table  table-hover"
                        style="font-size: large;text-align: center;">
                     <thead>
                     <tr>
@@ -323,7 +323,7 @@
         //获取带"/"的项目名，如：/uimcardprj
         var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
 
-        var url = localhostPaht + projectName + "/admin/checkEmail.do";
+        var url = localhostPaht + projectName + "/admin/index/checkEmail.do";
 
         $.post(
             url,

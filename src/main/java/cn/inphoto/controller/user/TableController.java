@@ -63,7 +63,10 @@ public class TableController {
         tablePage.setUser_id(user.getUserId());
 
         // 判断页面数据对象中是否有相应数据，没有给予初始值
-        if (tablePage.getMedia_state_list() == null || tablePage.getMedia_state_list().isEmpty()) {
+        if ((tablePage.getMedia_state_list() == null) ||
+                tablePage.getMedia_state_list().isEmpty() ||
+                tablePage.getMedia_state_list().contains(MediaData.MEDIA_STATE_RECYCLE) ||
+                tablePage.getMedia_state_list().contains(MediaData.MEDIA_STATE_DELETE)) {
             tablePage.setMedia_state_list(Arrays.asList(MediaData.MEDIA_STATE_NORMAL, MediaData.MEDIA_STATE_WILL_DELETE));
         }
 
@@ -123,6 +126,7 @@ public class TableController {
 
         session.setAttribute("nav_code", UserController.TABLE_CODE);
 
+
         return "user/recycle";
 
     }
@@ -173,12 +177,16 @@ public class TableController {
                     int a = shareDataDao.countByTime(
                             user.getUserId(), category_id, begin, end, ShareData.SHARE_TYPE_WEB_CLICK);
 
+                    int b = mediaDataDao.countByUser_idAndCategory_idAndMedia_stateAndCreate_Time(
+                            user.getUserId(), category_id, begin, end, MediaData.MEDIA_STATE_NORMAL);
+
                     // 创建返回的Map对象
                     Map<String, Object> result = new HashMap<>();
 
                     // 将数据添加到返回的map中
                     result.put("name", format.format(begin));
-                    result.put("num", a);
+                    result.put("click_num", a);
+                    result.put("upload_num", b);
 
                     // 将map对象添加到队列中
                     maps[i - 1] = result;
@@ -289,7 +297,7 @@ public class TableController {
                 user.getUserId(), category_id, Collections.singletonList(MediaData.MEDIA_STATE_RECYCLE));
 
         // 查询回收站中该套餐系统的7天内过期的媒体数
-        int recycle_7 = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
+        int recycle_7 = mediaDataDao.countByUser_idAndCategory_idAndMedia_stateAndOver_time(
                 user.getUserId(), category_id, begin, end, MediaData.MEDIA_STATE_RECYCLE);
 
         // 将日历设置都15天之后
@@ -299,7 +307,7 @@ public class TableController {
         end = calendar.getTime();
 
         // 查询回收站中该套餐系统的15天内过期的媒体数
-        int recycle_15 = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
+        int recycle_15 = mediaDataDao.countByUser_idAndCategory_idAndMedia_stateAndOver_time(
                 user.getUserId(), category_id, begin, end, MediaData.MEDIA_STATE_RECYCLE);
 
         result.put("recycle_total", recycle_total);
@@ -345,7 +353,7 @@ public class TableController {
                 user.getUserId(), null, Collections.singletonList(MediaData.MEDIA_STATE_RECYCLE));
 
         // 查询回收站中该套餐系统的7天内过期的媒体数
-        int recycle_7 = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
+        int recycle_7 = mediaDataDao.countByUser_idAndCategory_idAndMedia_stateAndOver_time(
                 user.getUserId(), null, begin, end, MediaData.MEDIA_STATE_RECYCLE);
 
         // 将日历设置都15天之后
@@ -355,7 +363,7 @@ public class TableController {
         end = calendar.getTime();
 
         // 查询回收站中该套餐系统的15天内过期的媒体数
-        int recycle_15 = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
+        int recycle_15 = mediaDataDao.countByUser_idAndCategory_idAndMedia_stateAndOver_time(
                 user.getUserId(), null, begin, end, MediaData.MEDIA_STATE_RECYCLE);
 
         result.put("recycle_total", recycle_total);

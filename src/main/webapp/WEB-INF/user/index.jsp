@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <title>Bootstrap 101 Template</title>
+    <title>IN Photo管理系统</title>
     <link rel="icon" href="${pageContext.request.contextPath}/images/logo.png">
 
     <!-- Bootstrap -->
@@ -25,20 +25,20 @@
 <jsp:include page="/WEB-INF/user/menu.jsp"/>
 
 <h1>你好，世界！</h1>
-<a type="button" href="javascript:takeScreenshot();">aaaaa</a>
-<a type="button" id="bbbbb">bbbbb</a>
+<%--<a type="button" href="javascript:takeScreenshot();">aaaaa</a>--%>
+<%--<a type="button" id="bbbbb">bbbbb</a>--%>
 
-<div class="row">
-    <div class="col-lg-offset-3 col-lg-6  col-md-offset-2 col-md-8 col-sm-12 col-xs-12" id="aaaaa"
-         style="background-color: white;">
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-            <canvas id="myChart" width="200" height="100"></canvas>
-        </div>
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-            <canvas id="myChart2" width="200" height="100"></canvas>
-        </div>
-    </div>
-</div>
+<%--<div class="row">--%>
+    <%--<div class="col-lg-offset-3 col-lg-6  col-md-offset-2 col-md-8 col-sm-12 col-xs-12" id="aaaaa"--%>
+         <%--style="background-color: white;">--%>
+        <%--<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">--%>
+            <%--<canvas id="myChart" width="200" height="100"></canvas>--%>
+        <%--</div>--%>
+        <%--<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">--%>
+            <%--<canvas id="myChart2" width="200" height="100"></canvas>--%>
+        <%--</div>--%>
+    <%--</div>--%>
+<%--</div>--%>
 <c:if test="${sessionScope.loginUser.userName==null||sessionScope.loginUser.userName==''}">
     <!-- 填写账户名Modal -->
     <div class="modal fade" id="nameModal" tabindex="-1" role="dialog" aria-labelledby="nameModalLabel">
@@ -131,62 +131,62 @@
 
     });
 
-    var ctx = document.getElementById("myChart").getContext('2d');
-    var ctx2 = document.getElementById("myChart2").getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-            datasets: [{
-                label: '# 点击量',
-                data: [12, 19, 3, 5, 2, 3],
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255,99,132,1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    });
-
-    var recycle_info = new Chart(ctx2, {
-            type: 'polarArea',
-            data: {
-                labels: ["该系统数据总数", "数据7天内过期数", "数据15天内过期数"],
-                datasets: [{
-                    label: "回收站数据过期情况",
-                    data: [30, 90, 24],
-                    backgroundColor: ["rgb(255, 99, 132)", "rgb(75, 192, 192)", "rgb(255, 205, 86)"]
-                }]
-            }
-        })
-    ;
-
-    function takeScreenshot() {
-
-        html2canvas($("#aaaaa"), {
-            onrendered: function (canvas) {
-                $('#bbbbb').attr('href', canvas.toDataURL());
-                $('#bbbbb').attr('download', 'myjobdeer.png');
-                //$('#down_button').css('display','inline-block');
-                var html_canvas = canvas.toDataURL();
-                $.post('', {
-                    order_id: 1,
-                    type_id: 2,
-                    html_canvas: html_canvas
-                }, function (json) {
-                }, 'json');
-            }
-        });
-
-    }
+//    var ctx = document.getElementById("myChart").getContext('2d');
+    //    var ctx2 = document.getElementById("myChart2").getContext('2d');
+    //    var myChart = new Chart(ctx, {
+    //        type: 'line',
+    //        data: {
+    //            labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+    //            datasets: [{
+    //                label: '# 点击量',
+    //                data: [12, 19, 3, 5, 2, 3],
+    //                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+    //                borderColor: 'rgba(255,99,132,1)',
+    //                borderWidth: 1
+    //            }]
+    //        },
+    //        options: {
+    //            scales: {
+    //                yAxes: [{
+    //                    ticks: {
+    //                        beginAtZero: true
+    //                    }
+    //                }]
+    //            }
+    //        }
+    //    });
+    //
+    //    var recycle_info = new Chart(ctx2, {
+    //            type: 'polarArea',
+    //            data: {
+    //                labels: ["该系统数据总数", "数据7天内过期数", "数据15天内过期数"],
+    //                datasets: [{
+    //                    label: "回收站数据过期情况",
+    //                    data: [30, 90, 24],
+    //                    backgroundColor: ["rgb(255, 99, 132)", "rgb(75, 192, 192)", "rgb(255, 205, 86)"]
+    //                }]
+    //            }
+    //        })
+    //    ;
+    //
+    //    function takeScreenshot() {
+    //
+    //        html2canvas($("#aaaaa"), {
+    //            onrendered: function (canvas) {
+    //                $('#bbbbb').attr('href', canvas.toDataURL());
+    //                $('#bbbbb').attr('download', 'myjobdeer.png');
+    //                //$('#down_button').css('display','inline-block');
+    //                var html_canvas = canvas.toDataURL();
+    //                $.post('', {
+    //                    order_id: 1,
+    //                    type_id: 2,
+    //                    html_canvas: html_canvas
+    //                }, function (json) {
+    //                }, 'json');
+    //            }
+    //        });
+    //
+    //    }
 
 </script>
 </body>

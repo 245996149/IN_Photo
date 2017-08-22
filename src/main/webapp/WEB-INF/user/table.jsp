@@ -8,7 +8,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <title>Table</title>
+    <title>数据管理-<c:forEach items="${category}" var="c">
+        <c:if test="${tablePage.category_id==c.categoryId}">
+            ${c.categoryName}
+        </c:if>
+    </c:forEach></title>
     <link rel="icon" href="${pageContext.request.contextPath}/images/logo.png">
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -109,7 +113,7 @@
             </div>
             <!-- Table -->
             <div class="table-responsive">
-                <table class="table table-bordered table-hover dataTable" style="font-size: x-large;">
+                <table class="table table-hover dataTable" style="font-size: x-large;">
                     <thead>
                     <tr>
                         <td><input type="checkbox" id="media_data_all_checkbox" onclick="DoCheck();"><span>媒体编号</span>
@@ -128,28 +132,13 @@
                         <td>缩略图</td>
                         <td>创建日期</td>
                         <td>提取码</td>
-                        <td>操作</td>
+                        <td>状态</td>
+                        <td></td>
                     </tr>
                     </thead>
                     <tbody>
-                    <%--<tr>--%>
-                    <%--<td><input type="checkbox"><span>12345678934</span></td>--%>
-                    <%--<td width="5%"><a href="#" class="thumbnail" style="margin-bottom:auto;">--%>
-                    <%--<img src="${pageContext.request.contextPath}/images/test.jpg" alt="...">--%>
-                    <%--</a></td>--%>
-                    <%--<td>2017-12-30 24:00:00</td>--%>
-                    <%--<td>123455</td>--%>
-                    <%--<td>--%>
-                    <%--<div class="btn-group-sm" role="group" aria-label="...">--%>
-                    <%--<button type="button" class="btn btn-danger">删除</button>--%>
-                    <%--<button type="button" class="btn btn-primary btn-lg">查看--%>
-                    <%--</button>--%>
-                    <%--<button type="button" class="btn btn-info">下载</button>--%>
-                    <%--</div>--%>
-                    <%--</td>--%>
-                    <%--</tr>--%>
                     <c:forEach items="${mediaDataList}" var="m">
-                        <tr>
+                        <tr <c:if test="${m.mediaState==3}">class="danger" </c:if>>
                             <td><input type="checkbox" name="media_data_checkbox"
                                        onclick="checkAllCheck();" value="${m.mediaId}"><span>${m.mediaName}</span></td>
                             <td width="5%"><a href="javascript:void(0);" onclick="open_modal(${m.mediaName});"
@@ -167,6 +156,12 @@
                                     </c:choose>
                                 </c:forEach>
                             </td>
+                            <td><c:choose>
+                                <c:when test="${m.mediaState==0}">正常</c:when>
+                                <c:when test="${m.mediaState==3}">待删除<br/>
+                                    <fmt:formatDate value="${m.deleteTime}" pattern="yyyy年MM月dd日"/>移动到回收站中</c:when>
+                                <c:otherwise>未知</c:otherwise>
+                            </c:choose></td>
                             <td>
                                 <div class="btn-group-sm" role="group" aria-label="...">
                                     <button type="button" class="btn btn-danger" onclick="delete_media(${m.mediaId});">
@@ -197,7 +192,7 @@
                                         </c:when>
                                         <c:otherwise>
                                             <li>
-                                                <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${tablePage.currentPage-1}"
+                                                <a href="${pageContext.request.contextPath}/user/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${tablePage.currentPage-1}"
                                                    aria-label="Previous">
                                                     <span aria-hidden="true">&laquo;</span>
                                                 </a>
@@ -206,7 +201,7 @@
                                     </c:choose>
                                     <c:if test="${tablePage.totalPage>5 && tablePage.currentPage>3}">
                                         <li>
-                                            <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=1">1</a>
+                                            <a href="${pageContext.request.contextPath}/user/table/toTable.do?category_id=${tablePage.category_id}&currentPage=1">1</a>
                                         </li>
                                         <li><a href="javascript:void(0);">...</a></li>
                                     </c:if>
@@ -219,11 +214,12 @@
                                                 <c:forEach begin="1" end="${tablePage.totalPage}" var="i">
                                                     <c:choose>
                                                         <c:when test="${i==tablePage.currentPage}">
-                                                            <li class="active"><a href="javascript:void(0);">${i}</a></li>
+                                                            <li class="active"><a href="javascript:void(0);">${i}</a>
+                                                            </li>
                                                         </c:when>
                                                         <c:otherwise>
                                                             <li>
-                                                                <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
+                                                                <a href="${pageContext.request.contextPath}/user/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
                                                             </li>
                                                         </c:otherwise>
                                                     </c:choose>
@@ -233,11 +229,12 @@
                                                 <c:forEach begin="1" end="5" var="i">
                                                     <c:choose>
                                                         <c:when test="${i==tablePage.currentPage}">
-                                                            <li class="active"><a href="javascript:void(0);">${i}</a></li>
+                                                            <li class="active"><a href="javascript:void(0);">${i}</a>
+                                                            </li>
                                                         </c:when>
                                                         <c:otherwise>
                                                             <li>
-                                                                <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
+                                                                <a href="${pageContext.request.contextPath}/user/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
                                                             </li>
                                                         </c:otherwise>
                                                     </c:choose>
@@ -247,14 +244,15 @@
 
                                         <%-- 总页数小于等于5张 --%>
                                         <c:when test="${tablePage.currentPage>=(tablePage.totalPage-2)}">
-                                            <c:forEach begin="${tablePage.totalPage-5}" end="${tablePage.totalPage}" var="i">
+                                            <c:forEach begin="${tablePage.totalPage-5}" end="${tablePage.totalPage}"
+                                                       var="i">
                                                 <c:choose>
                                                     <c:when test="${i==tablePage.currentPage}">
                                                         <li class="active"><a href="javascript:void(0);">${i}</a></li>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <li>
-                                                            <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
+                                                            <a href="${pageContext.request.contextPath}/user/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
                                                         </li>
                                                     </c:otherwise>
                                                 </c:choose>
@@ -270,7 +268,7 @@
                                                     </c:when>
                                                     <c:otherwise>
                                                         <li>
-                                                            <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
+                                                            <a href="${pageContext.request.contextPath}/user/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${i}">${i}</a>
                                                         </li>
                                                     </c:otherwise>
                                                 </c:choose>
@@ -282,7 +280,7 @@
                                     <c:if test="${tablePage.totalPage>5 && tablePage.currentPage<(tablePage.totalPage-2)}">
                                         <li><a href="javascript:void(0);">...</a></li>
                                         <li>
-                                            <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${tablePage.totalPage}">${tablePage.totalPage}</a>
+                                            <a href="${pageContext.request.contextPath}/user/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${tablePage.totalPage}">${tablePage.totalPage}</a>
                                         </li>
                                     </c:if>
 
@@ -296,7 +294,7 @@
                                         </c:when>
                                         <c:otherwise>
                                             <li>
-                                                <a href="${pageContext.request.contextPath}/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${tablePage.currentPage+1}"
+                                                <a href="${pageContext.request.contextPath}/user/table/toTable.do?category_id=${tablePage.category_id}&currentPage=${tablePage.currentPage+1}"
                                                    aria-label="Next">
                                                     <span aria-hidden="true">&raquo;</span>
                                                 </a>

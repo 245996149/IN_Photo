@@ -138,7 +138,7 @@
 
     function checkCategoryCheckbox() {
         var a = $("input[name='categoryIds']:checked").length;
-        if (a == 0) {
+        if (a === 0) {
             alert("最少选择一个套餐");
             return false;
         } else {
@@ -148,7 +148,7 @@
 
     function checkRoleCheckbox() {
         var a = $("input[name='roleIds']:checked").length;
-        if (a == 0) {
+        if (a === 0) {
             alert("最少选择一个角色");
             return false;
         } else {
@@ -158,10 +158,14 @@
 
     function checkForm() {
         var forms = $("#updateForm");
-        if (!judgeNull(forms)) {
-            alert("有必填项为空！");
-            return false;
-        }
+//        var admin_name = $("#adminName").val();
+//        var phone = $("#phone").val();
+//        if (!judgeNull(forms)) {
+//            if (admin_name !== null && admin_name !== "" && phone !== null && phone !== "") {
+//                alert("有必填项为空！");
+//                return false;
+//            }
+//        }
 
         if (!checkCategoryCheckbox() || !checkRoleCheckbox()) {
             return false;
@@ -177,7 +181,7 @@
         var forms = a.find('input');
         //alert(forms.length);
         for (var i = 0; i < forms.length; i++) {
-            if (forms[i].value == "") {
+            if (forms[i].value === "") {
                 forms[i].focus();
                 //alert("有选项为空");
                 return false;

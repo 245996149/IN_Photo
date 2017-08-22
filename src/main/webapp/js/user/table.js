@@ -11,10 +11,12 @@ function getClick_7() {
         },
         function (res) {
             var labelsArr = new Array(7);
-            var dataArr = new Array(7);
+            var click_data = new Array(7);
+            var upload_data = new Array(7);
             for (var i = 0; i < res.length; i++) {
                 labelsArr[i] = res[i].name;
-                dataArr[i] = res[i].num;
+                click_data[i] = res[i].click_num;
+                upload_data[i] = res[i].upload_num;
             }
 
             var ctx = document.getElementById("click_7").getContext('2d');
@@ -25,9 +27,15 @@ function getClick_7() {
                     labels: labelsArr,
                     datasets: [{
                         label: '点击量',
-                        data: dataArr,
+                        data: click_data,
                         backgroundColor: 'rgba(255, 99, 132, 0.2)',
                         borderColor: 'rgba(255,99,132,1)',
+                        borderWidth: 1
+                    }, {
+                        label: '上传量',
+                        data: upload_data,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192,1)',
                         borderWidth: 1
                     }]
                 },
