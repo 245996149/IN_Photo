@@ -20,8 +20,7 @@ public class ResFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         // 设置日志默认
-        MDC.put("user_id", 0);
-        MDC.put("category_id", 0);
+        MDC.put("user_info", "SYSTEM_DEFAULT");
 
         try {
             filterChain.doFilter(servletRequest, servletResponse);

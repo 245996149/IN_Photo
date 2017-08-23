@@ -1,11 +1,14 @@
 package cn.inphoto.task;
 
-import cn.inphoto.dao.*;
+import cn.inphoto.dao.MediaDataDao;
+import cn.inphoto.dao.UserCategoryDao;
+import cn.inphoto.dao.UserDao;
 import cn.inphoto.dbentity.user.MediaData;
 import cn.inphoto.dbentity.user.User;
 import cn.inphoto.dbentity.user.UserCategory;
-import cn.inphoto.util.DBUtil;
-import org.junit.Test;
+import cn.inphoto.log.UserLogLevel;
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -14,12 +17,12 @@ import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.*;
 
-import static cn.inphoto.util.DateUtil.getSevenDateLater;
-import static cn.inphoto.util.DateUtil.getThirtyDateLater;
-import static cn.inphoto.util.DateUtil.getTodayDate;
+import static cn.inphoto.util.DateUtil.*;
 
 @Component
 public class MediaTask {
+
+    private Logger logger = Logger.getLogger(MediaTask.class);
 
     @Resource
     private MediaDataDao mediaDataDao;
@@ -57,8 +60,6 @@ public class MediaTask {
         // 遍历客户
         for (User u : userList
                 ) {
-
-//            System.out.println(u.toString());
 
             // 查找该客户所有的正常状态下的媒体
             List<MediaData> mediaDataList = mediaDataDao.findByUser_idAndState(
@@ -112,20 +113,26 @@ public class MediaTask {
 
             }
 
-//            System.out.println("..........................................");
-
             // 写入数据
             if (!updateMediaDataList.isEmpty()) {
 
+                StringBuilder a = new StringBuilder();
                  /*遍历待更新队列，将队列中的媒体数据设置为待删除状态，并设置删除时间为7天后*/
                 for (MediaData m : updateMediaDataList
                         ) {
                     m.setMediaState(MediaData.MEDIA_STATE_WILL_DELETE);
                     m.setDeleteTime(new Timestamp(getSevenDateLater().getTime()));
-//                    System.out.println(m.toString());
+                    a.append(String.valueOf(m.getMediaId())).append("、");
                 }
 
-                mediaDataDao.updateMediaList(updateMediaDataList);
+                if (mediaDataDao.updateMediaList(updateMediaDataList)) {
+
+                    MDC.put("user_info", "user_id=" + u.getUserId());
+
+                    logger.log(UserLogLevel.TASK,
+                            "清理user_id=" + u.getUserId() +
+                                    " 的用户媒体数据量超过套餐的媒体。共清理了media_id为下列的媒体数据：" + a);
+                }
             }
 
         }
@@ -139,8 +146,6 @@ public class MediaTask {
     @Scheduled(cron = "0 50 2 * * ? ")
     public void cleanWillDeleteMedia() {
 
-        System.out.println("清理过期待删除媒体数据");
-
         // 查找所有待删除状态下的媒体数据
         List<MediaData> mediaDataList = mediaDataDao.findByState(MediaData.MEDIA_STATE_WILL_DELETE);
 
@@ -151,6 +156,8 @@ public class MediaTask {
 
         List<MediaData> updateMediaList = new ArrayList<>();
 
+        StringBuilder a = new StringBuilder();
+
         // 遍历队列，找到删除时间早于今天0时的媒体数据，添加过期时间、回收站状态,并将其添加到待更新队列
         for (MediaData m : mediaDataList
                 ) {
@@ -158,6 +165,7 @@ public class MediaTask {
                 m.setMediaState(MediaData.MEDIA_STATE_RECYCLE);
                 m.setOverTime(new Timestamp(getThirtyDateLater().getTime()));
                 updateMediaList.add(m);
+                a.append(String.valueOf(m.getMediaId())).append("、");
             }
         }
 
@@ -166,7 +174,10 @@ public class MediaTask {
             return;
         }
 
-        mediaDataDao.updateMediaList(updateMediaList);
+        if (mediaDataDao.updateMediaList(updateMediaList)) {
+            logger.log(UserLogLevel.TASK,
+                    "清理过期待删除媒体数据。共清理了media_id为下列的媒体数据：" + a);
+        }
 
     }
 
@@ -176,8 +187,6 @@ public class MediaTask {
      */
     @Scheduled(cron = "0 40 2 * * ? ")
     public void cleanRecycleMedia() {
-
-        System.out.println("清理回收站中过期媒体数据");
 
         // 查找所有待删除状态下的媒体数据
         List<MediaData> mediaDataList = mediaDataDao.findByState(MediaData.MEDIA_STATE_RECYCLE);
@@ -189,12 +198,15 @@ public class MediaTask {
 
         List<MediaData> updateMediaList = new ArrayList<>();
 
+        StringBuilder a = new StringBuilder();
+
         // 遍历队列，找到删除时间早于今天0时的媒体数据，添加过期时间、回收站状态,并将其添加到待更新队列
         for (MediaData m : mediaDataList
                 ) {
             if (m.getOverTime().getTime() < getTodayDate().getTime()) {
                 m.setMediaState(MediaData.MEDIA_STATE_DELETE);
                 updateMediaList.add(m);
+                a.append(String.valueOf(m.getMediaId())).append("、");
             }
         }
 
@@ -203,7 +215,11 @@ public class MediaTask {
             return;
         }
 
-        mediaDataDao.updateMediaList(updateMediaList);
+        if (mediaDataDao.updateMediaList(updateMediaList)) {
+            logger.log(UserLogLevel.TASK,
+                    "清理过期待删除媒体数据。共清理了media_id为下列的媒体数据：" + a);
+
+        }
 
     }
 
@@ -212,8 +228,6 @@ public class MediaTask {
      */
     @Scheduled(cron = "0 45 2 * * ? ")
     public void changeWillDeleteMediaToNormal() {
-
-        System.out.println("判断待删除下媒体是否可以恢复成正常状态，可以则恢复");
 
         // 查找所有正常状态的客户
         List<User> userList = userDao.findByState(User.USER_STATE_NORMAL);
@@ -272,13 +286,23 @@ public class MediaTask {
             // 写入数据
             if (!updateMediaList.isEmpty()) {
 
+                StringBuilder a = new StringBuilder();
+
                  /*遍历待更新队列，将队列中的媒体数据设置为正常状态*/
                 for (MediaData m : updateMediaList
                         ) {
                     m.setMediaState(MediaData.MEDIA_STATE_NORMAL);
+                    a.append(String.valueOf(m.getMediaId())).append("、");
                 }
 
-                mediaDataDao.updateMediaList(updateMediaList);
+                if (mediaDataDao.updateMediaList(updateMediaList)) {
+
+                    MDC.put("user_info", "user_id=" + u.getUserId());
+                    logger.log(UserLogLevel.TASK,
+                            "清理user_id=" + u.getUserId() +
+                                    " 的用户媒体数据量超过套餐的媒体。共清理了media_id为下列的媒体数据：" + a);
+                }
+
             }
 
         }

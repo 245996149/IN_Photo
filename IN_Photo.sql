@@ -219,7 +219,7 @@ CREATE TABLE `code_webinfo` (
   `button_pic` varchar(255) DEFAULT NULL,
   `code_webinfo_state` char(1) DEFAULT NULL,
   PRIMARY KEY (`code_webinfo_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -228,37 +228,38 @@ CREATE TABLE `code_webinfo` (
 
 LOCK TABLES `code_webinfo` WRITE;
 /*!40000 ALTER TABLE `code_webinfo` DISABLE KEYS */;
+INSERT INTO `code_webinfo` VALUES (1,2,3,'畅玩艺术乐园','/data/IN_Photo/2/settings/settings_pic_70819.png',31.70,31.40,31.40,62.40,'#ffffff','#ff0000','#ff5252',45.00,32.40,32.40,48.60,'/data/IN_Photo/2/settings/settings_pic_16077.png','1'),(2,2,3,'畅玩艺术乐园','/data/IN_Photo/2/settings/settings_pic_70819.png',31.70,31.40,31.40,62.40,'#ffffff','#ff0000','#ff5252',45.00,32.40,32.40,48.60,'/data/IN_Photo/2/settings/settings_pic_16077.png','0');
 /*!40000 ALTER TABLE `code_webinfo` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `loginfo`
+-- Table structure for table `log_info`
 --
 
-DROP TABLE IF EXISTS `loginfo`;
+DROP TABLE IF EXISTS `log_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `loginfo` (
-  `loginfo_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) DEFAULT NULL COMMENT '用户id',
-  `category_id` int(11) DEFAULT NULL COMMENT '套餐系统id',
+CREATE TABLE `log_info` (
+  `log_info_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_info` varchar(255) DEFAULT NULL COMMENT '用户id',
   `class` varchar(255) DEFAULT NULL COMMENT '操作的类',
   `method` varchar(255) DEFAULT NULL COMMENT '操作的方法',
   `line` int(11) DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '时间',
   `log_level` varchar(20) DEFAULT NULL COMMENT '错误级别',
   `message` longtext COMMENT '错误信息',
-  PRIMARY KEY (`loginfo_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`log_info_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `loginfo`
+-- Dumping data for table `log_info`
 --
 
-LOCK TABLES `loginfo` WRITE;
-/*!40000 ALTER TABLE `loginfo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `loginfo` ENABLE KEYS */;
+LOCK TABLES `log_info` WRITE;
+/*!40000 ALTER TABLE `log_info` DISABLE KEYS */;
+INSERT INTO `log_info` VALUES (1,'','cn.inphoto.controller.admin.AdminLoginController','checkAdmin',201,'2017-08-23 03:05:28','ADMIN','登录验证：用户admin_id=6 尝试 邮箱登录 验证，登陆结果为：{success=true, message=验证成功, url=/IN_Photo/admin/index.do}'),(2,'','cn.inphoto.controller.admin.AdminLoginController','checkAdmin',201,'2017-08-23 03:05:43','ADMIN','登录验证：用户admin_id=1 尝试 用户名登录 验证，登陆结果为：{success=true, message=验证成功, url=/IN_Photo/admin/index.do}'),(3,'','cn.inphoto.controller.user.UserLoginController','checkUser',165,'2017-08-23 03:06:00','USER','登录验证：用户user_id=2 尝试 用户名登录 验证，登陆结果为：密码错误'),(4,'','cn.inphoto.controller.user.PageSettingsController','perCode',318,'2017-08-23 03:12:19','USER','用户user_id=2 更新预览category_id=3 套餐系统提取页面，返回结果为：{success=true, message=更新成功, url=http%3A%2F%2F192.168.0.222%2F%2FIN_Photo%2Fmobile%2FtoCode.do%3Fuser_id%3D2%26category_id%3D3%26test%3Dtrue}'),(5,'','cn.inphoto.controller.user.PageSettingsController','changeCodePreToNormal',401,'2017-08-23 03:12:31','USER','用户user_id=2 更新预览category_id=3 套餐系统为生效状态，返回结果为：{success=true, message=更新成功}'),(6,'','cn.inphoto.controller.user.PageSettingsController','setShareInfo',471,'2017-08-23 03:13:04','USER','用户user_id=2 更新预览category_id=3 套餐系统为生效状态，返回结果为：{success=true, message=更新成功}');
+/*!40000 ALTER TABLE `log_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -397,7 +398,7 @@ CREATE TABLE `share_info` (
   `share_chats_text` varchar(255) DEFAULT NULL,
   `share_chats_icon` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`share_info_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -406,6 +407,7 @@ CREATE TABLE `share_info` (
 
 LOCK TABLES `share_info` WRITE;
 /*!40000 ALTER TABLE `share_info` DISABLE KEYS */;
+INSERT INTO `share_info` VALUES (1,2,3,'啊啊啊啊啊啊啊啊啊','/data/IN_Photo/2/settings/settings_pic_94002.png','啊啊啊啊','啊啊啊啊啊啊啊','/data/IN_Photo/2/settings/settings_pic_43967.png');
 /*!40000 ALTER TABLE `share_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -483,4 +485,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-08-22 17:19:06
+-- Dump completed on 2017-08-23 11:59:05

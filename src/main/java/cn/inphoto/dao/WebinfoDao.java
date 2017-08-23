@@ -1,7 +1,7 @@
 package cn.inphoto.dao;
 
 import cn.inphoto.dbentity.user.CodeWebInfo;
-import cn.inphoto.dbentity.user.PicWebinfo;
+import cn.inphoto.dbentity.user.PicWebInfo;
 import cn.inphoto.dbentity.user.ShareInfo;
 
 import java.util.List;
@@ -29,14 +29,14 @@ public interface WebinfoDao {
      * @param pic_web_info_state 状态
      * @return
      */
-    PicWebinfo findPicByUser_idAndCategory_id(Long user_id, Integer category_id, String pic_web_info_state);
+    PicWebInfo findPicByUser_idAndCategory_id(Long user_id, Integer category_id, String pic_web_info_state);
 
     /**
      * 根据pic_web_info_id查询展示页面设置
      * @param pic_web_info_id 展示页面设置id
      * @return 展示页面设置
      */
-    PicWebinfo findPicByPic_id(Long pic_web_info_id);
+    PicWebInfo findPicByPic_id(Long pic_web_info_id);
 
     /**
      * 根据code_web_info_id查询提取页面设置
@@ -59,7 +59,7 @@ public interface WebinfoDao {
      */
     ShareInfo findShareByUser_idAndCategory(Long user_id, Integer category_id);
 
-    List<PicWebinfo> findPicAllByUser_id(Long user_id);
+    List<PicWebInfo> findPicAllByUser_id(Long user_id);
 
     List<CodeWebInfo> findCodeAllByUser_id(Long user_id);
 

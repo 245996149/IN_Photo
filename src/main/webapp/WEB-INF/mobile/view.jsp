@@ -4,7 +4,7 @@
 <head>
     <meta name="viewport"
           content="width=640, user-scalable=no, target-densitydpi=device-dpi">
-    <title>${picWebinfo.pageTitle}</title>
+    <title>${picWebInfo.pageTitle}</title>
 
     <script type="text/javascript"
             src="${pageContext.request.contextPath}/js/jquery-3.2.1.js"></script>
@@ -151,11 +151,11 @@
             <%--<img src="${pageContext.request.contextPath}/get/getMedia.do?type=1&id=${media_id}"--%>
             <%--style="position:absolute;height: 100%;width: 100%;opacity: 0;z-index: 999">--%>
 
-            <img src="${pageContext.request.contextPath}/get/getMedia.do?type=2&id=${picWebinfo.picWebinfoId}"
+            <img src="${pageContext.request.contextPath}/get/getMedia.do?type=2&id=${picWebInfo.picWebinfoId}"
                  style="height: auto;width: 100%;z-index: 0">
 
-            <div style="position: absolute;top: ${picWebinfo.pictureTop}%;bottom: ${picWebinfo.pictureBottom}%;
-                    left: ${picWebinfo.pictureLeft}%;right: ${picWebinfo.pictureRight}%;z-index: 10;">
+            <div style="position: absolute;top: ${picWebInfo.pictureTop}%;bottom: ${picWebInfo.pictureBottom}%;
+                    left: ${picWebInfo.pictureLeft}%;right: ${picWebInfo.pictureRight}%;z-index: 10;">
                 <img src="${pageContext.request.contextPath}/get/getMedia.do?type=1&id=${media_id}&download=true&image_type=.${image_type}"
                      style="height: 100%;width: 100%">
             </div>
@@ -164,11 +164,11 @@
             <%--<img src="${pageContext.request.contextPath}/get/getMedia.do?type=7"--%>
             <%--style="position:absolute;height: 100%;width: 100%;opacity: 0;z-index: 999">--%>
 
-            <img src="${pageContext.request.contextPath}/get/getMedia.do?type=2&id=${picWebinfo.picWebinfoId}"
+            <img src="${pageContext.request.contextPath}/get/getMedia.do?type=2&id=${picWebInfo.picWebinfoId}"
                  style="height: auto;width: 100%;z-index: 0">
 
-            <div style="position: absolute;top: ${picWebinfo.pictureTop}%;bottom: ${picWebinfo.pictureBottom}%;
-                    left: ${picWebinfo.pictureLeft}%;right: ${picWebinfo.pictureRight}%;z-index: 10">
+            <div style="position: absolute;top: ${picWebInfo.pictureTop}%;bottom: ${picWebInfo.pictureBottom}%;
+                    left: ${picWebInfo.pictureLeft}%;right: ${picWebInfo.pictureRight}%;z-index: 10">
                 <img src="${pageContext.request.contextPath}/get/getMedia.do?type=7" style="height: 100%;width: 100%">
             </div>
         </c:otherwise>

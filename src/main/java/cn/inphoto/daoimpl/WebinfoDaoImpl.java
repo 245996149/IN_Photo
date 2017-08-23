@@ -3,7 +3,7 @@ package cn.inphoto.daoimpl;
 import cn.inphoto.dao.SuperDao;
 import cn.inphoto.dao.WebinfoDao;
 import cn.inphoto.dbentity.user.CodeWebInfo;
-import cn.inphoto.dbentity.user.PicWebinfo;
+import cn.inphoto.dbentity.user.PicWebInfo;
 import cn.inphoto.dbentity.user.ShareInfo;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -34,26 +34,26 @@ public class WebinfoDaoImpl extends SuperDao implements WebinfoDao {
     }
 
     @Override
-    public PicWebinfo findPicByUser_idAndCategory_id(Long user_id, Integer category_id, String pic_web_info_state) {
+    public PicWebInfo findPicByUser_idAndCategory_id(Long user_id, Integer category_id, String pic_web_info_state) {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from PicWebinfo where userId = :user_id and categoryId = :category_id and" +
+            Query query = session.createQuery("from PicWebInfo where userId = :user_id and categoryId = :category_id and" +
                     " picWebinfoState = :pic_web_info_state");
 
             query.setParameter("user_id", user_id);
             query.setParameter("category_id", category_id);
             query.setParameter("pic_web_info_state", pic_web_info_state);
 
-            return (PicWebinfo) query.uniqueResult();
+            return (PicWebInfo) query.uniqueResult();
         }
     }
 
     @Override
-    public PicWebinfo findPicByPic_id(Long pic_web_info_id) {
+    public PicWebInfo findPicByPic_id(Long pic_web_info_id) {
 
         try (Session session = sessionFactory.openSession()) {
-            return session.get(PicWebinfo.class, pic_web_info_id);
+            return session.get(PicWebInfo.class, pic_web_info_id);
         }
     }
 
@@ -87,10 +87,10 @@ public class WebinfoDaoImpl extends SuperDao implements WebinfoDao {
     }
 
     @Override
-    public List<PicWebinfo> findPicAllByUser_id(Long user_id) {
+    public List<PicWebInfo> findPicAllByUser_id(Long user_id) {
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery("from PicWebinfo where userId = :user_id");
+            Query query = session.createQuery("from PicWebInfo where userId = :user_id");
 
             query.setParameter("user_id", user_id);
 

@@ -2,6 +2,7 @@ package cn.inphoto.controller;
 
 import cn.inphoto.dao.*;
 import cn.inphoto.dbentity.user.*;
+import cn.inphoto.log.UserLogLevel;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,7 +91,7 @@ public class ReceiveController {
             result.put("success", false);
             result.put("code", 100);
             result.put("message", "userId、names、type三者为必填参数，不能为空");
-            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id="
+            logger.log(UserLogLevel.USER, "接收到的names=" + names + "，user_id=" + user_id + ",category_id="
                     + category_id + "，返回的信息为：" + result.toString());
             return result;
 
@@ -104,7 +105,7 @@ public class ReceiveController {
             result.put("success", false);
             result.put("code", 101);
             result.put("message", "未找到user_id=" + user_id + "对应的用户");
-            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id="
+            logger.log(UserLogLevel.USER, "接收到的names=" + names + "，user_id=" + user_id + ",category_id="
                     + category_id + "，返回的信息为：" + result.toString());
             return result;
 
@@ -113,8 +114,7 @@ public class ReceiveController {
         Category category = categoryDao.findByCategory_id(category_id);
 
         // 设置日志信息
-        MDC.put("user_id", user.getUserId());
-        MDC.put("category_id", category_id);
+        MDC.put("user_info", "user_id=" + user_id + ";category_id=" + category_id);
 
         // 根据category_code、user_id查询用户有效期内的系统
         UserCategory userCategory =
@@ -127,7 +127,7 @@ public class ReceiveController {
             result.put("success", false);
             result.put("code", 103);
             result.put("message", "user_id=" + user_id + "的用户没有category_id=" + category_id + "状态正常的系统");
-            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id="
+            logger.log(UserLogLevel.USER, "接收到的names=" + names + "，user_id=" + user_id + ",category_id="
                     + category_id + "，返回的信息为：" + result.toString());
             return result;
 
@@ -136,8 +136,6 @@ public class ReceiveController {
         // 获取配置文件中的存储数据的根目录
         //String path = getConfigInfo("data_path");
         String path = data_path;
-
-        System.out.println(data_path);
 
         //设置InPhoto媒体数据用户存储的目录，判断路径是否存在，不存在则创建
         String userPath = path + File.separator + user.getUserId();
@@ -156,7 +154,7 @@ public class ReceiveController {
                 result.put("success", false);
                 result.put("code", 104);
                 result.put("message", "请求中未包含文件");
-                logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id="
+                logger.log(UserLogLevel.USER, "接收到的names=" + names + "，user_id=" + user_id + ",category_id="
                         + category_id + "，返回的信息为：" + result.toString());
                 return result;
 
@@ -244,7 +242,7 @@ public class ReceiveController {
                     result.put("success", false);
                     result.put("code", 105);
                     result.put("message", "文件接收未完整！");
-                    logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id="
+                    logger.log(UserLogLevel.USER, "接收到的names=" + names + "，user_id=" + user_id + ",category_id="
                             + category_id + "，返回的信息为：" + result.toString());
                     return result;
 
@@ -283,7 +281,7 @@ public class ReceiveController {
                     result.put("success", false);
                     result.put("code", 106);
                     result.put("message", "Gif文件转换失败");
-                    logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id=" + category_id
+                    logger.log(UserLogLevel.USER, "接收到的names=" + names + "，user_id=" + user_id + ",category_id=" + category_id
                             + "，number=" + number + "，second=" + second + "返回的信息为：" + result.toString());
                     return result;
 
@@ -305,7 +303,7 @@ public class ReceiveController {
                 result.put("success", false);
                 result.put("code", 107);
                 result.put("message", "文件写入数据库时发生了错误，请稍后再试");
-                logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id=" + category_id +
+                logger.log(UserLogLevel.USER, "接收到的names=" + names + "，user_id=" + user_id + ",category_id=" + category_id +
                         "，返回的信息为：" + result.toString());
                 return result;
 
@@ -328,7 +326,7 @@ public class ReceiveController {
                 result.put("success", false);
                 result.put("code", 108);
                 result.put("message", "验证码写入数据库中发生错误");
-                logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id="
+                logger.log(UserLogLevel.USER, "接收到的names=" + names + "，user_id=" + user_id + ",category_id="
                         + category_id + "，返回的信息为：" + result.toString());
                 return result;
 
@@ -355,7 +353,7 @@ public class ReceiveController {
             result.put("message", "数据写入系统成功");
             result.put("url", request.getScheme() + "://" + request.getServerName() + request.getContextPath() +
                     "/mobile/toPage.do?user_id=" + user_id + "&category_id=" + category_id + "&media_id=" + mediaData.getMediaId());
-            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id="
+            logger.log(UserLogLevel.USER, "接收到的names=" + names + "，user_id=" + user_id + ",category_id="
                     + category_id + "，返回的信息为：" + result.toString());
             return result;
 
@@ -364,7 +362,7 @@ public class ReceiveController {
             result.put("success", false);
             result.put("code", 99);
             result.put("message", "发生未知错误，错误信息为：" + getErrorInfoFromException(e));
-            logger.info("接收到的names=" + names + "，user_id=" + user_id + ",category_id="
+            logger.log(UserLogLevel.USER, "接收到的names=" + names + "，user_id=" + user_id + ",category_id="
                     + category_id + "，返回的信息为：" + result.toString());
             return result;
 

@@ -1,5 +1,6 @@
 package cn.inphoto.log;
 
+import org.apache.log4j.Priority;
 import org.apache.log4j.jdbc.JDBCAppender;
 
 
@@ -9,11 +10,13 @@ import java.sql.SQLException;
 import java.util.Date;
 
 /**
- * Log4j数据库管理，判断数据库链接是否有效
  * Created by kaxia on 2017/6/21.
  */
 public class LogJDBCAppender extends JDBCAppender {
 
+    /**
+     * Log4j数据库管理，判断数据库链接是否有效
+     */
     @Override
     protected Connection getConnection() throws SQLException {
         // TODO Auto-generated method stub
@@ -30,4 +33,12 @@ public class LogJDBCAppender extends JDBCAppender {
         }
         return connection;
     }
+
+    /**
+     * 定义日志附加器，用于判断日志等级是否相等，而不是判断优先级
+     */
+//    @Override
+//    public boolean isAsSevereAsThreshold(Priority priority) {
+//        return this.getThreshold().equals(priority);
+//    }
 }

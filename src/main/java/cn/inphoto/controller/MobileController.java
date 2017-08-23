@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static cn.inphoto.util.DirUtil.getErrorInfoFromException;
 import static cn.inphoto.util.ResultMapUtil.createResult;
 
 /**
@@ -212,12 +211,12 @@ public class MobileController {
             // 判断用户套餐系统是否存在
             if (userCategory == null) return MOBILE_404;
 
-            String picState = PicWebinfo.PIC_WEB_INFO_STATE_NORMAL;
+            String picState = PicWebInfo.PIC_WEB_INFO_STATE_NORMAL;
 
             // 判断是否在测试模式，在测试模式将media_id设置为0
             if (test) {
                 model.addAttribute("media_id", 0);
-                picState = PicWebinfo.PIC_WEB_INFO_STATE_PREVIEW;
+                picState = PicWebInfo.PIC_WEB_INFO_STATE_PREVIEW;
             } else {
                 // 查询媒体数据，并判断媒体数据是否在正常状态内
                 MediaData mediaData = mediaDataDao.findByMedia_id(media_id);
@@ -234,7 +233,7 @@ public class MobileController {
             }
 
             // 查询用户展示页面设置
-            PicWebinfo picWebinfo = webinfoDao.findPicByUser_idAndCategory_id(
+            PicWebInfo picWebInfo = webinfoDao.findPicByUser_idAndCategory_id(
                     user.getUserId(), userCategory.getCategoryId(), picState);
 
             ShareInfo shareInfo = webinfoDao.findShareByUser_idAndCategory(user_id, category_id);
@@ -251,9 +250,9 @@ public class MobileController {
             logger.info("用户打开了了user_id=" + user_id + "，category_id=" + category_id + ",media_id=" + media_id + "的展示页面");
 
             // 判断展示页面设置是否有效，无效打开默认页面
-            if (picWebinfo == null) return MOBILE_VIEW_DEFAULT;
+            if (picWebInfo == null) return MOBILE_VIEW_DEFAULT;
 
-            model.addAttribute("picWebinfo", picWebinfo);
+            model.addAttribute("picWebInfo", picWebInfo);
 
         } catch (Exception e) {
             e.printStackTrace();

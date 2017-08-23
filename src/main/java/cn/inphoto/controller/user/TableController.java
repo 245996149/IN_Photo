@@ -3,7 +3,7 @@ package cn.inphoto.controller.user;
 import cn.inphoto.dao.*;
 import cn.inphoto.dbentity.page.TablePage;
 import cn.inphoto.dbentity.user.*;
-import cn.inphoto.log.UserLog;
+import cn.inphoto.log.UserLogLevel;
 import net.sf.json.JSONArray;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
@@ -394,8 +394,7 @@ public class TableController {
 
         changeMediaDataToRecycle(mediaData);
 
-        MDC.put("user_id", user.getUserId());
-        MDC.put("category_id", mediaData.getCategoryId());
+        MDC.put("user_info", "user_id=" + user.getUserId() + ";category_id=" + mediaData.getCategoryId());
 
         if (utilDao.update(mediaData)) {
 
@@ -409,7 +408,7 @@ public class TableController {
 
         }
 
-        logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 对media_id=" +
+        logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 对media_id=" +
                 mediaData.getMediaId() + " 的媒体数据执行了移动到回收站的操作，操作结果为：" + result.toString());
 
         return result;
@@ -449,7 +448,7 @@ public class TableController {
             changeMediaDataToRecycle(m);
         }
 
-        MDC.put("user_id", user.getUserId());
+        MDC.put("user_info", "user_id=" + user.getUserId());
 
         if (mediaDataDao.updateMediaList(mediaDataList)) {
 
@@ -463,7 +462,7 @@ public class TableController {
 
         }
 
-        logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 对media_id=" +
+        logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 对media_id=" +
                 media_id_list + " 的媒体数据执行了移动到回收站的操作，操作结果为：" + result.toString());
 
         return result;
@@ -489,8 +488,7 @@ public class TableController {
         mediaData.setMediaState(MediaData.MEDIA_STATE_DELETE);
         mediaData.setOverTime(new Timestamp(System.currentTimeMillis()));
 
-        MDC.put("user_id", user.getUserId());
-        MDC.put("category_id", mediaData.getCategoryId());
+        MDC.put("user_info", "user_id=" + user.getUserId() + ";category_id=" + mediaData.getCategoryId());
 
         if (utilDao.update(mediaData)) {
 
@@ -504,7 +502,7 @@ public class TableController {
 
         }
 
-        logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 对media_id=" +
+        logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 对media_id=" +
                 mediaData.getMediaId() + " 的媒体数据执行了彻底删除的操作，操作结果为：" + result.toString());
 
         return result;
@@ -545,7 +543,7 @@ public class TableController {
             m.setOverTime(new Timestamp(System.currentTimeMillis()));
         }
 
-        MDC.put("user_id", user.getUserId());
+        MDC.put("user_info", "user_id=" + user.getUserId() );
 
         // 更新数据库中媒体数据的信息
         if (mediaDataDao.updateMediaList(mediaDataList)) {
@@ -560,7 +558,7 @@ public class TableController {
 
         }
 
-        logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 对media_id=" +
+        logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 对media_id=" +
                 media_id_list + " 的媒体数据执行了彻底删除的操作，操作结果为：" + result.toString());
 
         return result;
@@ -589,15 +587,14 @@ public class TableController {
         UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_idAndState(
                 user.getUserId(), mediaData.getCategoryId(), UserCategory.USER_CATEGORY_STATE_NORMAL);
 
-        MDC.put("user_id", user.getUserId());
-        MDC.put("category_id", mediaData.getCategoryId());
+        MDC.put("user_info", "user_id=" + user.getUserId() + ";category_id=" + mediaData.getCategoryId());
 
         // 判断系统是否过期
         if (userCategory == null) {
 
             result.put("success", false);
             result.put("message", "系统已经过期失效，无法还原。请联系客服。");
-            logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 尝试还原回收站中media_id为：" +
+            logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 尝试还原回收站中media_id为：" +
                     mediaData.getMediaId() + "的数据，返回的结果是：" + result.toString());
             return result;
 
@@ -610,7 +607,7 @@ public class TableController {
 
             result.put("success", false);
             result.put("message", "该媒体数据隶属于的系统已经达到最大媒体数据容量，请联系客服另行购买。");
-            logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 尝试还原回收站中media_id为：" +
+            logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 尝试还原回收站中media_id为：" +
                     mediaData.getMediaId() + "的数据，返回的结果是：" + result.toString());
             return result;
 
@@ -634,7 +631,7 @@ public class TableController {
 
         }
 
-        logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 尝试还原回收站中media_id为：" +
+        logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 尝试还原回收站中media_id为：" +
                 mediaData.getMediaId() + "的数据，返回的结果是：" + result.toString());
 
         return result;
@@ -666,7 +663,7 @@ public class TableController {
             media_ids.add(jsonArray.getLong(i));
         }
 
-        MDC.put("user_id", user.getUserId());
+        MDC.put("user_info", "user_id=" + user.getUserId() );
 
         // 加载数据库中的对象
         List<MediaData> mediaDataList = mediaDataDao.findByMedia_ids(media_ids);
@@ -744,7 +741,7 @@ public class TableController {
 
             result.put("success", false);
             result.put("message", msg + "系统容量不足");
-            logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 尝试还原回收站中media_id为：" +
+            logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 尝试还原回收站中media_id为：" +
                     media_id_list + "的数据，返回的结果是：" + result.toString());
             return result;
 
@@ -770,7 +767,7 @@ public class TableController {
             result.put("message", "更新成功！");
         }
 
-        logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 尝试还原回收站中media_id为：" +
+        logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 尝试还原回收站中media_id为：" +
                 media_id_list + "的数据，返回的结果是：" + result.toString());
 
         return result;

@@ -4,6 +4,9 @@ import cn.inphoto.dao.UserDao;
 import cn.inphoto.dao.UtilDao;
 import cn.inphoto.dbentity.admin.AdminInfo;
 import cn.inphoto.dbentity.user.User;
+import cn.inphoto.log.UserLogLevel;
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +28,8 @@ import static cn.inphoto.util.SMSUtil.sendSMSLimit;
 @Controller
 @RequestMapping("/user")
 public class UserController {
+
+    private static Logger logger = Logger.getLogger(UserController.class);
 
     /*首页简码*/
     public static int INDEX_CODE = 1;
@@ -118,6 +123,7 @@ public class UserController {
             return createResult(false, "该手机号已被使用");
         }
 
+        MDC.put("user_id", user.getUserId());
 
         // 创建6位验证码字符串对象
         StringBuilder codeTemp = new StringBuilder();
@@ -134,17 +140,16 @@ public class UserController {
 
         session.setAttribute("addUserPhoneCode", codeMap);
 
-//        System.out.println(codeMap.toString());
-
-        // TODO 添加发送短信逻辑
-//        if (!sendSMS(phone, codeTemp.toString(), "IN PHOTO管理员系统绑定手机号", "SMS_61155105")) {
-
         if (!getSuccess(sendSMSLimit(
                 phone, codeTemp.toString(), "IN PHOTO管理系统绑定手机号",
                 "SMS_61155105", "addUserPhone", session))) {
-
+            logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() +
+                    " 的用户请求绑定手机号，提交的信息为：" + phone + "，发送短信失败，请检查短信服务器状态");
             return createResult(false, "发送失败，请联系管理员查看短信服务器状态");
         }
+
+        logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() +
+                " 的用户请求绑定手机号，提交的信息为：" + phone + "，发送验证信息成功，验证信息为" + codeTemp);
 
         return createResult(true, "发送成功");
     }
@@ -175,13 +180,20 @@ public class UserController {
 
         // 更新数据
         User user = (User) session.getAttribute("loginUser");
+
         user.setPhone(phone);
+
+        MDC.put("user_id", user.getUserId());
 
         // 写入数据
         if (!utilDao.update(user)) {
+            logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() +
+                    " 的用户请求绑定手机号，已经验证验证码，提交的信息为：" + phone + "，写入数据是发生了错误");
             return createResult(false, "写入数据是发生了错误，请稍候再试");
         }
 
+        logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() +
+                " 的用户请求绑定手机号，已经验证验证码，提交的信息为：" + phone + "，绑定手机号成功");
         return createResult(true, "绑定手机号成功");
     }
 

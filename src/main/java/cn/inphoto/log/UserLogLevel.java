@@ -5,28 +5,28 @@ import org.apache.log4j.Level;
 /**
  * 自定义日志级别
  */
-public class UserLog extends Level {
+public class UserLogLevel extends Level {
 
     private static final long serialVersionUID = 1L;
 
-    protected UserLog(int level, String levelStr, int syslogEquivalent) {
+    private UserLogLevel(int level, String levelStr, int syslogEquivalent) {
         super(level, levelStr, syslogEquivalent);
     }
 
     /**
      * 定义log的权重为介于OFF和FATAL之间，便于打印LIFE级别的log
      */
-    public static final int USER_INT = FATAL_INT + 10;
+    private static final int USER_INT = FATAL_INT + 10;
 
-    public static final int ADMIN_INT = FATAL_INT + 9;
+    private static final int ADMIN_INT = FATAL_INT + 9;
 
-    public static final int TASK_INT = FATAL_INT + 20;
+    private static final int TASK_INT = FATAL_INT + 20;
 
-    public static final Level TASK = new UserLog(TASK_INT, "TASK", 10);
+    public static final Level TASK = new UserLogLevel(TASK_INT, "TASK", 10);
 
-    public static final Level USER = new UserLog(USER_INT, "USER", 10);
+    public static final Level USER = new UserLogLevel(USER_INT, "USER", 10);
 
-    public static final Level ADMIN = new UserLog(ADMIN_INT, "ADMIN", 10);
+    public static final Level ADMIN = new UserLogLevel(ADMIN_INT, "ADMIN", 10);
 
     public static Level toLevel(String logArgument) {
         if (logArgument != null) {

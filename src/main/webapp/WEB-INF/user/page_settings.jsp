@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -83,7 +84,7 @@
                                         <div class="input-group">
                                             <span class="input-group-addon" id="show_page_title_span">页面标题</span>
                                             <input type="text" class="form-control" id="show_page_title"
-                                                   name="pageTitle"
+                                                   name="pageTitle" value="${picWebInfo.pageTitle}"
                                                    aria-describedby="show_page_title_span">
                                         </div>
                                         <br>
@@ -98,14 +99,14 @@
                                         <label for="show_pic_top">媒体上边距离版面顶部的百分比</label>
                                         <div class="input-group">
                                             <input type="text" class="form-control" id="show_pic_top" name="pictureTop"
-                                                   aria-describedby="basic-addon3">
+                                                   aria-describedby="basic-addon3" value="${picWebInfo.pictureTop}">
                                             <span class="input-group-addon">%</span>
                                         </div>
                                         <br>
                                         <label for="show_pic_bottom">媒体下边距离版面底部的百分比</label>
                                         <div class="input-group">
                                             <input type="text" class="form-control" id="show_pic_bottom"
-                                                   name="pictureBottom"
+                                                   name="pictureBottom" value="${picWebInfo.pictureBottom}"
                                                    aria-describedby="basic-addon3">
                                             <span class="input-group-addon">%</span>
                                         </div>
@@ -113,7 +114,7 @@
                                         <label for="show_pic_left">媒体左边距离版面左边的百分比</label>
                                         <div class="input-group">
                                             <input type="text" class="form-control" id="show_pic_left"
-                                                   name="pictureLeft"
+                                                   name="pictureLeft" value="${picWebInfo.pictureLeft}"
                                                    aria-describedby="basic-addon3">
                                             <span class="input-group-addon">%</span>
                                         </div>
@@ -121,7 +122,7 @@
                                         <label for="show_pic_right">媒体右边距离版面右边的百分比</label>
                                         <div class="input-group">
                                             <input type="text" class="form-control" id="show_pic_right"
-                                                   name="pictureRight"
+                                                   name="pictureRight" value="${picWebInfo.pictureRight}"
                                                    aria-describedby="basic-addon3">
                                             <span class="input-group-addon">%</span>
                                         </div>
@@ -194,7 +195,7 @@
                                         <div class="input-group">
                                             <span class="input-group-addon" id="code_page_title_span">页面标题</span>
                                             <input type="text" class="form-control" id="code_page_title"
-                                                   name="pageTitle"
+                                                   name="pageTitle" value="${codeWebInfo.pageTitle}"
                                                    aria-describedby="code_page_title_span">
                                         </div>
                                         <br>
@@ -210,7 +211,7 @@
                                                 <label for="code_input_top">输入框上边距离版面顶部的百分比</label>
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" id="code_input_top"
-                                                           name="inputTop"
+                                                           name="inputTop" value="${codeWebInfo.inputTop}"
                                                            aria-describedby="basic-addon3">
                                                     <span class="input-group-addon">%</span>
                                                 </div>
@@ -218,7 +219,7 @@
                                                 <label for="code_input_bottom">输入框下边距离版面底部的百分比</label>
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" id="code_input_bottom"
-                                                           name="inputBottom"
+                                                           name="inputBottom" value="${codeWebInfo.inputBottom}"
                                                            aria-describedby="basic-addon3">
                                                     <span class="input-group-addon">%</span>
                                                 </div>
@@ -226,7 +227,7 @@
                                                 <label for="code_input_left">输入框左边距离版面左边的百分比</label>
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" id="code_input_left"
-                                                           name="inputLeft"
+                                                           name="inputLeft" value="${codeWebInfo.inputLeft}"
                                                            aria-describedby="basic-addon3">
                                                     <span class="input-group-addon">%</span>
                                                 </div>
@@ -234,7 +235,7 @@
                                                 <label for="code_input_right">输入框右边距离版面右边的百分比</label>
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" id="code_input_right"
-                                                           name="inputRight"
+                                                           name="inputRight" value="${codeWebInfo.inputRight}"
                                                            aria-describedby="basic-addon3">
                                                     <span class="input-group-addon">%</span>
                                                 </div>
@@ -246,6 +247,7 @@
                                                     <span class="input-group-addon"
                                                           id="code_input_bg_color_span">#</span>
                                                     <input type="text" class="form-control" name="inputBgColor"
+                                                           value="${fn:substring(codeWebInfo.inputBgColor, 1, 6)}"
                                                            aria-describedby="basic-addon1" id="code_input_bg_color">
                                                 </div>
                                                 <br>
@@ -254,6 +256,7 @@
                                                 <span class="input-group-addon"
                                                       id="code_input_border_color_span">#</span>
                                                     <input type="text" class="form-control" name="inputBorderColor"
+                                                           value="${fn:substring(codeWebInfo.inputBorderColor, 1, 6)}"
                                                            aria-describedby="basic-addon1" id="code_input_border_color">
                                                 </div>
                                                 <br>
@@ -262,6 +265,7 @@
                                                 <span class="input-group-addon"
                                                       id="code_input_text_color_span">#</span>
                                                     <input type="text" class="form-control" name="inputTextColor"
+                                                           value="${fn:substring(codeWebInfo.inputTextColor, 1, 6)}"
                                                            aria-describedby="basic-addon1" id="code_input_text_color">
                                                 </div>
                                                 <br>
@@ -279,7 +283,7 @@
                                         <label for="code_button_top">按钮上边距离版面顶部的百分比</label>
                                         <div class="input-group">
                                             <input type="text" class="form-control" id="code_button_top"
-                                                   name="buttonTop"
+                                                   name="buttonTop" value="${codeWebInfo.buttonTop}"
                                                    aria-describedby="basic-addon3">
                                             <span class="input-group-addon">%</span>
                                         </div>
@@ -287,7 +291,7 @@
                                         <label for="code_button_bottom">按钮下边距离版面底部的百分比</label>
                                         <div class="input-group">
                                             <input type="text" class="form-control" id="code_button_bottom"
-                                                   name="buttonBottom"
+                                                   name="buttonBottom" value="${codeWebInfo.buttonBottom}"
                                                    aria-describedby="basic-addon3">
                                             <span class="input-group-addon">%</span>
                                         </div>
@@ -295,7 +299,7 @@
                                         <label for="code_button_left">按钮左边距离版面左边的百分比</label>
                                         <div class="input-group">
                                             <input type="text" class="form-control" id="code_button_left"
-                                                   name="buttonLeft"
+                                                   name="buttonLeft" value="${codeWebInfo.buttonLeft}"
                                                    aria-describedby="basic-addon3">
                                             <span class="input-group-addon">%</span>
                                         </div>
@@ -303,7 +307,7 @@
                                         <label for="code_button_right">按钮右边距离版面右边的百分比</label>
                                         <div class="input-group">
                                             <input type="text" class="form-control" id="code_button_right"
-                                                   name="buttonRight"
+                                                   name="buttonRight" value="${codeWebInfo.buttonRight}"
                                                    aria-describedby="basic-addon3">
                                             <span class="input-group-addon">%</span>
                                         </div>
@@ -392,6 +396,7 @@
                                                       id="share_moments_title_span">分享标题</span>
                                                     <input type="text" class="form-control" id="share_moments_title"
                                                            name="shareMomentsTitle"
+                                                           value="${shareInfo.shareMomentsTitle}"
                                                            aria-describedby="share_moments_title_span">
                                                 </div>
                                                 <br>
@@ -413,7 +418,7 @@
                                                     <span class="input-group-addon"
                                                           id="share_chats_title_span">分享标题</span>
                                                     <input type="text" class="form-control" id="share_chats_title"
-                                                           name="shareChatsTitle"
+                                                           name="shareChatsTitle" value="${shareInfo.shareChatsTitle}"
                                                            aria-describedby="share_moments_title_span">
                                                 </div>
                                                 <br>
@@ -421,7 +426,7 @@
                                                     <span class="input-group-addon"
                                                           id="share_chats_text_span">分享内容</span>
                                                     <input type="text" class="form-control" id="share_chats_text"
-                                                           name="shareChatsText"
+                                                           name="shareChatsText" value="${shareInfo.shareChatsText}"
                                                            aria-describedby="share_moments_title_span">
                                                 </div>
                                                 <br>

@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static cn.inphoto.util.DirUtil.getErrorInfoFromException;
 import static cn.inphoto.util.ZIPUtil.createZIP;
 import static cn.inphoto.util.picUtil.QRUtil.writeToStream;
 
@@ -89,9 +88,9 @@ public class DownloadController {
 
                 case 2://type=2 pic_bg
 
-                    PicWebinfo picWebinfo = webinfoDao.findPicByPic_id(id);
-                    if (picWebinfo != null) {
-                        file_path = picWebinfo.getBackground();
+                    PicWebInfo picWebInfo = webinfoDao.findPicByPic_id(id);
+                    if (picWebInfo != null) {
+                        file_path = picWebInfo.getBackground();
                     }
                     break;
 

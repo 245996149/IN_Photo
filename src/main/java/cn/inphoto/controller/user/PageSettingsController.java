@@ -3,10 +3,10 @@ package cn.inphoto.controller.user;
 import cn.inphoto.dao.UtilDao;
 import cn.inphoto.dao.WebinfoDao;
 import cn.inphoto.dbentity.user.CodeWebInfo;
-import cn.inphoto.dbentity.user.PicWebinfo;
+import cn.inphoto.dbentity.user.PicWebInfo;
 import cn.inphoto.dbentity.user.ShareInfo;
 import cn.inphoto.dbentity.user.User;
-import cn.inphoto.log.UserLog;
+import cn.inphoto.log.UserLogLevel;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.springframework.stereotype.Controller;
@@ -46,7 +46,16 @@ public class PageSettingsController {
 
         User user = (User) session.getAttribute("loginUser");
 
+        PicWebInfo picWebInfo = webinfoDao.findPicByUser_idAndCategory_id(user.getUserId(), category_id, PicWebInfo.PIC_WEB_INFO_STATE_NORMAL);
+
+        CodeWebInfo codeWebInfo = webinfoDao.findCodeByUser_idAndCategory_id(user.getUserId(), category_id, CodeWebInfo.CODE_WEB_INFO_STATE_NORMAL);
+
+        ShareInfo shareInfo = webinfoDao.findShareByUser_idAndCategory(user.getUserId(), category_id);
+
         model.addAttribute("category_id", category_id);
+        model.addAttribute("picWebInfo", picWebInfo);
+        model.addAttribute("codeWebInfo", codeWebInfo);
+        model.addAttribute("shareInfo", shareInfo);
 
         session.setAttribute("nav_code", UserController.PAGESETTINGS_CODE);
 
@@ -59,24 +68,24 @@ public class PageSettingsController {
      * @param request
      * @param session
      * @param show_pic_bg      背景图片
-     * @param picWebinfo view信息对象
+     * @param picWebInfo view信息对象
      * @return 是否成功
      */
     @RequestMapping("/perView.do")
     @ResponseBody
     public Map perView(HttpServletRequest request, HttpSession session, @RequestParam MultipartFile show_pic_bg,
-                       PicWebinfo picWebinfo) {
+                       PicWebInfo picWebInfo) {
 
         User user = (User) session.getAttribute("loginUser");
 
         Map<String, Object> result = new HashMap<>();
 
         // 查找数据库中是否有曾经预览的数据
-        PicWebinfo picWebinfoDB = webinfoDao.findPicByUser_idAndCategory_id(
-                user.getUserId(), picWebinfo.getCategoryId(), PicWebinfo.PIC_WEB_INFO_STATE_PREVIEW);
+        PicWebInfo picWebInfoDB = webinfoDao.findPicByUser_idAndCategory_id(
+                user.getUserId(), picWebInfo.getCategoryId(), PicWebInfo.PIC_WEB_INFO_STATE_PREVIEW);
 
         MDC.put("user_id", user.getUserId());
-        MDC.put("category_id", picWebinfo.getCategoryId());
+        MDC.put("category_id", picWebInfo.getCategoryId());
 
         try {
 
@@ -84,22 +93,22 @@ public class PageSettingsController {
             String filePath = createSettingsPic(show_pic_bg, user);
 
             // 判断数据库中曾经预览的信息是否有效
-            if (picWebinfoDB == null) {
+            if (picWebInfoDB == null) {
 
                 /*无效*/
                 // 设置上传图片的路径信息
-                picWebinfo.setBackground(filePath);
-                picWebinfo.setUserId(user.getUserId());
-                picWebinfo.setPicWebinfoState(PicWebinfo.PIC_WEB_INFO_STATE_PREVIEW);
+                picWebInfo.setBackground(filePath);
+                picWebInfo.setUserId(user.getUserId());
+                picWebInfo.setPicWebinfoState(PicWebInfo.PIC_WEB_INFO_STATE_PREVIEW);
 
                 // 保存数据到数据库中
-                if (!utilDao.save(picWebinfo)) {
+                if (!utilDao.save(picWebInfo)) {
 
                     //保存失败
                     result.put("success", false);
                     result.put("message", "向数据库中写入数据库时发生错误，请稍后再试");
-                    logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
-                            + picWebinfo.getCategoryId() + " 套餐系统view页面，保存时发生错误，返回结果为：" + result.toString());
+                    logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
+                            + picWebInfo.getCategoryId() + " 套餐系统view页面，保存时发生错误，返回结果为：" + result.toString());
                     return result;
 
                 }
@@ -108,21 +117,21 @@ public class PageSettingsController {
 
                 /*有效*/
                 // 更新查询到的预览的信息
-                picWebinfoDB.setBackground(filePath);
-                picWebinfoDB.setPictureBottom(picWebinfo.getPictureBottom());
-                picWebinfoDB.setPictureLeft(picWebinfo.getPictureLeft());
-                picWebinfoDB.setPictureRight(picWebinfo.getPictureRight());
-                picWebinfoDB.setPictureTop(picWebinfo.getPictureTop());
-                picWebinfoDB.setPageTitle(picWebinfo.getPageTitle());
+                picWebInfoDB.setBackground(filePath);
+                picWebInfoDB.setPictureBottom(picWebInfo.getPictureBottom());
+                picWebInfoDB.setPictureLeft(picWebInfo.getPictureLeft());
+                picWebInfoDB.setPictureRight(picWebInfo.getPictureRight());
+                picWebInfoDB.setPictureTop(picWebInfo.getPictureTop());
+                picWebInfoDB.setPageTitle(picWebInfo.getPageTitle());
 
                 // 更新数据库中的预览信息
-                if (!utilDao.update(picWebinfoDB)) {
+                if (!utilDao.update(picWebInfoDB)) {
 
                     //更新失败
                     result.put("success", false);
                     result.put("message", "向数据库中写入数据库时发生错误，请稍后再试");
-                    logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
-                            + picWebinfo.getCategoryId() + " 套餐系统view页面，更新时发生错误，返回结果为：" + result.toString());
+                    logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
+                            + picWebInfo.getCategoryId() + " 套餐系统view页面，更新时发生错误，返回结果为：" + result.toString());
                     return result;
 
                 }
@@ -132,7 +141,7 @@ public class PageSettingsController {
             result.put("success", true);
             result.put("message", "更新成功");
             result.put("url", URLEncoder.encode("http://" + request.getServerName() + "/" + request.getContextPath() + "/mobile/toPage.do?user_id="
-                    + user.getUserId() + "&category_id=" + picWebinfo.getCategoryId() + "&test=true", "utf-8"));
+                    + user.getUserId() + "&category_id=" + picWebInfo.getCategoryId() + "&test=true", "utf-8"));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -140,8 +149,8 @@ public class PageSettingsController {
             result.put("message", "发生未知错误，请稍后再试。");
         }
 
-        logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
-                + picWebinfo.getCategoryId() + " 套餐系统view页面，返回结果为：" + result.toString());
+        logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
+                + picWebInfo.getCategoryId() + " 套餐系统view页面，返回结果为：" + result.toString());
         return result;
 
     }
@@ -167,15 +176,15 @@ public class PageSettingsController {
         try {
 
             // 查找用户生效状态的view信息
-            PicWebinfo norPic = webinfoDao.findPicByUser_idAndCategory_id(
-                    user.getUserId(), category_id, PicWebinfo.PIC_WEB_INFO_STATE_NORMAL);
+            PicWebInfo norPic = webinfoDao.findPicByUser_idAndCategory_id(
+                    user.getUserId(), category_id, PicWebInfo.PIC_WEB_INFO_STATE_NORMAL);
 
             // 查找用户预览状态的view信息
-            PicWebinfo prePic = webinfoDao.findPicByUser_idAndCategory_id(
-                    user.getUserId(), category_id, PicWebinfo.PIC_WEB_INFO_STATE_PREVIEW);
+            PicWebInfo prePic = webinfoDao.findPicByUser_idAndCategory_id(
+                    user.getUserId(), category_id, PicWebInfo.PIC_WEB_INFO_STATE_PREVIEW);
 
             // 设置状态为生效
-            prePic.setPicWebinfoState(PicWebinfo.PIC_WEB_INFO_STATE_NORMAL);
+            prePic.setPicWebinfoState(PicWebInfo.PIC_WEB_INFO_STATE_NORMAL);
 
             // 判断生效状态的信息是否有限
             if (norPic == null) {
@@ -188,7 +197,7 @@ public class PageSettingsController {
                     //保存失败
                     result.put("success", false);
                     result.put("message", "向数据库中写入数据库时发生错误，请稍后再试");
-                    logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
+                    logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
                             + category_id + " 套餐系统view页面为生效状态，保存时发生错误，返回结果为：" + result.toString());
                     return result;
 
@@ -204,7 +213,7 @@ public class PageSettingsController {
                     //更新失败
                     result.put("success", false);
                     result.put("message", "向数据库中写入数据库时发生错误，请稍后再试");
-                    logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
+                    logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
                             + category_id + " 套餐系统view页面为生效状态，更新时发生错误，返回结果为：" + result.toString());
                     return result;
 
@@ -223,7 +232,7 @@ public class PageSettingsController {
 
         }
 
-        logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
+        logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
                 + category_id + " 套餐系统为生效状态，返回结果为：" + result.toString());
         return result;
     }
@@ -272,7 +281,7 @@ public class PageSettingsController {
                     //保存失败
                     result.put("success", false);
                     result.put("message", "向数据库中写入数据库时发生错误，请稍后再试");
-                    logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
+                    logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
                             + codeWebInfo.getCategoryId() + " 套餐系统提取页面，保存时发生错误，返回结果为：" + result.toString());
                     return result;
 
@@ -287,7 +296,7 @@ public class PageSettingsController {
                     //保存失败
                     result.put("success", false);
                     result.put("message", "向数据库中写入数据库时发生错误，请稍后再试");
-                    logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
+                    logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
                             + codeWebInfo.getCategoryId() + " 套餐系统提取页面，更新时发生错误，返回结果为：" + result.toString());
                     return result;
 
@@ -306,7 +315,7 @@ public class PageSettingsController {
             result.put("message", "发生未知错误，请稍后再试。");
         }
 
-        logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
+        logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
                 + codeWebInfo.getCategoryId() + " 套餐系统提取页面，返回结果为：" + result.toString());
         return result;
     }
@@ -354,7 +363,7 @@ public class PageSettingsController {
                     //保存失败
                     result.put("success", false);
                     result.put("message", "向数据库中写入数据库时发生错误，请稍后再试");
-                    logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
+                    logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
                             + category_id + " 套餐系统提取页面为生效状态，保存时发生错误，返回结果为：" + result.toString());
                     return result;
 
@@ -370,7 +379,7 @@ public class PageSettingsController {
                     //更新失败
                     result.put("success", false);
                     result.put("message", "向数据库中写入数据库时发生错误，请稍后再试");
-                    logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
+                    logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
                             + category_id + " 套餐系统提取页面为生效状态，更新时发生错误，返回结果为：" + result.toString());
                     return result;
 
@@ -389,7 +398,7 @@ public class PageSettingsController {
 
         }
 
-        logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
+        logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
                 + category_id + " 套餐系统为生效状态，返回结果为：" + result.toString());
         return result;
     }
@@ -427,7 +436,7 @@ public class PageSettingsController {
                 if (!utilDao.save(shareInfo)) {
                     result.put("success", false);
                     result.put("message", "向数据库中写入数据库时发生错误，请稍后再试");
-                    logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 更新分享信息category_id="
+                    logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 更新分享信息category_id="
                             + shareInfo.getCategoryId() + " 套餐系统，返回结果为：" + result.toString());
                     return result;
                 }
@@ -441,7 +450,7 @@ public class PageSettingsController {
                 if (!utilDao.update(shareInfo)) {
                     result.put("success", false);
                     result.put("message", "向数据库中写入数据库时发生错误，请稍后再试");
-                    logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 更新分享信息category_id="
+                    logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 更新分享信息category_id="
                             + shareInfo.getCategoryId() + " 套餐系统，返回结果为：" + result.toString());
                     return result;
                 }
@@ -459,7 +468,7 @@ public class PageSettingsController {
 
         }
 
-        logger.log(UserLog.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
+        logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() + " 更新预览category_id="
                 + shareInfo.getCategoryId() + " 套餐系统为生效状态，返回结果为：" + result.toString());
         return result;
 

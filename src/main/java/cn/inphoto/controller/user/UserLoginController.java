@@ -5,7 +5,8 @@ import cn.inphoto.dbentity.admin.AdminInfo;
 import cn.inphoto.dbentity.user.Category;
 import cn.inphoto.dbentity.user.User;
 import cn.inphoto.dbentity.user.UserCategory;
-import cn.inphoto.log.UserLog;
+import cn.inphoto.log.UserLogLevel;
+import cn.inphoto.log.UserLogLevel;
 import cn.inphoto.util.ImageUtil;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
@@ -127,7 +128,7 @@ public class UserLoginController {
             return createResult(false, "账号、密码不能为空");
         }
 
-        System.out.println(login_type+";"+input_text+";"+password+";"+remLogin);
+        System.out.println(login_type + ";" + input_text + ";" + password + ";" + remLogin);
 
         User user = null;
         String check_type = null;
@@ -158,13 +159,13 @@ public class UserLoginController {
             return createResult(false, "该用户现在处于停用状态，请联系管理员");
         }
 
+        MDC.put("user_id", user.getUserId());
+
         if (!getMD5(password).equals(user.getPassword())) {
-            logger.log(UserLog.USER, "登录验证：用户user_id=" + user.getUserId() +
+            logger.log(UserLogLevel.USER, "登录验证：用户user_id=" + user.getUserId() +
                     " 尝试 " + check_type + " 验证，登陆结果为：密码错误");
             return createResult(false, "密码错误，请重新输入密码!");
         }
-
-        MDC.put("user_id", user.getUserId());
 
         // 查询该用户所有的用户套餐系统
         List<UserCategory> userCategoryList = userCategoryDao.findByUser_idAndState(
@@ -222,7 +223,8 @@ public class UserLoginController {
 
         }
 
-        logger.log(UserLog.USER, "用户user_name=" + user.getUserName() + " 的用户退出登陆");
+        logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() +
+                ";user_name=" + user.getUserName() + " 的用户退出登陆");
 
         return "redirect:toLogin.do";
 
@@ -243,8 +245,6 @@ public class UserLoginController {
                                                String user_name, String password, String category_code) {
 
         response.setCharacterEncoding("utf-8");
-
-        logger.info("接收到的参数为：userName=" + user_name + ";password=" + password + ";type=" + category_code);
 
         // 如果用户名或者密码为空，返回错误信息
         if (user_name == null || password == null || category_code == null) {
@@ -288,6 +288,8 @@ public class UserLoginController {
         result.put("success", true);
         result.put("user_id", user.getUserId());
         result.put("category_id", category.getCategoryId());
+        logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() +
+                " 的用户请求了客户端访问接口，请求成功，返回信息为：" + result.toString());
         return result;
 
     }
@@ -377,6 +379,8 @@ public class UserLoginController {
         session.setAttribute("forgot_password_code", codeTemp);
         session.setAttribute("forgot_password_user", user);
 
+        MDC.put("user_info", "user_id=" + user.getUserId());
+
         switch (type) {
             case AdminInfo.LOGIN_EMAIL:
                 // 发送邮件
@@ -391,12 +395,17 @@ public class UserLoginController {
                 break;
             case AdminInfo.LOGIN_PHONE:
                 if (!getSuccess(sendSMSLimit(user.getPhone(), codeTemp.toString(), "IN PHOTO管理系统验证", "SMS_61155105", "forgotAdminPassword", session))) {
+                    logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() +
+                            " 的用户请求重置密码，提交的信息为：" + input_text + ";" + type + "，发送短信失败，请检查短信服务器状态");
                     return createResult(false, "发送失败，请联系管理员查看短信服务器状态");
                 }
                 break;
             default:
                 break;
         }
+
+        logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() +
+                " 的用户请求重置密码，提交的信息为：" + input_text + ";" + type + "，发送验证信息成功，验证信息为" + codeTemp);
 
         return createResult(true, "验证码已经成功发送，请查看验证码");
 
@@ -436,14 +445,20 @@ public class UserLoginController {
             return createResult(false, "未在数据库中找到用户");
         }
 
+        MDC.put("user_info", "user_id=" + user.getUserId());
+
         // 更新数据
         user.setPassword(getMD5(password));
 
         // 写入数据
         if (!utilDao.update(user)) {
+            logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() +
+                    " 的用户请求重置密码，重置失败，原因是将数据写入数据库时发生了错误");
             return createResult(false, "将数据写入数据库时发生了错误，请稍候重试");
         }
 
+        logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() +
+                " 的用户请求重置密码，重置成功");
         return createResult(true, "重置成功");
     }
 

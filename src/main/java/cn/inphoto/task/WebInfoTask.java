@@ -1,12 +1,14 @@
 package cn.inphoto.task;
 
-import cn.inphoto.dao.UserCategoryDao;
 import cn.inphoto.dao.UserDao;
 import cn.inphoto.dao.WebinfoDao;
 import cn.inphoto.dbentity.user.CodeWebInfo;
-import cn.inphoto.dbentity.user.PicWebinfo;
+import cn.inphoto.dbentity.user.PicWebInfo;
 import cn.inphoto.dbentity.user.ShareInfo;
 import cn.inphoto.dbentity.user.User;
+import cn.inphoto.log.UserLogLevel;
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,8 @@ import java.util.List;
 
 @Component
 public class WebInfoTask {
+
+    private Logger logger = Logger.getLogger(WebInfoTask.class);
 
     @Resource
     private UserDao userDao;
@@ -47,7 +51,9 @@ public class WebInfoTask {
         dataPath = data_path;
     }
 
-
+    /**
+     * @throws IOException
+     */
     @Scheduled(cron = "0 0 4 * * ? ")
     public void cleanOverImage() throws IOException {
 
@@ -56,9 +62,7 @@ public class WebInfoTask {
         for (User u : userList
                 ) {
 
-            System.out.println("清理" + u.toString() + "设置文件夹");
-
-            List<PicWebinfo> picWebinfoList = webinfoDao.findPicAllByUser_id(u.getUserId());
+            List<PicWebInfo> picWebInfoList = webinfoDao.findPicAllByUser_id(u.getUserId());
 
             List<CodeWebInfo> codeWebInfoList = webinfoDao.findCodeAllByUser_id(u.getUserId());
 
@@ -66,8 +70,8 @@ public class WebInfoTask {
 
             List<String> filePathList = new ArrayList<>();
 
-            if (!picWebinfoList.isEmpty()) {
-                for (PicWebinfo p : picWebinfoList
+            if (!picWebInfoList.isEmpty()) {
+                for (PicWebInfo p : picWebInfoList
                         ) {
                     filePathList.add(p.getBackground());
                 }
@@ -93,6 +97,8 @@ public class WebInfoTask {
                 String settingPath = dataPath + File.separator + u.getUserId() + File.separator + "settings";
                 File settingFile = new File(settingPath);
                 File[] files = settingFile.listFiles();
+                StringBuilder a = new StringBuilder();
+                boolean isDelete = false;
                 assert files != null;
                 for (File f : files
                         ) {
@@ -101,13 +107,21 @@ public class WebInfoTask {
                             ) {
                         if (s.equals(f.getCanonicalPath())) {
                             flag = true;
+                            a.append(f.getCanonicalPath()).append("、");
                             break;
                         }
                     }
                     if (!flag) {
-                        System.out.println("删除" + f.getName());
+                        isDelete = true;
+//                        System.out.println("删除" + f.getName());
                         f.delete();
                     }
+                }
+
+                if (isDelete) {
+                    MDC.put("user_info", "user_id=" + u.getUserId());
+                    logger.log(UserLogLevel.TASK,
+                            "清理user_id=" + u.getUserId() + " 的用户的无用的设置图片。共清理了图片路径为：" + a + " 的图片");
                 }
             }
 
