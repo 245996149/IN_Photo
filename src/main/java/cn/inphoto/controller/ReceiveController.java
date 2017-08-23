@@ -57,9 +57,6 @@ public class ReceiveController {
     @Resource
     private MediaDataDao mediaDataDao;
 
-    @Resource
-    private MediaCodeDao mediaCodeDao;
-
     /**
      * @param request     请求
      * @param response    发送
@@ -134,7 +131,6 @@ public class ReceiveController {
         }
 
         // 获取配置文件中的存储数据的根目录
-        //String path = getConfigInfo("data_path");
         String path = data_path;
 
         //设置InPhoto媒体数据用户存储的目录，判断路径是否存在，不存在则创建
@@ -213,11 +209,8 @@ public class ReceiveController {
                         //取得当前上传文件的文件名称
                         String fileName = file.getOriginalFilename();
 
-//                        System.out.println(fileName);
                         //如果名称不为“”,说明该文件存在，否则说明该文件不存在
                         if (!"".equals(fileName.trim())) {
-
-//                            System.out.println(fileName);
 
                             InputStream in = file.getInputStream();
 
@@ -233,8 +226,6 @@ public class ReceiveController {
                         }
                     }
                 }
-
-//                System.out.println(temMap.size());
 
                 //判断Map中是否有BufferedImage，且BufferedImage数量等于上传参数的数量，
                 if (temMap.size() == 0 || temMap.size() != number) {
@@ -308,8 +299,6 @@ public class ReceiveController {
                 return result;
 
             }
-
-//            System.out.println(mediaData.toString());
 
             // 创建验证码对象用于更新、新增验证码表
             MediaCode mediaCode = new MediaCode();

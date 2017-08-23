@@ -54,7 +54,7 @@ public class UserLoginController {
     boolean sendEmail;
 
     @Resource
-    UtilDao utilDao;
+    private UtilDao utilDao;
 
     @Resource
     private UserDao userDao;

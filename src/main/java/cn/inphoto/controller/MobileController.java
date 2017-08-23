@@ -36,22 +36,22 @@ public class MobileController {
     String appid;
 
     @Resource
-    UserDao userDao;
+    private UserDao userDao;
 
     @Resource
-    UserCategoryDao userCategoryDao;
+    private UserCategoryDao userCategoryDao;
 
     @Resource
-    WebinfoDao webinfoDao;
+    private WebinfoDao webinfoDao;
 
     @Resource
-    MediaCodeDao mediaCodeDao;
+    private MediaCodeDao mediaCodeDao;
 
     @Resource
-    MediaDataDao mediaDataDao;
+    private MediaDataDao mediaDataDao;
 
     @Resource
-    UtilDao utilDao;
+    private UtilDao utilDao;
 
     /*定义404页面*/
     private static final String MOBILE_404 = "mobile/404";
@@ -266,16 +266,14 @@ public class MobileController {
     /**
      * 生成获取微信jssdk所需参数反馈给客户端
      *
-     * @param response
-     * @param request
+     * @param response 发送
+     * @param request  请求
      * @param url      当前页面url
-     * @return
+     * @return 微信jssdk所需参数
      */
     @RequestMapping("/getWeChatInfo.do")
     @ResponseBody
     public Map<String, String> weChat(HttpServletResponse response, HttpServletRequest request, String url) {
-
-//        logger.info("接收到生成获取微信jssdk的请求---------->请求的url为：" + url);
 
         return WXConfig(request, response, url);
 
@@ -284,9 +282,9 @@ public class MobileController {
     /**
      * 获取微信jssdk所需参数
      *
-     * @param request
-     * @param response
-     * @return
+     * @param response 发送
+     * @param request  请求
+     * @return 微信jssdk所需参数
      */
     private HashMap<String, String> WXConfig(HttpServletRequest request, HttpServletResponse response, String url) {
 
@@ -314,12 +312,9 @@ public class MobileController {
 
             signature = Sha1.getSha1(str);
 
-//            logger.info("获取微信jssdk参数---------->合成的字符串为：" + str + "；签名后的字符串为：" + signature);
-
         } catch (Exception e) {
 
             e.printStackTrace();
-//            logger.info("获取微信jssdk参数---------->发生未知错误，错误信息为：" + getErrorInfoFromException(e));
 
         }
 
@@ -329,8 +324,6 @@ public class MobileController {
         res.put("nonceStr", nonce_str);
         res.put("timestamp", time);
         res.put("signature", signature);
-
-//        logger.info("获取微信jssdk参数---------->返回的参数为：" + res.toString());
 
         return res;
 

@@ -8,7 +8,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <title>PageSettings</title>
+    <title>页面设置-
+        <c:forEach items="${category}" var="c">
+            <c:if test="${category_id==c.categoryId}">
+                ${c.categoryName}
+            </c:if>
+        </c:forEach>
+    </title>
     <link rel="icon" href="${pageContext.request.contextPath}/images/logo.png">
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -247,7 +253,7 @@
                                                     <span class="input-group-addon"
                                                           id="code_input_bg_color_span">#</span>
                                                     <input type="text" class="form-control" name="inputBgColor"
-                                                           value="${fn:substring(codeWebInfo.inputBgColor, 1, 6)}"
+                                                           value="${fn:substring(codeWebInfo.inputBgColor, 1, 7)}"
                                                            aria-describedby="basic-addon1" id="code_input_bg_color">
                                                 </div>
                                                 <br>
@@ -256,7 +262,7 @@
                                                 <span class="input-group-addon"
                                                       id="code_input_border_color_span">#</span>
                                                     <input type="text" class="form-control" name="inputBorderColor"
-                                                           value="${fn:substring(codeWebInfo.inputBorderColor, 1, 6)}"
+                                                           value="${fn:substring(codeWebInfo.inputBorderColor, 1, 7)}"
                                                            aria-describedby="basic-addon1" id="code_input_border_color">
                                                 </div>
                                                 <br>
@@ -265,7 +271,7 @@
                                                 <span class="input-group-addon"
                                                       id="code_input_text_color_span">#</span>
                                                     <input type="text" class="form-control" name="inputTextColor"
-                                                           value="${fn:substring(codeWebInfo.inputTextColor, 1, 6)}"
+                                                           value="${fn:substring(codeWebInfo.inputTextColor, 1, 7)}"
                                                            aria-describedby="basic-addon1" id="code_input_text_color">
                                                 </div>
                                                 <br>

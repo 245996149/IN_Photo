@@ -56,10 +56,10 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     public int countByUser_idAndCategory_idAndMedia_state(Long user_id, Integer category_id, List<String> media_state_list) {
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = null;
+            Query query;
 
             // 判断是否有category_id参数
-            if (category_id == null) {
+            if (category_id == null || category_id == 0) {
                 query = session.createQuery(
                         "select count(*) from MediaData where userId = :user_id  and mediaState in (:media_state_list)");
             } else {

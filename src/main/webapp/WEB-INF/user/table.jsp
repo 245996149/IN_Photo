@@ -179,7 +179,7 @@
                     </tbody>
                     <tfoot>
                     <tr>
-                        <td colspan="5" style="text-align: center;">
+                        <td colspan="6" style="text-align: center;">
                             <nav aria-label="Page navigation">
                                 <ul class="pagination">
                                     <c:choose>

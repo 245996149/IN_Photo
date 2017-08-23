@@ -77,7 +77,7 @@
             </div>
             <!-- Table -->
             <div class="table-responsive">
-                <table class="table table-bordered table-hover dataTable" style="font-size: x-large;">
+                <table class="table table-hover dataTable" style="font-size: x-large;">
                     <thead>
                     <tr>
                         <td><input type="checkbox" id="media_data_all_checkbox" onclick="DoCheck();"><span>媒体编号</span>
@@ -96,7 +96,7 @@
                         <td>隶属于</td>
                         <td>删除日期</td>
                         <td>有效时间</td>
-                        <td>操作</td>
+                        <td></td>
                     </tr>
                     </thead>
                     <tbody>

@@ -1,7 +1,6 @@
 package cn.inphoto.controller.admin;
 
 import cn.inphoto.dao.AdminDao;
-import cn.inphoto.dao.ClientDao;
 import cn.inphoto.dao.UtilDao;
 import cn.inphoto.dbentity.admin.AdminInfo;
 import cn.inphoto.dbentity.admin.ModuleInfo;
@@ -9,7 +8,6 @@ import cn.inphoto.dbentity.admin.RoleInfo;
 import cn.inphoto.log.UserLogLevel;
 import cn.inphoto.util.ImageUtil;
 import org.apache.log4j.Logger;
-import org.omg.CORBA.PUBLIC_MEMBER;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,7 +34,6 @@ import static cn.inphoto.util.MD5Util.getMD5;
 import static cn.inphoto.util.MailUtil.sendMail;
 import static cn.inphoto.util.ResultMapUtil.createResult;
 import static cn.inphoto.util.ResultMapUtil.getSuccess;
-import static cn.inphoto.util.SMSUtil.sendSMS;
 import static cn.inphoto.util.SMSUtil.sendSMSLimit;
 
 /**
@@ -53,10 +50,10 @@ public class AdminLoginController {
     boolean sendEmail;
 
     @Resource
-    AdminDao adminDao;
+    private AdminDao adminDao;
 
     @Resource
-    UtilDao utilDao;
+    private UtilDao utilDao;
 
     @RequestMapping("/toLogin.do")
     public String toLogin(HttpServletRequest request, Model model) throws IOException {
@@ -93,8 +90,6 @@ public class AdminLoginController {
     @ResponseBody
     public Map checkAdmin(Integer login_type, String input_text, String password, boolean remLogin,
                           HttpServletResponse response, HttpSession session, HttpServletRequest request) throws UnsupportedEncodingException {
-
-//        System.out.println(login_type + "   " + input_text + "   " + password + "   " + remLogin);
 
         Map<String, Object> result = new HashMap<>();
 

@@ -32,16 +32,16 @@ import static cn.inphoto.util.ResultMapUtil.createResult;
 public class AdminUserController {
 
     @Resource
-    AdminDao adminDao;
+    private AdminDao adminDao;
 
     @Resource
-    UtilDao utilDao;
+    private UtilDao utilDao;
 
     @Resource
-    CategoryDao categoryDao;
+    private CategoryDao categoryDao;
 
     @Resource
-    RoleDao roleDao;
+    private RoleDao roleDao;
 
     /*
    注册邮件中的IN Photo管理中心地址

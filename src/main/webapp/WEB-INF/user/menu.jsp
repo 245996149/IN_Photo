@@ -41,13 +41,14 @@
                                     <c:forEach items="${category}" var="c">
                                         <c:if test="${auc.categoryId==c.categoryId}">
                                             <li>
-                                                <a href="${pageContext.request.contextPath}/user/table/toTable.do?category_id=${auc.categoryId}">${c.categoryName}</a>
+                                                <a href="${pageContext.request.contextPath}/user/table/toTable.do?category_id=${auc.categoryId}&currentPage=1">${c.categoryName}</a>
                                             </li>
                                         </c:if>
                                     </c:forEach>
                                 </c:forEach>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="${pageContext.request.contextPath}/user/table/toRecycle.do">回收站</a></li>
+                                <li><a href="${pageContext.request.contextPath}/user/table/toRecycle.do?currentPage=1">回收站</a>
+                                </li>
                             </ul>
                         </li>
                     </c:when>

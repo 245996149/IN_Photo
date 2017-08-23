@@ -125,10 +125,6 @@
                                     <td>
                                         <a class="btn btn-success btn-xs"
                                            href="${pageContext.request.contextPath}/admin/clientManage/toUpdateCategory.do?userCategory_id=${uc.userCategoryId}">修改套餐信息</a>
-
-                                            <%--<button type="button" class="btn btn-success btn-xs">--%>
-                                            <%--修改套餐信息--%>
-                                            <%--</button>--%>
                                     </td>
                                 </c:when>
                                 <c:otherwise>

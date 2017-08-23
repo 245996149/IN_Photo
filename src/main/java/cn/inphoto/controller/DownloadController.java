@@ -43,10 +43,10 @@ public class DownloadController {
     private Logger logger = Logger.getLogger(DownloadController.class);
 
     @Resource
-    WebinfoDao webinfoDao;
+    private WebinfoDao webinfoDao;
 
     @Resource
-    MediaDataDao mediaDataDao;
+    private MediaDataDao mediaDataDao;
 
     /**
      * 输出媒体、套餐系统图片数据
@@ -184,8 +184,8 @@ public class DownloadController {
     /**
      * 根据媒体数据ID队列，打包下载媒体数据
      *
-     * @param response Request对象
-     * @param session Session对象
+     * @param response      Request对象
+     * @param session       Session对象
      * @param media_id_list 媒体数据ID队列
      * @throws IOException 抛出IO错误
      */
@@ -239,9 +239,10 @@ public class DownloadController {
 
     /**
      * 根据传入的url判断是否解码，并生成该url对应的二维码
+     *
      * @param response Response对象
-     * @param url 输入的URL
-     * @param encode 是否是编码的
+     * @param url      输入的URL
+     * @param encode   是否是编码的
      * @throws IOException 抛出IO错误
      */
     @RequestMapping("/getQR.do")

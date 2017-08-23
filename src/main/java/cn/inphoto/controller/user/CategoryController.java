@@ -14,7 +14,6 @@ import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
- *
  * Created by kaxia on 2017/6/21.
  */
 @Controller
@@ -22,17 +21,17 @@ import java.util.*;
 public class CategoryController {
 
     @Resource
-    UserCategoryDao userCategoryDao;
+    private UserCategoryDao userCategoryDao;
 
     @Resource
-    MediaDataDao mediaDataDao;
+    private MediaDataDao mediaDataDao;
 
     /**
      * 打开套餐管理页面
      *
-     * @param session
-     * @param model
-     * @return
+     * @param session 服务器缓存
+     * @param model 页面数据缓存
+     * @return 页面
      */
     @RequestMapping("/toCategory.do")
     public String toCategory(HttpSession session, Model model) {

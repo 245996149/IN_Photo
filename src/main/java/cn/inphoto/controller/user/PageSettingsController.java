@@ -36,10 +36,10 @@ public class PageSettingsController {
     private Logger logger = Logger.getLogger(PageSettingsController.class);
 
     @Resource
-    UtilDao utilDao;
+    private UtilDao utilDao;
 
     @Resource
-    WebinfoDao webinfoDao;
+    private WebinfoDao webinfoDao;
 
     @RequestMapping("/toPageSettings.do")
     public String toPageSettings(int category_id, Model model, HttpSession session) {

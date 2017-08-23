@@ -100,6 +100,8 @@ public class TableController {
 
         tablePage.setUser_id(user.getUserId());
 
+        tablePage.setCategory_id(0);
+
         tablePage.setMedia_state_list(MediaData.MEDIA_STATE_RECYCLE);
 
         tablePage.setRows(mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
