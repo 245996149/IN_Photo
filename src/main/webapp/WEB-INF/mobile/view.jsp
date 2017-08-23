@@ -194,11 +194,12 @@
             </c:when>
             <c:otherwise>
                 <input type="text" value="我们制造全世界最美的笑容" id="share_moments_title">
-                <input type="text" value="${url}/InPhoto/mobile/openMedia.do?id=...&type=4"
+                <input type="text" value="${url}${pageContext.request.contextPath}/images/logo.png"
                        id="share_moments_icon">
                 <input type="text" value="我们制造全世界最美的笑容" id="share_chats_title">
                 <input type="text" value="我们制造全世界最美的笑容" id="share_chats_text">
-                <input type="text" value="${url}/InPhoto/mobile/openMedia.do?id=...&type=4">
+                <input type="text" value="${url}${pageContext.request.contextPath}/images/logo.png"
+                       id="share_chats_icon">
             </c:otherwise>
         </c:choose>
     </div>

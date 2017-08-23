@@ -238,7 +238,7 @@ public class MobileController {
 
             ShareInfo shareInfo = webinfoDao.findShareByUser_idAndCategory(user_id, category_id);
 
-            model.addAttribute("shareInfoEntity", shareInfo);
+            model.addAttribute("shareInfo", shareInfo);
             model.addAttribute("url", "http://" + request.getServerName());
             model.addAttribute("test", test);
             model.addAttribute("category_id", userCategory.getCategoryId());
