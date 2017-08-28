@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sun.misc.BASE64Decoder;
 
@@ -86,7 +87,7 @@ public class AdminLoginController {
         return "admin/sign_in";
     }
 
-    @RequestMapping("/checkAdmin.do")
+    @RequestMapping(value = "/checkAdmin.do", method = RequestMethod.POST)
     @ResponseBody
     public Map checkAdmin(Integer login_type, String input_text, String password, boolean remLogin,
                           HttpServletResponse response, HttpSession session, HttpServletRequest request) throws UnsupportedEncodingException {

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sun.misc.BASE64Decoder;
 
@@ -119,7 +120,7 @@ public class UserLoginController {
      * @return 是否成功
      * @throws UnsupportedEncodingException 抛出编码异常错误
      */
-    @RequestMapping("/checkUser.do")
+    @RequestMapping(value = "/checkUser.do", method = RequestMethod.POST)
     @ResponseBody
     public Map checkUser(Integer login_type, String input_text, String password, boolean remLogin,
                          HttpServletResponse response, HttpSession session, HttpServletRequest request) throws UnsupportedEncodingException {
@@ -239,7 +240,7 @@ public class UserLoginController {
      * @param category_code 套餐简码
      * @return 是否成功
      */
-    @RequestMapping("/checkClientUser.do")
+    @RequestMapping(value = "/checkClientUser.do", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> checkClientUser(HttpServletResponse response,
                                                String user_name, String password, String category_code) {
