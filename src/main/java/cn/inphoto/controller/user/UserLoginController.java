@@ -235,7 +235,8 @@ public class UserLoginController {
      * 验证客户端用户名密码
      *
      * @param response      返回
-     * @param user_name     用户名
+     * @param login_type    登录类型
+     * @param input_text    输入的文本
      * @param password      密码
      * @param category_code 套餐简码
      * @return 是否成功
@@ -243,18 +244,37 @@ public class UserLoginController {
     @RequestMapping(value = "/checkClientUser.do", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> checkClientUser(HttpServletResponse response,
-                                               String user_name, String password, String category_code) {
+                                               Integer login_type, String input_text, String password, String category_code) {
 
         response.setCharacterEncoding("utf-8");
 
         // 如果用户名或者密码为空，返回错误信息
-        if (user_name == null || password == null || category_code == null) {
+        if (login_type == null || input_text == null || password == null || category_code == null) {
 
             return createResult(false, "用户名、密码、类型不能为空");
 
         }
 
-        User user = userDao.findByUser_name(user_name);
+        User user = null;
+        String check_type = null;
+
+        // 判断登录类型
+        switch (login_type) {
+            case User.LOGIN_USER_NAME:
+                user = userDao.findByUser_name(input_text);
+                check_type = "用户名登录";
+                break;
+            case User.LOGIN_PHONE:
+                user = userDao.findByPhone(input_text);
+                check_type = "手机号登录";
+                break;
+            case User.LOGIN_EMAIL:
+                user = userDao.findByEmail(input_text);
+                check_type = "邮箱登录";
+                break;
+            default:
+                break;
+        }
 
         if (user == null) {
 
@@ -295,7 +315,7 @@ public class UserLoginController {
             result.put("watermark", true);
         }
         logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() +
-                " 的用户请求了客户端访问接口，请求成功，返回信息为：" + result.toString());
+                " 的用户使用" + check_type + "请求了客户端访问接口，请求成功，返回信息为：" + result.toString());
         return result;
 
     }
