@@ -110,9 +110,9 @@
                                             onclick="location='toCategoryList.do?user_id=${u.userId}'">
                                         套餐管理
                                     </button>
-                                    <button type="button" class="btn btn-warning"
-                                            onclick="resetPassword(${u.userId});">
-                                        重置密码
+                                    <button type="button" class="btn btn-success"
+                                            onclick="location='toUpdateClient.do?user_id=${u.userId}'">
+                                        更新信息
                                     </button>
                                 </c:if>
                                 <c:if test="${u.userState=='1'}">
@@ -438,15 +438,6 @@
         )
     }
 
-    function resetPassword(user_id) {
-
-        if (!confirm("确定要重置该客户的密码吗？点击确认后，系统会将新的密码发送至客户邮箱")) {
-            return false;
-        }
-
-        alert(user_id);
-
-    }
 </script>
 
 </body>

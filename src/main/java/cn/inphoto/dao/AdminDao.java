@@ -15,6 +15,8 @@ import java.util.List;
  */
 public interface AdminDao {
 
+    List<AdminInfo> findAll();
+
     /**
      * 根据admin_id查询管理员对象
      *

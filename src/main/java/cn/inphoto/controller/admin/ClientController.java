@@ -482,7 +482,7 @@ public class ClientController {
     @RequestMapping("/updateCategory.do")
     @ResponseBody
     public Map updateCategory(Long user_category_id, HttpSession session,
-                              @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date,byte watermark,
+                              @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date, byte watermark,
                               @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date, Integer number) {
 
         AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
@@ -619,6 +619,84 @@ public class ClientController {
     }
 
     /**
+     * 枪王信息更细页面
+     *
+     * @param user_id 客户id
+     * @param session
+     * @param model
+     * @return 页面
+     */
+    @RequestMapping("/toUpdateClient.do")
+    public String toUpdateClient(Long user_id, HttpSession session, Model model) {
+
+        AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
+        boolean isAdmin = (boolean) session.getAttribute("isAdmin");
+
+        User user = userDao.findByUser_id(user_id);
+
+        // 判断是否有管理员权限
+        if (!isAdmin) {
+            //没有管理员权限，判断是否有管理权限
+            if (user.getAdminId() != adminInfo.getAdminId()) {
+                return "no_power";
+            }
+        }
+
+        List<AdminInfo> adminInfoList = adminDao.findAll();
+
+        model.addAttribute("user", user);
+        model.addAttribute("adminList", adminInfoList);
+
+        return "admin/client/client_update";
+
+    }
+
+    /**
+     * 更新客户数据
+     *
+     * @param user_id  客户id
+     * @param company  公司
+     * @param admin_id 管理员id
+     * @param session
+     * @return 是否修改成功
+     */
+    @ResponseBody
+    @RequestMapping("/updateClient.do")
+    public Map updateClient(Long user_id, String company, Integer admin_id, HttpSession session) {
+        AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
+        boolean isAdmin = (boolean) session.getAttribute("isAdmin");
+
+        User user = userDao.findByUser_id(user_id);
+
+        if (user == null) {
+            return createResult(false, "没有找到对应的用户");
+        }
+
+        // 判断是否有管理员权限
+        if (!isAdmin) {
+            //没有管理员权限，判断是否有管理权限
+            if (user.getAdminId() != adminInfo.getAdminId()) {
+                return createResult(false, "您没有权限操作该数据");
+            }
+        }
+
+        adminInfo = adminDao.findByAdmin_id(admin_id);
+
+        if (adminInfo == null) {
+            return createResult(false, "没有找到对应的管理员账户");
+        }
+
+        user.setCompany(company);
+        user.setAdminId(adminInfo.getAdminId());
+
+        if (!utilDao.update(user)) {
+            return createResult(false, "在写入数据时发生了错误，请稍候再试");
+        }
+
+        return createResult(true, "修改数据成功，请等待跳转");
+    }
+
+    /**
      * 重置密码
      *
      * @param user_id 用户id
@@ -647,7 +725,7 @@ public class ClientController {
 
         user.setPassword(getMD5(pwd));
 
-        if (!utilDao.save(user)) {
+        if (!utilDao.update(user)) {
 
             return createResult(false, "在写入数据时发生了错误，请稍候再试");
 

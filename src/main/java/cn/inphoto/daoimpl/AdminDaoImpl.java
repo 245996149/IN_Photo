@@ -29,6 +29,16 @@ import java.util.Set;
 public class AdminDaoImpl extends SuperDao implements AdminDao {
 
     @Override
+    public List<AdminInfo> findAll() {
+        try (Session session = sessionFactory.openSession()) {
+
+            Query query = session.createQuery("from AdminInfo");
+
+            return query.list();
+        }
+    }
+
+    @Override
     public AdminInfo findByAdmin_id(int admin_id) {
         try (Session session = sessionFactory.openSession()) {
 
