@@ -84,8 +84,7 @@ public class PageSettingsController {
         PicWebInfo picWebInfoDB = webinfoDao.findPicByUser_idAndCategory_id(
                 user.getUserId(), picWebInfo.getCategoryId(), PicWebInfo.PIC_WEB_INFO_STATE_PREVIEW);
 
-        MDC.put("user_id", user.getUserId());
-        MDC.put("category_id", picWebInfo.getCategoryId());
+        MDC.put("user_info", "user_id=" + user.getUserId() + ";category_id=" + picWebInfo.getCategoryId());
 
         try {
 
@@ -168,8 +167,7 @@ public class PageSettingsController {
 
         User user = (User) session.getAttribute("loginUser");
 
-        MDC.put("user_id", user.getUserId());
-        MDC.put("category_id", category_id);
+        MDC.put("user_info", "user_id=" + user.getUserId() + ";category_id=" + category_id);
 
         Map<String, Object> result = new HashMap<>();
 
@@ -260,8 +258,7 @@ public class PageSettingsController {
         CodeWebInfo codeWebinfoDB = webinfoDao.findCodeByUser_idAndCategory_id(
                 user.getUserId(), codeWebInfo.getCategoryId(), CodeWebInfo.CODE_WEB_INFO_STATE_PREVIEW);
 
-        MDC.put("user_id", user.getUserId());
-        MDC.put("category_id", codeWebInfo.getCategoryId());
+        MDC.put("user_info", "user_id=" + user.getUserId() + ";category_id=" + codeWebInfo.getCategoryId());
 
         try {
 
@@ -334,8 +331,7 @@ public class PageSettingsController {
 
         User user = (User) session.getAttribute("loginUser");
 
-        MDC.put("user_id", user.getUserId());
-        MDC.put("category_id", category_id);
+        MDC.put("user_info", "user_id=" + user.getUserId() + ";category_id=" + category_id);
 
         Map<String, Object> result = new HashMap<>();
 
@@ -410,8 +406,7 @@ public class PageSettingsController {
 
         User user = (User) session.getAttribute("loginUser");
 
-        MDC.put("user_id", user.getUserId());
-        MDC.put("category_id", shareInfo.getCategoryId());
+        MDC.put("user_info", "user_id=" + user.getUserId() + ";category_id=" + shareInfo.getCategoryId());
 
         Map<String, Object> result = new HashMap<>();
 

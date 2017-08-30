@@ -23,8 +23,8 @@ DROP TABLE IF EXISTS `admin_category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `admin_category` (
-  `admin_id` int(11) NOT NULL,
-  `category_id` int(11) NOT NULL,
+  `admin_id` int(11) NOT NULL COMMENT '管理员id',
+  `category_id` int(11) NOT NULL COMMENT '套餐id',
   PRIMARY KEY (`admin_id`,`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -47,13 +47,13 @@ DROP TABLE IF EXISTS `admin_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `admin_info` (
-  `admin_id` int(11) NOT NULL AUTO_INCREMENT,
-  `admin_name` varchar(45) DEFAULT NULL,
-  `password` varchar(45) NOT NULL,
-  `phone` varchar(20) DEFAULT NULL,
-  `email` varchar(45) NOT NULL,
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `admin_statu` char(2) DEFAULT NULL,
+  `admin_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '管理员id',
+  `admin_name` varchar(45) DEFAULT NULL COMMENT '管理员账户名',
+  `password` varchar(45) NOT NULL COMMENT '密码',
+  `phone` varchar(20) DEFAULT NULL COMMENT '手机号',
+  `email` varchar(45) NOT NULL COMMENT '邮箱',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `admin_statu` char(2) DEFAULT NULL COMMENT '状态：正常生效 = "0";停用状态 = "1";',
   PRIMARY KEY (`admin_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -76,8 +76,8 @@ DROP TABLE IF EXISTS `admin_module_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `admin_module_info` (
-  `module_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
+  `module_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '模块id',
+  `name` varchar(45) NOT NULL COMMENT '模块名',
   PRIMARY KEY (`module_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -100,8 +100,8 @@ DROP TABLE IF EXISTS `admin_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `admin_role` (
-  `admin_id` int(11) NOT NULL,
-  `role_id` int(11) NOT NULL,
+  `admin_id` int(11) NOT NULL COMMENT '管理员id',
+  `role_id` int(11) NOT NULL COMMENT '角色id',
   PRIMARY KEY (`admin_id`,`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -124,8 +124,8 @@ DROP TABLE IF EXISTS `admin_role_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `admin_role_info` (
-  `role_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
+  `role_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '角色id',
+  `name` varchar(45) NOT NULL COMMENT '角色名',
   PRIMARY KEY (`role_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -148,8 +148,8 @@ DROP TABLE IF EXISTS `admin_role_module`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `admin_role_module` (
-  `role_id` int(11) NOT NULL,
-  `module_id` int(11) NOT NULL,
+  `role_id` int(11) NOT NULL COMMENT '角色id',
+  `module_id` int(11) NOT NULL COMMENT '模块id',
   PRIMARY KEY (`role_id`,`module_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -175,8 +175,8 @@ CREATE TABLE `category` (
   `category_id` int(3) NOT NULL AUTO_INCREMENT COMMENT '套餐id',
   `category_code` varchar(20) NOT NULL COMMENT '套餐简码',
   `category_name` varchar(20) NOT NULL COMMENT '套餐名称',
-  `made_gif` tinyint(4) NOT NULL DEFAULT '0',
-  `gif_transparency` tinyint(4) NOT NULL DEFAULT '0',
+  `made_gif` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否生成GIF',
+  `gif_transparency` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'GIF是否透明',
   `category_note` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`category_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
@@ -200,24 +200,24 @@ DROP TABLE IF EXISTS `code_webinfo`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `code_webinfo` (
-  `code_webinfo_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) NOT NULL,
-  `category_id` int(3) NOT NULL,
-  `page_title` varchar(20) DEFAULT NULL,
-  `background` varchar(255) DEFAULT NULL,
-  `input_top` float(5,2) DEFAULT NULL,
-  `input_left` float(5,2) DEFAULT NULL,
-  `input_right` float(5,2) DEFAULT NULL,
-  `input_bottom` float(5,2) DEFAULT NULL,
-  `input_bg_color` varchar(10) DEFAULT NULL,
-  `input_border_color` varchar(10) DEFAULT NULL,
-  `input_text_color` varchar(10) DEFAULT NULL,
-  `button_top` float(5,2) DEFAULT NULL,
-  `button_left` float(5,2) DEFAULT NULL,
-  `button_right` float(5,2) DEFAULT NULL,
-  `button_bottom` float(5,2) DEFAULT NULL,
-  `button_pic` varchar(255) DEFAULT NULL,
-  `code_webinfo_state` char(1) DEFAULT NULL,
+  `code_webinfo_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '验证码页面信息id',
+  `user_id` bigint(20) NOT NULL COMMENT '客户id',
+  `category_id` int(3) NOT NULL COMMENT '套餐id',
+  `page_title` varchar(20) DEFAULT NULL COMMENT '页面标题',
+  `background` varchar(255) DEFAULT NULL COMMENT '背景图路径',
+  `input_top` float(5,2) DEFAULT NULL COMMENT '输入框顶部距页面顶部百分比',
+  `input_left` float(5,2) DEFAULT NULL COMMENT '输入框左边距页面左边百分比',
+  `input_right` float(5,2) DEFAULT NULL COMMENT '输入框右边距页面右边百分比',
+  `input_bottom` float(5,2) DEFAULT NULL COMMENT '输入框底部距页面底部百分比',
+  `input_bg_color` varchar(10) DEFAULT NULL COMMENT '输入框背景色',
+  `input_border_color` varchar(10) DEFAULT NULL COMMENT '输入框边框色',
+  `input_text_color` varchar(10) DEFAULT NULL COMMENT '输入框文本颜色',
+  `button_top` float(5,2) DEFAULT NULL COMMENT '按钮顶部距页面顶部百分比',
+  `button_left` float(5,2) DEFAULT NULL COMMENT '按钮左边距页面左边百分比',
+  `button_right` float(5,2) DEFAULT NULL COMMENT '按钮右边距页面右边百分比',
+  `button_bottom` float(5,2) DEFAULT NULL COMMENT '按钮底部距页面底部百分比',
+  `button_pic` varchar(255) DEFAULT NULL COMMENT '按钮图片路径',
+  `code_webinfo_state` char(1) DEFAULT NULL COMMENT '验证码页面信息状态，预览=“1”，正常=“0”',
   PRIMARY KEY (`code_webinfo_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -240,8 +240,8 @@ DROP TABLE IF EXISTS `log_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `log_info` (
-  `log_info_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_info` varchar(255) DEFAULT NULL COMMENT '用户id',
+  `log_info_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '日志id',
+  `user_info` varchar(255) DEFAULT NULL COMMENT '日志所属者信息',
   `class` varchar(255) DEFAULT NULL COMMENT '操作的类',
   `method` varchar(255) DEFAULT NULL COMMENT '操作的方法',
   `line` int(11) DEFAULT NULL,
@@ -249,7 +249,7 @@ CREATE TABLE `log_info` (
   `log_level` varchar(20) DEFAULT NULL COMMENT '错误级别',
   `message` longtext COMMENT '错误信息',
   PRIMARY KEY (`log_info_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -258,7 +258,7 @@ CREATE TABLE `log_info` (
 
 LOCK TABLES `log_info` WRITE;
 /*!40000 ALTER TABLE `log_info` DISABLE KEYS */;
-INSERT INTO `log_info` VALUES (1,'','cn.inphoto.controller.admin.AdminLoginController','checkAdmin',201,'2017-08-23 03:05:28','ADMIN','登录验证：用户admin_id=6 尝试 邮箱登录 验证，登陆结果为：{success=true, message=验证成功, url=/IN_Photo/admin/index.do}'),(2,'','cn.inphoto.controller.admin.AdminLoginController','checkAdmin',201,'2017-08-23 03:05:43','ADMIN','登录验证：用户admin_id=1 尝试 用户名登录 验证，登陆结果为：{success=true, message=验证成功, url=/IN_Photo/admin/index.do}'),(3,'','cn.inphoto.controller.user.UserLoginController','checkUser',165,'2017-08-23 03:06:00','USER','登录验证：用户user_id=2 尝试 用户名登录 验证，登陆结果为：密码错误'),(4,'','cn.inphoto.controller.user.PageSettingsController','perCode',318,'2017-08-23 03:12:19','USER','用户user_id=2 更新预览category_id=3 套餐系统提取页面，返回结果为：{success=true, message=更新成功, url=http%3A%2F%2F192.168.0.222%2F%2FIN_Photo%2Fmobile%2FtoCode.do%3Fuser_id%3D2%26category_id%3D3%26test%3Dtrue}'),(5,'','cn.inphoto.controller.user.PageSettingsController','changeCodePreToNormal',401,'2017-08-23 03:12:31','USER','用户user_id=2 更新预览category_id=3 套餐系统为生效状态，返回结果为：{success=true, message=更新成功}'),(6,'','cn.inphoto.controller.user.PageSettingsController','setShareInfo',471,'2017-08-23 03:13:04','USER','用户user_id=2 更新预览category_id=3 套餐系统为生效状态，返回结果为：{success=true, message=更新成功}');
+INSERT INTO `log_info` VALUES (1,'','cn.inphoto.controller.admin.AdminLoginController','checkAdmin',201,'2017-08-23 03:05:28','ADMIN','登录验证：用户admin_id=6 尝试 邮箱登录 验证，登陆结果为：{success=true, message=验证成功, url=/IN_Photo/admin/index.do}'),(2,'','cn.inphoto.controller.admin.AdminLoginController','checkAdmin',201,'2017-08-23 03:05:43','ADMIN','登录验证：用户admin_id=1 尝试 用户名登录 验证，登陆结果为：{success=true, message=验证成功, url=/IN_Photo/admin/index.do}'),(3,'','cn.inphoto.controller.user.UserLoginController','checkUser',165,'2017-08-23 03:06:00','USER','登录验证：用户user_id=2 尝试 用户名登录 验证，登陆结果为：密码错误'),(4,'','cn.inphoto.controller.user.PageSettingsController','perCode',318,'2017-08-23 03:12:19','USER','用户user_id=2 更新预览category_id=3 套餐系统提取页面，返回结果为：{success=true, message=更新成功, url=http%3A%2F%2F192.168.0.222%2F%2FIN_Photo%2Fmobile%2FtoCode.do%3Fuser_id%3D2%26category_id%3D3%26test%3Dtrue}'),(5,'','cn.inphoto.controller.user.PageSettingsController','changeCodePreToNormal',401,'2017-08-23 03:12:31','USER','用户user_id=2 更新预览category_id=3 套餐系统为生效状态，返回结果为：{success=true, message=更新成功}'),(6,'','cn.inphoto.controller.user.PageSettingsController','setShareInfo',471,'2017-08-23 03:13:04','USER','用户user_id=2 更新预览category_id=3 套餐系统为生效状态，返回结果为：{success=true, message=更新成功}'),(7,'','cn.inphoto.controller.admin.AdminLoginController','checkAdmin',197,'2017-08-30 01:57:44','ADMIN','登录验证：用户admin_id=1 尝试 用户名登录 验证，登陆结果为：{success=true, message=验证成功, url=/IN_Photo/admin/index.do}'),(8,'','cn.inphoto.controller.admin.AdminLoginController','checkAdmin',197,'2017-08-30 02:02:22','ADMIN','登录验证：用户admin_id=1 尝试 用户名登录 验证，登陆结果为：{success=true, message=验证成功, url=/IN_Photo/admin/index.do}');
 /*!40000 ALTER TABLE `log_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -270,11 +270,11 @@ DROP TABLE IF EXISTS `media_code`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `media_code` (
-  `media_code_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `media_code` varchar(10) NOT NULL,
-  `media_id` bigint(20) NOT NULL,
-  `user_id` bigint(20) NOT NULL,
-  `category_id` int(3) NOT NULL,
+  `media_code_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '媒体验证码id',
+  `media_code` varchar(10) NOT NULL COMMENT '媒体验证码',
+  `media_id` bigint(20) NOT NULL COMMENT '所指向的媒体id',
+  `user_id` bigint(20) NOT NULL COMMENT '客户id',
+  `category_id` int(3) NOT NULL COMMENT '套餐id',
   PRIMARY KEY (`media_code_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1320 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -297,15 +297,15 @@ DROP TABLE IF EXISTS `media_data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `media_data` (
-  `media_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `media_name` varchar(50) NOT NULL,
-  `file_path` varchar(255) NOT NULL,
-  `user_id` bigint(20) NOT NULL,
-  `category_id` int(3) NOT NULL,
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `media_state` char(1) NOT NULL,
-  `delete_time` timestamp NULL DEFAULT NULL,
-  `over_time` timestamp NULL DEFAULT NULL,
+  `media_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '媒体id',
+  `media_name` varchar(50) NOT NULL COMMENT '媒体名',
+  `file_path` varchar(255) NOT NULL COMMENT '文件路径',
+  `user_id` bigint(20) NOT NULL COMMENT '客户id',
+  `category_id` int(3) NOT NULL COMMENT '套餐id',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `media_state` char(1) NOT NULL COMMENT '媒体状态：\n	/*媒体数据正常*/\n	MEDIA_STATE_NORMAL = "0";\n	/*媒体数据已经移入回收站中*/\n    	MEDIA_STATE_RECYCLE = "1";\n   	/*媒体数据已删除*/\n    	MEDIA_STATE_DELETE = "2";\n    	/*套餐过期，媒体数据待移动到回收站中*/\n    	MEDIA_STATE_WILL_DELETE = "3";',
+  `delete_time` timestamp NULL DEFAULT NULL COMMENT '删除时间',
+  `over_time` timestamp NULL DEFAULT NULL COMMENT '过期时间',
   PRIMARY KEY (`media_id`),
   UNIQUE KEY `media_name_UNIQUE` (`media_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1376 DEFAULT CHARSET=utf8;
@@ -329,16 +329,16 @@ DROP TABLE IF EXISTS `pic_webinfo`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `pic_webinfo` (
-  `pic_webinfo_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) NOT NULL,
-  `category_id` int(3) NOT NULL,
-  `page_title` varchar(20) DEFAULT NULL,
-  `background` varchar(255) DEFAULT NULL,
-  `picture_top` float(5,2) DEFAULT NULL,
-  `picture_left` float(5,2) DEFAULT NULL,
-  `picture_right` float(5,2) DEFAULT NULL,
-  `picture_bottom` float(5,2) DEFAULT NULL,
-  `pic_webinfo_state` char(1) DEFAULT NULL,
+  `pic_webinfo_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '展示页面信息id',
+  `user_id` bigint(20) NOT NULL COMMENT '客户id',
+  `category_id` int(3) NOT NULL COMMENT '套餐id',
+  `page_title` varchar(20) DEFAULT NULL COMMENT '页面标题',
+  `background` varchar(255) DEFAULT NULL COMMENT '背景图路径',
+  `picture_top` float(5,2) DEFAULT NULL COMMENT '图片顶部距页面顶部的百分比',
+  `picture_left` float(5,2) DEFAULT NULL COMMENT '图片左边距页面左边的百分比',
+  `picture_right` float(5,2) DEFAULT NULL COMMENT '图片右边距页面右边的百分比',
+  `picture_bottom` float(5,2) DEFAULT NULL COMMENT '图片底部距页面底部的百分比',
+  `pic_webinfo_state` char(1) DEFAULT NULL COMMENT '展示页面信息的状态：\n	/*正常生效*/\n    	PIC_WEB_INFO_STATE_NORMAL = "0";\n    	/*预览状态*/\n    	PIC_WEB_INFO_STATE_PREVIEW = "1";',
   PRIMARY KEY (`pic_webinfo_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -427,8 +427,9 @@ CREATE TABLE `user_category` (
   `media_number` int(10) DEFAULT NULL,
   `category_id` int(3) DEFAULT NULL,
   `user_category_state` char(1) DEFAULT NULL,
+  `watermark` tinyint(4) DEFAULT '1' COMMENT '是否加水印',
   PRIMARY KEY (`user_category_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -437,7 +438,7 @@ CREATE TABLE `user_category` (
 
 LOCK TABLES `user_category` WRITE;
 /*!40000 ALTER TABLE `user_category` DISABLE KEYS */;
-INSERT INTO `user_category` VALUES (15,2,'2017-06-12 08:19:25','2017-06-12 08:19:25','2017-07-12 08:19:25',1000,1,'1'),(16,2,'2017-06-12 08:19:25','2017-06-12 08:19:25','2017-07-12 08:19:25',1000,2,'1'),(17,2,'2017-06-12 08:19:25','2017-06-12 08:19:25','2017-07-12 08:19:25',1000,3,'1'),(18,2,'2017-08-04 04:00:00','2017-08-04 04:00:00','2018-09-04 04:00:00',1000,5,'0'),(19,2,'2017-08-22 05:20:24','2017-08-21 16:00:00','2018-08-21 16:00:00',10000,2,'0'),(20,2,'2017-08-22 05:20:38','2017-08-21 16:00:00','2018-08-21 16:00:00',10000,3,'0'),(21,11,'2017-08-22 09:16:47','2017-08-21 16:00:00','2018-08-21 16:00:00',10000,3,'0');
+INSERT INTO `user_category` VALUES (15,2,'2017-06-12 08:19:25','2017-06-12 08:19:25','2017-07-12 08:19:25',1000,1,'1',1),(16,2,'2017-06-12 08:19:25','2017-06-12 08:19:25','2017-07-12 08:19:25',1000,2,'1',1),(17,2,'2017-06-12 08:19:25','2017-06-12 08:19:25','2017-07-12 08:19:25',1000,3,'1',1),(18,2,'2017-08-04 04:00:00','2017-08-04 04:00:00','2018-09-03 16:00:00',1000,5,'0',0),(19,2,'2017-08-22 05:20:24','2017-08-21 16:00:00','2018-08-21 16:00:00',10000,2,'0',1),(20,2,'2017-08-22 05:20:38','2017-08-21 16:00:00','2018-08-21 16:00:00',10000,3,'0',1),(21,11,'2017-08-22 09:16:47','2017-08-21 16:00:00','2018-08-21 16:00:00',10000,3,'0',1),(22,2,'2017-08-30 01:59:12','2017-08-29 16:00:00','2018-08-29 16:00:00',10000,1,'0',1),(23,2,'2017-08-30 02:04:01','2017-08-29 16:00:00','2017-08-30 02:04:42',10000,4,'1',1),(24,2,'2017-08-30 02:04:50','2017-08-29 16:00:00','2017-08-30 02:08:56',10000,4,'1',1),(25,2,'2017-08-30 02:09:03','2017-08-29 16:00:00','2018-08-29 16:00:00',111,4,'0',0);
 /*!40000 ALTER TABLE `user_category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -485,4 +486,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-08-23 11:59:05
+-- Dump completed on 2017-08-30 10:15:11
