@@ -114,6 +114,20 @@
                                aria-describedby="beginDate" id="number" name="number"
                                value="${userCategory.mediaNumber}">
                     </div>
+                    <div class="form-group" id="watermark">
+                        <div class="col-sm-12">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="watermark"
+                                           <c:if test="${userCategory.watermark==1}">checked</c:if> value="1">加水印
+                                </label>
+                                <label>
+                                    <input type="radio" name="watermark"
+                                           <c:if test="${userCategory.watermark==0}">checked</c:if> value="0">不加水印
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </form>
                 <br/>
                 <div class="row">
@@ -195,7 +209,8 @@
                 "user_category_id": $("#user_category_id").val(),
                 "begin_date": $("#begin_date").val(),
                 "end_date": $("#end_date").val(),
-                "number": $("#number").val()
+                "number": $("#number").val(),
+                "watermark": $("input[name='watermark']:checked").val()
             },
             function (res) {
                 if (res.success) {

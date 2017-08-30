@@ -104,6 +104,18 @@
                         <input type="number" class="form-control"
                                aria-describedby="beginDate" id="number" name="number">
                     </div>
+                    <div class="form-group" id="watermark">
+                        <div class="col-sm-12">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="watermark" checked value="1">加水印
+                                </label>
+                                <label>
+                                    <input type="radio" name="watermark" value="0">不加水印
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </form>
                 <br/>
                 <div class="row">
@@ -197,7 +209,8 @@
                 "category_id": category,
                 "begin_date": $("#begin_date").val(),
                 "end_date": $("#end_date").val(),
-                "number": $("#number").val()
+                "number": $("#number").val(),
+                "watermark": $("input[name='watermark']:checked").val()
             },
             function (res) {
                 if (res.success) {

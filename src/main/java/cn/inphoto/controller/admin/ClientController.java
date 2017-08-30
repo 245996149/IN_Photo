@@ -256,7 +256,7 @@ public class ClientController {
     @RequestMapping("/addCategory.do")
     @ResponseBody
     public Map addCategory(Long user_id, Integer category_id,
-                           @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date,
+                           @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date, byte watermark,
                            @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date, Integer number) {
 
         List<UserCategory> userCategoryList = userCategoryDao.findByUser_idAndCategory_id(user_id, category_id);
@@ -315,6 +315,11 @@ public class ClientController {
             userCategory.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_NORMAL);
         } else {
             userCategory.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_NOT_START);
+        }
+        if (watermark == UserCategory.USER_CATEGORY_IS_NOT_WATERMARK) {
+            userCategory.setWatermark(UserCategory.USER_CATEGORY_IS_NOT_WATERMARK);
+        } else {
+            userCategory.setWatermark(UserCategory.USER_CATEGORY_IS_WATERMARK);
         }
 
         // 写入数据
@@ -477,7 +482,7 @@ public class ClientController {
     @RequestMapping("/updateCategory.do")
     @ResponseBody
     public Map updateCategory(Long user_category_id, HttpSession session,
-                              @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date,
+                              @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date,byte watermark,
                               @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date, Integer number) {
 
         AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
@@ -552,6 +557,9 @@ public class ClientController {
         userCategory.setMediaNumber(number);
         if (getTodayDate().getTime() / 1000 == begin_date.getTime() / 1000) {
             userCategory.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_NORMAL);
+        }
+        if (watermark != userCategory.getWatermark()) {
+            userCategory.setWatermark(watermark);
         }
 
         // 写入数据

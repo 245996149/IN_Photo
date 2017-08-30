@@ -19,6 +19,10 @@ public class UserCategory implements Serializable {
     public static final String USER_CATEGORY_STATE_OVER = "1";
     /*系统未开始*/
     public static final String USER_CATEGORY_STATE_NOT_START = "2";
+    /*加水印*/
+    public static final byte USER_CATEGORY_IS_WATERMARK = 1;
+    /*不加水印*/
+    public static final byte USER_CATEGORY_IS_NOT_WATERMARK = 0;
 
     private long userCategoryId;
     private long userId;
@@ -28,7 +32,7 @@ public class UserCategory implements Serializable {
     private Integer mediaNumber;
     private Integer categoryId;
     private String userCategoryState;
-
+    private byte watermark;
 
     @Id
     @Column(name = "user_category_id")
@@ -112,6 +116,16 @@ public class UserCategory implements Serializable {
         this.userCategoryState = userCategoryState;
     }
 
+    @Basic
+    @Column(name = "watermark")
+    public byte getWatermark() {
+        return watermark;
+    }
+
+    public void setWatermark(byte watermark) {
+        this.watermark = watermark;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -121,15 +135,13 @@ public class UserCategory implements Serializable {
 
         if (userCategoryId != that.userCategoryId) return false;
         if (userId != that.userId) return false;
+        if (watermark != that.watermark) return false;
         if (payTime != null ? !payTime.equals(that.payTime) : that.payTime != null) return false;
         if (beginTime != null ? !beginTime.equals(that.beginTime) : that.beginTime != null) return false;
         if (endTime != null ? !endTime.equals(that.endTime) : that.endTime != null) return false;
         if (mediaNumber != null ? !mediaNumber.equals(that.mediaNumber) : that.mediaNumber != null) return false;
         if (categoryId != null ? !categoryId.equals(that.categoryId) : that.categoryId != null) return false;
-        if (userCategoryState != null ? !userCategoryState.equals(that.userCategoryState) : that.userCategoryState != null)
-            return false;
-
-        return true;
+        return userCategoryState != null ? userCategoryState.equals(that.userCategoryState) : that.userCategoryState == null;
     }
 
     @Override
@@ -142,6 +154,7 @@ public class UserCategory implements Serializable {
         result = 31 * result + (mediaNumber != null ? mediaNumber.hashCode() : 0);
         result = 31 * result + (categoryId != null ? categoryId.hashCode() : 0);
         result = 31 * result + (userCategoryState != null ? userCategoryState.hashCode() : 0);
+        result = 31 * result + (int) watermark;
         return result;
     }
 
@@ -156,6 +169,7 @@ public class UserCategory implements Serializable {
                 ", mediaNumber=" + mediaNumber +
                 ", categoryId=" + categoryId +
                 ", userCategoryState='" + userCategoryState + '\'' +
+                ", watermark=" + watermark +
                 '}';
     }
 }

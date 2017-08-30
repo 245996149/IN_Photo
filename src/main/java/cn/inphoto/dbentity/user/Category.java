@@ -66,13 +66,18 @@ public class Category {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Category that = (Category) o;
+        Category category = (Category) o;
 
-        if (categoryId != that.categoryId) return false;
-        if (categoryCode != null ? !categoryCode.equals(that.categoryCode) : that.categoryCode != null) return false;
-        if (categoryName != null ? !categoryName.equals(that.categoryName) : that.categoryName != null) return false;
-
-        return true;
+        if (categoryId != category.categoryId) return false;
+        if (madeGif != category.madeGif) return false;
+        if (gifTransparency != category.gifTransparency) return false;
+        if (categoryCode != null ? !categoryCode.equals(category.categoryCode) : category.categoryCode != null)
+            return false;
+        if (categoryName != null ? !categoryName.equals(category.categoryName) : category.categoryName != null)
+            return false;
+        if (categoryNote != null ? !categoryNote.equals(category.categoryNote) : category.categoryNote != null)
+            return false;
+        return adminInfoSet != null ? adminInfoSet.equals(category.adminInfoSet) : category.adminInfoSet == null;
     }
 
     @Override
@@ -80,6 +85,10 @@ public class Category {
         int result = categoryId;
         result = 31 * result + (categoryCode != null ? categoryCode.hashCode() : 0);
         result = 31 * result + (categoryName != null ? categoryName.hashCode() : 0);
+        result = 31 * result + (int) madeGif;
+        result = 31 * result + (int) gifTransparency;
+        result = 31 * result + (categoryNote != null ? categoryNote.hashCode() : 0);
+        result = 31 * result + (adminInfoSet != null ? adminInfoSet.hashCode() : 0);
         return result;
     }
 

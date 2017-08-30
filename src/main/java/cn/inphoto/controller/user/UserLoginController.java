@@ -289,6 +289,11 @@ public class UserLoginController {
         result.put("success", true);
         result.put("user_id", user.getUserId());
         result.put("category_id", category.getCategoryId());
+        if (UserCategory.USER_CATEGORY_IS_NOT_WATERMARK == userCategory.getWatermark()) {
+            result.put("watermark", false);
+        } else {
+            result.put("watermark", true);
+        }
         logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() +
                 " 的用户请求了客户端访问接口，请求成功，返回信息为：" + result.toString());
         return result;
