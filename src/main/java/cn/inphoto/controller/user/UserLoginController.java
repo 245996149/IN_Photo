@@ -411,7 +411,7 @@ public class UserLoginController {
             case AdminInfo.LOGIN_EMAIL:
                 // 发送邮件
                 if (sendEmail) {
-                    sendMail(user.getEmail(), "IN Photo管理系统验证",
+                    sendMail(user.getEmail(), "INPHOTO管理系统验证",
                             "<div>尊敬的" + user.getEmail() + "您好！ 以下是您的验证码：</div>" +
                                     "<div><includetail><p><strong style='color:red'>" + codeTemp + "</strong></p>" +
                                     "<p>我们收到了来自您的重置密码请求，请使用上面的验证码验证您的账号</p>" +
@@ -420,7 +420,7 @@ public class UserLoginController {
                 }
                 break;
             case AdminInfo.LOGIN_PHONE:
-                if (!getSuccess(sendSMSLimit(user.getPhone(), codeTemp.toString(), "IN PHOTO管理系统验证", "SMS_61155105", "forgotAdminPassword", session))) {
+                if (!getSuccess(sendSMSLimit(user.getPhone(), codeTemp.toString(), "INPHOTO管理系统验证", "SMS_61155105", "forgotAdminPassword", session))) {
                     logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() +
                             " 的用户请求重置密码，提交的信息为：" + input_text + ";" + type + "，发送短信失败，请检查短信服务器状态");
                     return createResult(false, "发送失败，请联系管理员查看短信服务器状态");

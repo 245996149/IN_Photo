@@ -154,7 +154,7 @@ public class AdminController {
 
         // TODO 添加发送短信逻辑
         if (!getSuccess(sendSMSLimit(
-                phone, codeTemp.toString(), "IN PHOTO管理员系统绑定手机号",
+                phone, codeTemp.toString(), "INPHOTO管理员系统绑定手机号",
                 "SMS_61155105", "addAdminPhone", session))) {
 
             return createResult(false, "发送失败，请联系管理员查看短信服务器状态");

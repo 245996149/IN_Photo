@@ -44,7 +44,7 @@ public class AdminUserController {
     private RoleDao roleDao;
 
     /*
-   注册邮件中的IN Photo管理中心地址
+   注册邮件中的INPHOTO管理中心地址
     */
     @Value("#{properties['AdminEmailManageAdd']}")
     String emailManageAdd;
@@ -138,12 +138,12 @@ public class AdminUserController {
             // 发送邮件
             if (sendEmail) {
                 try {
-                    sendMail(adminInfo.getEmail(), "IN Photo注册邮件",
-                            "<div>尊敬的" + adminInfo.getEmail() + "您好！ 感谢您成为IN Photo管理员中的一员。</div>" +
+                    sendMail(adminInfo.getEmail(), "INPHOTO注册邮件",
+                            "<div>尊敬的" + adminInfo.getEmail() + "您好！ 感谢您成为INPHOTO管理员中的一员。</div>" +
                                     "<div><includetail><p>我们将为您提供最贴心的服务，祝您使用愉快！</p>" +
-                                    "<p>您在IN Photo管理中心的登录帐号：</p><p>帐号：" + adminInfo.getEmail() + "</p>" +
+                                    "<p>您在INPHOTO管理中心的登录帐号：</p><p>帐号：" + adminInfo.getEmail() + "</p>" +
                                     "<p>密码：" + pwd + "</p><p>请您及时登录系统填写用户名，更改密码。</p>" +
-                                    "<p><a href='" + emailManageAdd + "'>点击前往IN Photo管理员系统</a></p>" +
+                                    "<p><a href='" + emailManageAdd + "'>点击前往INPHOTO管理员系统</a></p>" +
                                     "<p>此邮件为系统自动发送，请勿直接回复该邮件</p></includetail></div>");
                 } catch (Exception e) {
                     e.printStackTrace();

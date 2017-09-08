@@ -44,7 +44,7 @@ public class WebInfoTask {
         webInfoTask.webinfoDao = this.webinfoDao;
     }
 
-    public static String dataPath;
+    private static String dataPath;
 
     @Value("#{properties['data_path']}")
     public void setDataPath(String data_path) {

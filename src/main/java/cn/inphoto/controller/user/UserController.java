@@ -141,7 +141,7 @@ public class UserController {
         session.setAttribute("addUserPhoneCode", codeMap);
 
         if (!getSuccess(sendSMSLimit(
-                phone, codeTemp.toString(), "IN PHOTO管理系统绑定手机号",
+                phone, codeTemp.toString(), "INPHOTO管理系统绑定手机号",
                 "SMS_61155105", "addUserPhone", session))) {
             logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() +
                     " 的用户请求绑定手机号，提交的信息为：" + phone + "，发送短信失败，请检查短信服务器状态");

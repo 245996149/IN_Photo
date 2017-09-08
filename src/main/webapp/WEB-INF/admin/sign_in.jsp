@@ -10,7 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="${pageContext.request.contextPath}/images/logo.png">
-    <title>IN Photo管理员系统</title>
+    <title>INPHOTO管理员系统</title>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="${pageContext.request.contextPath}/js/jquery-3.2.1.js"></script>
@@ -57,7 +57,7 @@
 <div class="container">
     <div class="alert alert-danger" role="alert" style="display: none" id="error_message">...</div>
     <form class="form-signin" id="signin_form" method="post">
-        <h2 class="form-signin-heading">IN Photo管理员系统</h2>
+        <h2 class="form-signin-heading">INPHOTO管理员系统</h2>
         <div class="input-group input-group-lg">
             <div class="input-group-btn">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"

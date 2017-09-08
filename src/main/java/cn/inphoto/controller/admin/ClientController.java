@@ -52,7 +52,7 @@ public class ClientController {
     private MediaCodeDao mediaCodeDao;
 
     /*
-    注册邮件中的IN Photo管理中心地址
+    注册邮件中的INPHOTO管理中心地址
      */
     @Value("#{properties['EmailManageAdd']}")
     String emailManageAdd;
@@ -130,12 +130,12 @@ public class ClientController {
             //TODO 添加发送邮件逻辑
             // 发送邮件
             if (sendEmail) {
-                sendMail(user.getEmail(), "IN Photo注册邮件",
-                        "<div>尊敬的" + user.getEmail() + "您好！ 感谢您成功注册IN Photo的会员。</div>" +
+                sendMail(user.getEmail(), "INPHOTO注册邮件",
+                        "<div>尊敬的" + user.getEmail() + "您好！ 感谢您成功注册INPHOTO的会员。</div>" +
                                 "<div><includetail><p>我们将为您提供最贴心的服务，祝您使用愉快！</p>" +
-                                "<p>您在IN Photo管理中心的登录帐号：</p><p>帐号：" + user.getEmail() + "</p>" +
+                                "<p>您在INPHOTO管理中心的登录帐号：</p><p>帐号：" + user.getEmail() + "</p>" +
                                 "<p>密码：" + pwd + "</p><p>请您及时登录系统填写用户名，更改密码。</p>" +
-                                "<p><a href='" + emailManageAdd + "'>点击前往IN Photo管理中心</a></p>" +
+                                "<p><a href='" + emailManageAdd + "'>点击前往INPHOTO管理中心</a></p>" +
                                 "<p>此邮件为系统自动发送，请勿直接回复该邮件</p></includetail></div>");
             } else {
                 System.out.println(pwd);
@@ -733,12 +733,12 @@ public class ClientController {
 
         // 发送邮件
         if (sendEmail) {
-            sendMail(user.getEmail(), "IN Photo注册邮件",
+            sendMail(user.getEmail(), "INPHOTO注册邮件",
                     "<div>尊敬的" + user.getEmail() + "您好！ </div>" +
                             "<div><includetail><p>我们将为您提供最贴心的服务，祝您使用愉快！</p>" +
-                            "<p>您在IN Photo管理中心的登录帐号：</p><p>帐号：" + user.getEmail() + "</p>" +
+                            "<p>您在INPHOTO管理中心的登录帐号：</p><p>帐号：" + user.getEmail() + "</p>" +
                             "<p>密码：" + pwd + "</p><p>请您及时登录系统填写用户名，更改密码。</p>" +
-                            "<p><a href='" + emailManageAdd + "'>点击前往IN Photo管理中心</a></p>" +
+                            "<p><a href='" + emailManageAdd + "'>点击前往INPHOTO管理中心</a></p>" +
                             "<p>此邮件为系统自动发送，请勿直接回复该邮件</p></includetail></div>");
         } else {
             System.out.println(pwd);

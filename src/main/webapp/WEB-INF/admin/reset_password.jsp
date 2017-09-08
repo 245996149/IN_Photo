@@ -10,7 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="${pageContext.request.contextPath}/images/logo.png">
-    <title>IN Photo管理员系统</title>
+    <title>INPHOTO管理员系统</title>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="${pageContext.request.contextPath}/js/jquery-3.2.1.js"></script>

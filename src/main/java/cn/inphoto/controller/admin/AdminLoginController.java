@@ -304,7 +304,7 @@ public class AdminLoginController {
             case AdminInfo.LOGIN_EMAIL:
                 // 发送邮件
                 if (sendEmail) {
-                    sendMail(adminInfo.getEmail(), "IN Photo管理员验证",
+                    sendMail(adminInfo.getEmail(), "INPHOTO管理员验证",
                             "<div>尊敬的" + adminInfo.getEmail() + "您好！ 以下是您的验证码：</div>" +
                                     "<div><includetail><p><strong style=\"color:red\">" + codeTemp + "</strong></p>" +
                                     "<p>我们收到了来自您的重置密码请求，请使用上面的验证码验证您的账号</p>" +
@@ -313,7 +313,7 @@ public class AdminLoginController {
                 }
                 break;
             case AdminInfo.LOGIN_PHONE:
-                if (!getSuccess(sendSMSLimit(adminInfo.getPhone(), codeTemp.toString(), "IN PHOTO管理员系统验证", "SMS_61155105", "forgotAdminPassword", session))) {
+                if (!getSuccess(sendSMSLimit(adminInfo.getPhone(), codeTemp.toString(), "INPHOTO管理员系统验证", "SMS_61155105", "forgotAdminPassword", session))) {
                     return createResult(false, "发送失败，请联系管理员查看短信服务器状态");
                 }
                 break;

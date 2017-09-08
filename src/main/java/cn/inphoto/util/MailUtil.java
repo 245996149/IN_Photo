@@ -106,12 +106,12 @@ public class MailUtil {
     @Test
     public void a() throws Exception {
 
-        sendMail("245996149@qq.com", "IN Photo注册邮件",
-                "<div>尊敬的245996149@qq.com您好！ 感谢您成功注册IN Photo的会员。</div>" +
+        sendMail("245996149@qq.com", "INPHOTO注册邮件",
+                "<div>尊敬的245996149@qq.com您好！ 感谢您成功注册INPHOTO的会员。</div>" +
                         "<div><includetail><p>我们将为您提供最贴心的服务，祝您购物愉快！</p>" +
-                        "<p>您在IN Photo管理中心的登录帐号：</p><p>帐号：245996149@qq.com</p>" +
+                        "<p>您在INPHOTO管理中心的登录帐号：</p><p>帐号：245996149@qq.com</p>" +
                         "<p>密码：syvdu3</p><p>请您及时登录系统更改密码。</p>" +
-                        "<p><a href='http://www.baidu.com'>点击前往IN Photo管理中心</a></p>" +
+                        "<p><a href='http://www.baidu.com'>点击前往INPHOTO管理中心</a></p>" +
                         "<p>此邮件为系统自动发送，请勿直接回复该邮件</p></includetail></div>");
 
     }
