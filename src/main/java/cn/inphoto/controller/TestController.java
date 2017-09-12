@@ -91,13 +91,18 @@ public class TestController {
     @ResponseBody
     public String getURL(HttpServletRequest request) {
 
-        String url = request.getScheme()+"://"+ request.getServerName()+request.getRequestURI()+"?"+request.getQueryString();
-        System.out.println("获取全路径（协议类型：//域名/项目名/命名空间/action名称?其他参数）url="+url);
-        String url2=request.getScheme()+"://"+ request.getServerName();//+request.getRequestURI();
-        System.out.println("协议名：//域名="+url2);
+        String url = request.getScheme() + "://" + request.getServerName() + request.getRequestURI() + "?" + request.getQueryString();
+        System.out.println("获取全路径（协议类型：//域名/项目名/命名空间/action名称?其他参数）url=" + url);
+        String url2 = request.getScheme() + "://" + request.getServerName();//+request.getRequestURI();
+        System.out.println("协议名：//域名=" + url2);
 
 
         return url2;
+    }
+
+    @RequestMapping("/testMap.do")
+    public String testMap() {
+        return "test";
     }
 
 }
