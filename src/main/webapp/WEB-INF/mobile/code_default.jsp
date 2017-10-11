@@ -92,7 +92,7 @@
                 },
                 function (res) {
                     if (res.success) {
-                        location.replace(res.url);
+                        location.replace(res.page_url);
                     } else {
                         alert(res.message);
                         $("#code").val("");

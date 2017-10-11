@@ -154,13 +154,21 @@ public class MobileController {
 
             StringBuffer url = request.getRequestURL();
 
-            String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length())
-                    .append(request.getContextPath()).append("/mobile/toPage.do?user_id=")
-                    .append(user_id).append("&category_id=").append(category_id)
-                    .append("&media_id=").append(mediaCode.getMediaId()).toString();
+            url = url.delete(url.length() - request.getRequestURI().length(), url.length());
 
+            String page_url = url + request.getContextPath() +
+                    "/mobile/toPage.do?user_id=" + user_id + "&category_id=" + category_id +
+                    "&media_id=" + mediaCode.getMediaId();
+
+            // 获取图片尾缀
+            String tempFileName[] = mediaData.getFilePath().split("\\.");
+
+            String image_url = url + request.getContextPath() +
+                    "/get/getMedia.do?type=1&id=" + mediaData.getMediaId() + "&image_type=." + tempFileName[1];
+            
             result.put("success", true);
-            result.put("url", tempContextUrl);
+            result.put("page_url", page_url);
+            result.put("image_url", image_url);
 
         }
 
