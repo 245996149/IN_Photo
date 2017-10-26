@@ -1,3 +1,4 @@
+<%@ page import="cn.inphoto.dbentity.user.MediaData" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -40,6 +41,7 @@
 
 <div style="display: none;">
     <input type="text" id="category_id" value="${tablePage.category_id}">
+    <input type="text" id="user_id" value="${tablePage.user_id}">
 </div>
 
 <%-- 导航栏 --%>
@@ -63,46 +65,64 @@
 </div>
 
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-9">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">七日内的点击量</h3>
+                <h3 class="panel-title">数据查询</h3>
             </div>
             <div class="panel-body">
-                <canvas id="click_7" width="400" height="200"></canvas>
+                <div class="row">
+                    <form class="form-inline" id="find__date_form">
+                        <div class="form-group">
+                            <label for="find__end_date">开始时间</label>
+                            <input type="date" class="form-control" id="find__begin_date"
+                                   onchange="settingFindDateInput();"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="find__end_date">结束时间</label>
+                            <input type="date" class="form-control" id="find__end_date">
+                        </div>
+                        <button type="button" class="btn btn-info" onclick="findDate();">查询
+                        </button>
+                    </form>
+                    <%--<div id="find_error_div">检测到您的浏览器不支持H5特性，所以禁用了批量下载功能，请使用<strong>Chrome内核</strong>的浏览器--%>
+                    <%--<br/><strong>Chrome内核的浏览器:</strong>Google Chrome、360极速浏览器、QQ浏览器、UC浏览器等--%>
+                    <%--</div>--%>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <canvas id="click_7" width="400" height="200"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <canvas id="share_7" width="400" height="200"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">七日内的分享量</h3>
+        <div class="row">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <h3 class="panel-title">系统使用情况</h3>
+                </div>
+                <div class="panel-body">
+                    <canvas id="system_info" width="400" height="200"></canvas>
+                </div>
             </div>
-            <div class="panel-body">
-                <canvas id="share_7" width="400" height="200"></canvas>
+        </div>
+        <div class="row">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <h3 class="panel-title">回收站数据过期情况</h3>
+                </div>
+                <div class="panel-body">
+                    <canvas id="recycle_info" width="400" height="200"></canvas>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="panel panel-danger">
-            <div class="panel-heading">
-                <h3 class="panel-title">系统使用情况</h3>
-            </div>
-            <div class="panel-body">
-                <canvas id="system_info" width="400" height="200"></canvas>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="panel panel-danger">
-            <div class="panel-heading">
-                <h3 class="panel-title">回收站数据过期情况</h3>
-            </div>
-            <div class="panel-body">
-                <canvas id="recycle_info" width="400" height="200"></canvas>
-            </div>
-        </div>
-    </div>
+
 </div>
 
 <div class="row">
@@ -137,8 +157,10 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <c:set var="WillDelete" value="<%=MediaData.MediaState.WillDelete.name() %>"/>
+                    <c:set var="Normal" value="<%=MediaData.MediaState.Normal.name() %>"/>
                     <c:forEach items="${mediaDataList}" var="m">
-                        <tr <c:if test="${m.mediaState==3}">class="danger" </c:if>>
+                        <tr <c:if test="${m.mediaState eq WillDelete}">class="danger" </c:if>>
                             <td><input type="checkbox" name="media_data_checkbox"
                                        onclick="checkAllCheck();" value="${m.mediaId}"><span>${m.mediaName}</span></td>
                             <td width="5%"><a href="javascript:void(0);" onclick="open_modal(${m.mediaName});"
@@ -157,8 +179,8 @@
                                 </c:forEach>
                             </td>
                             <td><c:choose>
-                                <c:when test="${m.mediaState==0}">正常</c:when>
-                                <c:when test="${m.mediaState==3}">待删除<br/>
+                                <c:when test="${m.mediaState eq Normal}">正常</c:when>
+                                <c:when test="${m.mediaState eq WillDelete}">待删除<br/>
                                     <fmt:formatDate value="${m.deleteTime}" pattern="yyyy年MM月dd日"/>移动到回收站中</c:when>
                                 <c:otherwise>未知</c:otherwise>
                             </c:choose></td>
@@ -305,6 +327,26 @@
                             </nav>
                         </td>
                     </tr>
+                    <tr>
+                        <td colspan="6" style="text-align: center;">
+                            <form class="form-inline" id="download_for_date_form" hidden>
+                                <div class="form-group">
+                                    <label for="download_begin_date">开始时间</label>
+                                    <input type="date" class="form-control" id="download_begin_date"
+                                           onchange="settingDownloadInput();"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="download_end_date">结束时间</label>
+                                    <input type="date" class="form-control" id="download_end_date">
+                                </div>
+                                <button type="button" class="btn btn-info" onclick="dowuloadForDate();">下载该时间段内数据
+                                </button>
+                            </form>
+                            <div id="error_div">检测到您的浏览器不支持H5特性，所以禁用了批量下载功能，请使用<strong>Chrome内核</strong>的浏览器
+                                <br/><strong>Chrome内核的浏览器:</strong>Google Chrome、360极速浏览器、QQ浏览器、UC浏览器等
+                            </div>
+                        </td>
+                    </tr>
                     </tfoot>
                 </table>
             </div>
@@ -373,9 +415,23 @@
 <script type="text/javascript">
 
     $(function () {
+        var date = new Date();
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+
+        if (date.getMonth() < 9) {
+            month = "0" + (date.getMonth() + 1);
+        }
+
+        if (date.getDate() < 10) {
+            day = "0" + date.getDate();
+        }
+
+        var today = date.getFullYear() + "-" + month + "-" + day;
         /*加载数据表单*/
-        getClick_7();
-        getShare_7();
+        checkDatesupport();
+        getClickData(getNewDay(today, -6), today);
+        getShareDate(getNewDay(today, -6), today);
         getSystemInfo();
         getRecycleInfo();
         $('#share_button').popover({
@@ -384,7 +440,7 @@
             content: aaa,
             placement: 'left'
         });
-
+        onloadSetting();
     });
 
     $('.carousel').carousel({
@@ -419,6 +475,56 @@
 //                placement: 'left'
 //            });
 
+    }
+
+    function checkDatesupport() {
+        var i = document.createElement('input');
+        i.setAttribute('type', 'date');
+        //浏览器不支持date类型
+        if (i.type == 'date') {
+            $("#error_div").hide();
+            $("#download_for_date_form").show();
+        }
+    }
+
+    function onloadSetting() {
+
+        var date = new Date();
+
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+
+        if (date.getMonth() < 9) {
+            month = "0" + (date.getMonth() + 1);
+        }
+
+        if (date.getDate() < 10) {
+            day = "0" + date.getDate();
+        }
+
+        today = date.getFullYear() + "-" + month + "-" + day;
+
+        var begin_date = $("#download_begin_date");
+
+        begin_date.val(today);
+
+        begin_date.attr("max", today);
+
+        var end_date = $("#download_end_date");
+
+        end_date.val(today);
+
+        end_date.attr("max", today);
+
+        var find_begin = $("#find__begin_date");
+
+        find_begin.val(getNewDay(today, -6), today);
+        find_begin.attr("max", today);
+
+        var find_end = $("#find__end_date");
+
+        find_end.val(today);
+        find_end.attr("max", today);
     }
 
 

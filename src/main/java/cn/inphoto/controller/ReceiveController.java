@@ -286,7 +286,7 @@ public class ReceiveController {
             mediaData.setCategoryId(category.getCategoryId());
             mediaData.setFilePath(filePath);
             mediaData.setMediaName(names);
-            mediaData.setMediaState(MediaData.MEDIA_STATE_NORMAL);
+            mediaData.setMediaState(MediaData.MediaState.Normal);
 
             // 将媒体信息写入数据库
             if (!utilDao.save(mediaData)) {
@@ -323,15 +323,15 @@ public class ReceiveController {
 
             // 判断数据总量是否超过用户购买量，超过则将时间最早的数据移到回收站中
             if (mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                    user.getUserId(), category.getCategoryId(), Collections.singletonList(MediaData.MEDIA_STATE_NORMAL))
+                    user.getUserId(), category.getCategoryId(), Collections.singletonList(MediaData.MediaState.Normal))
                     > userCategory.getMediaNumber()) {
 
                 // 数据总量超过用户购买量，获取该用户改套餐系统正常状态下创建时间最早的一条媒体数据
                 MediaData mediaDataEntity = mediaDataDao.findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(
-                        user.getUserId(), category.getCategoryId(), MediaData.MEDIA_STATE_NORMAL);
+                        user.getUserId(), category.getCategoryId(), MediaData.MediaState.Normal);
 
                 // 将该数据移到回收站
-                mediaDataEntity.setMediaState(MediaData.MEDIA_STATE_RECYCLE);
+                mediaDataEntity.setMediaState(MediaData.MediaState.Recycle);
 
                 // 更新该数据库中该数据信息
                 utilDao.update(mediaDataEntity);

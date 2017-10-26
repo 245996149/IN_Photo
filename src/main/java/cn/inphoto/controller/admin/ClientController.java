@@ -225,6 +225,7 @@ public class ClientController {
         boolean isAdmin = (boolean) session.getAttribute("isAdmin");
 
         User user = userDao.findByUser_id(user_id);
+        List<Category> categoryList;
 
         // 判断是否有管理员权限
         if (!isAdmin) {
@@ -232,9 +233,10 @@ public class ClientController {
             if (user.getAdminId() != adminInfo.getAdminId()) {
                 return "no_power";
             }
+            categoryList = new ArrayList<>(adminInfo.getCategorySet());
+        }else {
+            categoryList = categoryDao.findAll();
         }
-
-        List<Category> categoryList = new ArrayList<>(adminInfo.getCategorySet());
 
         model.addAttribute("user", user);
         model.addAttribute("categoryList", categoryList);
@@ -368,7 +370,7 @@ public class ClientController {
 
                 // 查询套餐对应的正常状态的媒体总数
                 int a = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                        user.getUserId(), uc.getCategoryId(), Collections.singletonList(MediaData.MEDIA_STATE_NORMAL));
+                        user.getUserId(), uc.getCategoryId(), Collections.singletonList(MediaData.MediaState.Normal));
 
                 // 将数据写入临时Map中以供页面调用
                 tempMap.put(uc.getUserCategoryId(), (a * 100 / uc.getMediaNumber()));
@@ -598,7 +600,7 @@ public class ClientController {
 
         // 判断页面数据对象中是否有相应数据，没有给予初始值
         if (tablePage.getMedia_state_list() == null || tablePage.getMedia_state_list().isEmpty()) {
-            tablePage.setMedia_state_list(Arrays.asList(MediaData.MEDIA_STATE_NORMAL, MediaData.MEDIA_STATE_WILL_DELETE));
+            tablePage.setMedia_state_list(Arrays.asList(MediaData.MediaState.Normal, MediaData.MediaState.WillDelete));
         }
 
 
@@ -608,9 +610,9 @@ public class ClientController {
 
         List<MediaCode> mediaCodeList = mediaCodeDao.findByUser_idAndCategory_id(user.getUserId(), tablePage.getCategory_id());
 
-        List<Category> categoryList = categoryDao.findAll();
+        Category category = categoryDao.findByCategory_id(tablePage.getCategory_id());
 
-        model.addAttribute("category", categoryList);
+        model.addAttribute("category", category);
         model.addAttribute("mediaDataList", mediaDataList);
         model.addAttribute("mediaCodeList", mediaCodeList);
         model.addAttribute("tablePage", tablePage);

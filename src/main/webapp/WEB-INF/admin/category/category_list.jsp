@@ -62,6 +62,7 @@
                         <td>套餐编号</td>
                         <td>套餐简码</td>
                         <td>套餐名称</td>
+                        <td>类型</td>
                         <td>是否生成GIF</td>
                         <td>GIF是否透明</td>
                         <td>备注</td>
@@ -74,6 +75,12 @@
                             <td>${cl.categoryId}</td>
                             <td>${cl.categoryCode}</td>
                             <td>${cl.categoryName}</td>
+                            <td><c:choose>
+                                <c:when test="${cl.isVideo==1}">
+                                    视频
+                                </c:when>
+                                <c:otherwise>图片</c:otherwise>
+                            </c:choose></td>
                             <td><c:if test="${cl.madeGif==1}">是</c:if></td>
                             <td><c:if test="${cl.gifTransparency==1}">是</c:if></td>
                             <td>${cl.categoryNote} </td>
@@ -126,7 +133,21 @@
                                id="categoryNote" name="categoryNote">
                     </div>
                     <br/>
-                    <div class="form-group">
+                    <div class="form-group" id="video_div">
+                        <div class="col-sm-12">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="isVideo" value="true" onchange="changeMediaType();">视频
+                                </label>
+                                <label>
+                                    <input type="radio" name="isVideo" checked value="false"
+                                           onchange="changeMediaType();">图片
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="form-group" id="gif_div">
                         <div class="col-sm-12">
                             <div class="radio">
                                 <label>
@@ -166,6 +187,18 @@
 
 <script type="text/javascript">
 
+    function changeMediaType() {
+
+        var isVideo = $("input[name='isVideo']:checked").val();
+
+        if (isVideo == 'false') {
+            $('#gif_div').show();
+        } else {
+            $('#gif_div').hide();
+            $('#tran_div').hide();
+        }
+    }
+
     function changeMakeGIF() {
 
         var makeGIF = $("input[name='makeGIF']:checked").val();
@@ -196,16 +229,24 @@
             return false;
         }
 
+        var isVideo = $("input[name='isVideo']:checked").val();
 
         var makeGIF = $("input[name='makeGIF']:checked").val();
 
         var GIFtran;
 
-        if (makeGIF == 'false') {
+        if (isVideo == true) {
+            makeGIF = false;
+        } else {
+            makeGIF = $("input[name='makeGIF']:checked").val();
+        }
+
+        if (makeGIF == false) {
             GIFtran = false;
         } else {
             GIFtran = $("input[name='GIFtran']:checked").val();
         }
+        console.log("aaa");
 
         $.post(
             "addCategory.do",
@@ -214,7 +255,8 @@
                 "code": code.val(),
                 "note": $("#categoryNote").val(),
                 "makeGIF": makeGIF,
-                "gif_tran": GIFtran
+                "gif_tran": GIFtran,
+                "isVideo": isVideo
             },
             function (res) {
                 if (res.success) {

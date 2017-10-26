@@ -51,6 +51,9 @@ public class MobileController {
     private MediaDataDao mediaDataDao;
 
     @Resource
+    private CategoryDao categoryDao;
+
+    @Resource
     private UtilDao utilDao;
 
     /*定义404页面*/
@@ -148,7 +151,8 @@ public class MobileController {
 
             MediaData mediaData = mediaDataDao.findByMedia_id(mediaCode.getMediaId());
 
-            if (mediaData == null || MediaData.MEDIA_STATE_RECYCLE.equals(mediaData.getMediaState()) || MediaData.MEDIA_STATE_DELETE.equals(mediaData.getMediaState())) {
+            if (mediaData == null || MediaData.MediaState.Recycle == mediaData.getMediaState()
+                    || MediaData.MediaState.Delete == mediaData.getMediaState()) {
                 return createResult(false, "数据已经过期！");
             }
 
@@ -165,7 +169,7 @@ public class MobileController {
 
             String image_url = url + request.getContextPath() +
                     "/get/getMedia.do?type=1&id=" + mediaData.getMediaId() + "&image_type=." + tempFileName[1];
-            
+
             result.put("success", true);
             result.put("page_url", page_url);
             result.put("image_url", image_url);
@@ -229,8 +233,8 @@ public class MobileController {
                 // 查询媒体数据，并判断媒体数据是否在正常状态内
                 MediaData mediaData = mediaDataDao.findByMedia_id(media_id);
                 if (mediaData == null ||
-                        (!MediaData.MEDIA_STATE_NORMAL.equals(mediaData.getMediaState()) &&
-                                !MediaData.MEDIA_STATE_WILL_DELETE.equals(mediaData.getMediaState())))
+                        (MediaData.MediaState.Normal != mediaData.getMediaState() &&
+                                MediaData.MediaState.WillDelete != mediaData.getMediaState()))
                     return MOBILE_404;
 
                 // 获取图片尾缀
@@ -246,10 +250,12 @@ public class MobileController {
 
             ShareInfo shareInfo = webinfoDao.findShareByUser_idAndCategory(user_id, category_id);
 
+            Category category = categoryDao.findByCategory_id(userCategory.getCategoryId());
+
             model.addAttribute("shareInfo", shareInfo);
             model.addAttribute("url", "http://" + request.getServerName());
             model.addAttribute("test", test);
-            model.addAttribute("category_id", userCategory.getCategoryId());
+            model.addAttribute("category", category);
             model.addAttribute("user_id", user.getUserId());
 
             // 输出日志

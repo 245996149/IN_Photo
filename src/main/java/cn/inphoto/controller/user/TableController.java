@@ -7,6 +7,7 @@ import cn.inphoto.log.UserLogLevel;
 import net.sf.json.JSONArray;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,9 +66,9 @@ public class TableController {
         // 判断页面数据对象中是否有相应数据，没有给予初始值
         if ((tablePage.getMedia_state_list() == null) ||
                 tablePage.getMedia_state_list().isEmpty() ||
-                tablePage.getMedia_state_list().contains(MediaData.MEDIA_STATE_RECYCLE) ||
-                tablePage.getMedia_state_list().contains(MediaData.MEDIA_STATE_DELETE)) {
-            tablePage.setMedia_state_list(Arrays.asList(MediaData.MEDIA_STATE_NORMAL, MediaData.MEDIA_STATE_WILL_DELETE));
+                tablePage.getMedia_state_list().contains(MediaData.MediaState.Recycle) ||
+                tablePage.getMedia_state_list().contains(MediaData.MediaState.Delete)) {
+            tablePage.setMedia_state_list(Arrays.asList(MediaData.MediaState.Normal, MediaData.MediaState.WillDelete));
         }
 
         tablePage.setRows(mediaDataDao.countByUser_idAndCategory_idAndMedia_state(user.getUserId(), tablePage.getCategory_id(), tablePage.getMedia_state_list()));
@@ -102,7 +103,7 @@ public class TableController {
 
         tablePage.setCategory_id(0);
 
-        tablePage.setMedia_state_list(MediaData.MEDIA_STATE_RECYCLE);
+        tablePage.setMedia_state_list(MediaData.MediaState.Recycle);
 
         tablePage.setRows(mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
                 user.getUserId(), null, tablePage.getMedia_state_list()));
@@ -143,12 +144,20 @@ public class TableController {
      */
     @RequestMapping("/getShareData.do")
     @ResponseBody
-    public Map[] getShareData(HttpSession session, int category_id, int type) {
+    public Map[] getShareData(HttpSession session, int category_id, int type,
+                              @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date,
+                              @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date) {
 
+        System.out.println(begin_date.toString() + "   " + end_date.toString());
         User user = (User) session.getAttribute("loginUser");
 
+        int days = (int) Math.abs((end_date.getTime() - begin_date.getTime())
+                / (24 * 60 * 60 * 1000) + 1);
+
+        System.out.println(days);
+
         // 创建返回的数组
-        Map[] maps = new HashMap[7];
+        Map[] maps = new HashMap[days];
 
         // 创建日期编码对象
         SimpleDateFormat format = new SimpleDateFormat("MM/dd");
@@ -157,7 +166,7 @@ public class TableController {
         Calendar calendar = Calendar.getInstance();
 
         // 给日历对象设置时间
-        calendar.setTime(new Date());
+        calendar.setTime(end_date);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
@@ -174,13 +183,13 @@ public class TableController {
         switch (type) {
             case 1:
                 // 循环查询七天内的点击量
-                for (int i = 7; i > 0; i--) {
+                for (int i = days; i > 0; i--) {
                     // 获取数据
                     int a = shareDataDao.countByTime(
                             user.getUserId(), category_id, begin, end, ShareData.SHARE_TYPE_WEB_CLICK);
 
                     int b = mediaDataDao.countByUser_idAndCategory_idAndMedia_stateAndCreate_Time(
-                            user.getUserId(), category_id, begin, end, MediaData.MEDIA_STATE_NORMAL);
+                            user.getUserId(), category_id, begin, end, MediaData.MediaState.Normal);
 
                     // 创建返回的Map对象
                     Map<String, Object> result = new HashMap<>();
@@ -202,7 +211,7 @@ public class TableController {
 
             case 2:
                 // 循环查询七天内的分享给好友量、分享到朋友圈
-                for (int i = 7; i > 0; i--) {
+                for (int i = days; i > 0; i--) {
                     int chats_num = shareDataDao.countByTime(
                             user.getUserId(), category_id, begin, end, ShareData.SHARE_TYPE_WECHAT_SHARE_CHATS);
                     int moments_num = shareDataDao.countByTime(
@@ -254,7 +263,7 @@ public class TableController {
         UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_idAndState(user.getUserId(), category_id, UserCategory.USER_CATEGORY_STATE_NORMAL);
         // 计算用户该套餐系统内状态为张昌的媒体数据的数量
         int media_num = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                user.getUserId(), category_id, Collections.singletonList(MediaData.MEDIA_STATE_NORMAL));
+                user.getUserId(), category_id, Collections.singletonList(MediaData.MediaState.Normal));
 
         result.put("use", media_num);
         result.put("remaining", (userCategory.getMediaNumber() - media_num));
@@ -296,11 +305,11 @@ public class TableController {
 
         // 查询回收站中该套餐系统的总数
         int recycle_total = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                user.getUserId(), category_id, Collections.singletonList(MediaData.MEDIA_STATE_RECYCLE));
+                user.getUserId(), category_id, Collections.singletonList(MediaData.MediaState.Recycle));
 
         // 查询回收站中该套餐系统的7天内过期的媒体数
         int recycle_7 = mediaDataDao.countByUser_idAndCategory_idAndMedia_stateAndOver_time(
-                user.getUserId(), category_id, begin, end, MediaData.MEDIA_STATE_RECYCLE);
+                user.getUserId(), category_id, begin, end, MediaData.MediaState.Recycle);
 
         // 将日历设置都15天之后
         calendar.add(Calendar.DATE, 8);
@@ -310,7 +319,7 @@ public class TableController {
 
         // 查询回收站中该套餐系统的15天内过期的媒体数
         int recycle_15 = mediaDataDao.countByUser_idAndCategory_idAndMedia_stateAndOver_time(
-                user.getUserId(), category_id, begin, end, MediaData.MEDIA_STATE_RECYCLE);
+                user.getUserId(), category_id, begin, end, MediaData.MediaState.Recycle);
 
         result.put("recycle_total", recycle_total);
         result.put("recycle_7", recycle_7);
@@ -352,11 +361,11 @@ public class TableController {
 
         // 查询回收站中该套餐系统的总数
         int recycle_total = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                user.getUserId(), null, Collections.singletonList(MediaData.MEDIA_STATE_RECYCLE));
+                user.getUserId(), null, Collections.singletonList(MediaData.MediaState.Recycle));
 
         // 查询回收站中该套餐系统的7天内过期的媒体数
         int recycle_7 = mediaDataDao.countByUser_idAndCategory_idAndMedia_stateAndOver_time(
-                user.getUserId(), null, begin, end, MediaData.MEDIA_STATE_RECYCLE);
+                user.getUserId(), null, begin, end, MediaData.MediaState.Recycle);
 
         // 将日历设置都15天之后
         calendar.add(Calendar.DATE, 8);
@@ -366,7 +375,7 @@ public class TableController {
 
         // 查询回收站中该套餐系统的15天内过期的媒体数
         int recycle_15 = mediaDataDao.countByUser_idAndCategory_idAndMedia_stateAndOver_time(
-                user.getUserId(), null, begin, end, MediaData.MEDIA_STATE_RECYCLE);
+                user.getUserId(), null, begin, end, MediaData.MediaState.Recycle);
 
         result.put("recycle_total", recycle_total);
         result.put("recycle_7", recycle_7);
@@ -487,7 +496,7 @@ public class TableController {
         // 查找media_id对应的mediaData
         MediaData mediaData = mediaDataDao.findByMedia_id(media_id);
 
-        mediaData.setMediaState(MediaData.MEDIA_STATE_DELETE);
+        mediaData.setMediaState(MediaData.MediaState.Delete);
         mediaData.setOverTime(new Timestamp(System.currentTimeMillis()));
 
         MDC.put("user_info", "user_id=" + user.getUserId() + ";category_id=" + mediaData.getCategoryId());
@@ -541,11 +550,11 @@ public class TableController {
         // 循环更新队列中的媒体数据的信息
         for (MediaData m : mediaDataList
                 ) {
-            m.setMediaState(MediaData.MEDIA_STATE_DELETE);
+            m.setMediaState(MediaData.MediaState.Delete);
             m.setOverTime(new Timestamp(System.currentTimeMillis()));
         }
 
-        MDC.put("user_info", "user_id=" + user.getUserId() );
+        MDC.put("user_info", "user_id=" + user.getUserId());
 
         // 更新数据库中媒体数据的信息
         if (mediaDataDao.updateMediaList(mediaDataList)) {
@@ -604,7 +613,7 @@ public class TableController {
 
         // 判断数据库中该系统草滩媒体数据总量是否超过套餐总量
         if (mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                user.getUserId(), mediaData.getCategoryId(), Collections.singletonList(MediaData.MEDIA_STATE_NORMAL))
+                user.getUserId(), mediaData.getCategoryId(), Collections.singletonList(MediaData.MediaState.Normal))
                 >= userCategory.getMediaNumber()) {
 
             result.put("success", false);
@@ -616,7 +625,7 @@ public class TableController {
         }
 
         // 给媒体数据信息赋予新的值
-        mediaData.setMediaState(MediaData.MEDIA_STATE_NORMAL);
+        mediaData.setMediaState(MediaData.MediaState.Normal);
         mediaData.setOverTime(null);
         mediaData.setDeleteTime(null);
 
@@ -665,7 +674,7 @@ public class TableController {
             media_ids.add(jsonArray.getLong(i));
         }
 
-        MDC.put("user_info", "user_id=" + user.getUserId() );
+        MDC.put("user_info", "user_id=" + user.getUserId());
 
         // 加载数据库中的对象
         List<MediaData> mediaDataList = mediaDataDao.findByMedia_ids(media_ids);
@@ -710,7 +719,7 @@ public class TableController {
 
                 // 获取数据库中的钙系统媒体总量
                 int mediaDataTotal = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                        user.getUserId(), u.getCategoryId(), Collections.singletonList(MediaData.MEDIA_STATE_NORMAL));
+                        user.getUserId(), u.getCategoryId(), Collections.singletonList(MediaData.MediaState.Normal));
 
                 // 比较两个值，判断是否能还原
                 if ((tempMapNum + mediaDataTotal) >= u.getMediaNumber()) {
@@ -752,7 +761,7 @@ public class TableController {
         // 循环更新队列中的媒体数据的信息
         for (MediaData m : mediaDataList
                 ) {
-            m.setMediaState(MediaData.MEDIA_STATE_NORMAL);
+            m.setMediaState(MediaData.MediaState.Normal);
             m.setOverTime(null);
             m.setDeleteTime(null);
         }

@@ -53,7 +53,7 @@ public class CategoryController {
 
             // 查询套餐对应的正常状态的媒体总数
             int a = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                    user.getUserId(), uc.getCategoryId(), Collections.singletonList(MediaData.MEDIA_STATE_NORMAL));
+                    user.getUserId(), uc.getCategoryId(), Collections.singletonList(MediaData.MediaState.Normal));
 
             // 将数据写入临时Map中以供页面调用
             tempMap.put(uc.getUserCategoryId(), (a * 100 / uc.getMediaNumber()));

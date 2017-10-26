@@ -46,13 +46,9 @@
 <div class="row">
     <div class="col-md-12">
         <div class="page-header">
-            <c:forEach items="${category}" var="c">
-                <c:if test="${tablePage.category_id==c.categoryId}">
-                    <h1> ${c.categoryName}
-                        <small>您现在在 ${c.categoryName} 媒体数据管理。</small>
-                    </h1>
-                </c:if>
-            </c:forEach>
+            <h1> ${category.categoryName}
+                <small>您现在在 ${category.categoryName} 媒体数据管理。</small>
+            </h1>
         </div>
     </div>
 </div>
@@ -92,11 +88,20 @@
                         <tr <c:if test="${m.mediaState==3}">class="danger" </c:if>>
                             <td><input type="checkbox" name="media_data_checkbox"
                                        onclick="checkAllCheck();" value="${m.mediaId}"><span>${m.mediaName}</span></td>
-                            <td width="5%"><a href="javascript:void(0);" onclick="open_modal(${m.mediaName});"
-                                              class="thumbnail" style="margin-bottom:auto;">
-                                <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1&thumbnail=true"
-                                     alt="...">
-                            </a></td>
+                            <td width="5%">
+                                <c:choose>
+                                    <c:when test="${category.isVideo==1}">
+
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a href="javascript:void(0);" onclick="open_modal(${m.mediaName});"
+                                           class="thumbnail" style="margin-bottom:auto;">
+                                            <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1&thumbnail=true"
+                                                 alt="...">
+                                        </a>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
                             <td><fmt:formatDate value="${m.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                             <td>
                                 <c:forEach items="${mediaCodeList}" var="mc">
@@ -292,10 +297,17 @@
                         <%--</div>--%>
                         <c:forEach items="${mediaDataList}" var="m">
                             <div class="item" data-media-name="${m.mediaName}">
-                                <img src="${pageContext.request.contextPath}/images/loading.gif" name="lazy"
-                                     style="margin: 0 auto;"
-                                     alt="${m.mediaId}"
-                                     lz-src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1">
+                                <c:choose>
+                                    <c:when test="${category.isVideo==1}">
+                                        <video src="${m.filePath}"></video>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img src="${pageContext.request.contextPath}/images/loading.gif" name="lazy"
+                                             style="margin: 0 auto;"
+                                             alt="${m.mediaId}"
+                                             lz-src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1">
+                                    </c:otherwise>
+                                </c:choose>
                                 <div class="carousel-caption">${m.mediaName}</div>
                             </div>
                         </c:forEach>

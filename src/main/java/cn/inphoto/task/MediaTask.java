@@ -63,7 +63,7 @@ public class MediaTask {
 
             // 查找该客户所有的正常状态下的媒体
             List<MediaData> mediaDataList = mediaDataDao.findByUser_idAndState(
-                    u.getUserId(), MediaData.MEDIA_STATE_NORMAL);
+                    u.getUserId(), MediaData.MediaState.Normal);
 
             // 判断媒体是否为空
             if (mediaDataList.isEmpty()) {
@@ -105,7 +105,7 @@ public class MediaTask {
                 if (map != null && map.containsKey(uc.getCategoryId())) {
                     if (map.get(uc.getCategoryId()).size() > uc.getMediaNumber()) {
                         List<MediaData> m2 = mediaDataDao.findByUser_idAndCategory_idAndMedia_stateOrderByCreate_time(
-                                uc.getUserId(), uc.getCategoryId(), MediaData.MEDIA_STATE_NORMAL,
+                                uc.getUserId(), uc.getCategoryId(), MediaData.MediaState.Normal,
                                 map.get(uc.getCategoryId()).size() - uc.getMediaNumber());
                         updateMediaDataList.addAll(m2);
                     }
@@ -120,7 +120,7 @@ public class MediaTask {
                  /*遍历待更新队列，将队列中的媒体数据设置为待删除状态，并设置删除时间为7天后*/
                 for (MediaData m : updateMediaDataList
                         ) {
-                    m.setMediaState(MediaData.MEDIA_STATE_WILL_DELETE);
+                    m.setMediaState(MediaData.MediaState.WillDelete);
                     m.setDeleteTime(new Timestamp(getSevenDateLater().getTime()));
                     a.append(String.valueOf(m.getMediaId())).append("、");
                 }
@@ -147,7 +147,7 @@ public class MediaTask {
     public void cleanWillDeleteMedia() {
 
         // 查找所有待删除状态下的媒体数据
-        List<MediaData> mediaDataList = mediaDataDao.findByState(MediaData.MEDIA_STATE_WILL_DELETE);
+        List<MediaData> mediaDataList = mediaDataDao.findByState(MediaData.MediaState.WillDelete);
 
         // 判断队列不为空
         if (mediaDataList.isEmpty()) {
@@ -162,7 +162,7 @@ public class MediaTask {
         for (MediaData m : mediaDataList
                 ) {
             if (m.getDeleteTime().getTime() < getTodayDate().getTime()) {
-                m.setMediaState(MediaData.MEDIA_STATE_RECYCLE);
+                m.setMediaState(MediaData.MediaState.Recycle);
                 m.setOverTime(new Timestamp(getThirtyDateLater().getTime()));
                 updateMediaList.add(m);
                 a.append(String.valueOf(m.getMediaId())).append("、");
@@ -189,7 +189,7 @@ public class MediaTask {
     public void cleanRecycleMedia() {
 
         // 查找所有待删除状态下的媒体数据
-        List<MediaData> mediaDataList = mediaDataDao.findByState(MediaData.MEDIA_STATE_RECYCLE);
+        List<MediaData> mediaDataList = mediaDataDao.findByState(MediaData.MediaState.Recycle);
 
         // 判断队列不为空
         if (mediaDataList.isEmpty()) {
@@ -204,7 +204,7 @@ public class MediaTask {
         for (MediaData m : mediaDataList
                 ) {
             if (m.getOverTime().getTime() < getTodayDate().getTime()) {
-                m.setMediaState(MediaData.MEDIA_STATE_DELETE);
+                m.setMediaState(MediaData.MediaState.Delete);
                 updateMediaList.add(m);
                 a.append(String.valueOf(m.getMediaId())).append("、");
             }
@@ -238,7 +238,7 @@ public class MediaTask {
 
             // 查找所有待删除状态下的媒体数据
             List<MediaData> mediaDataList = mediaDataDao.findByUser_idAndState(
-                    u.getUserId(), MediaData.MEDIA_STATE_WILL_DELETE);
+                    u.getUserId(), MediaData.MediaState.WillDelete);
 
             // 判断队列不为空
             if (mediaDataList.isEmpty()) {
@@ -260,7 +260,7 @@ public class MediaTask {
                 // 判断map中是否有该媒体对应套餐的总数量，没有则从数据库中查询
                 if (!media_count.containsKey(m.getCategoryId())) {
                     int num = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
-                            u.getUserId(), m.getCategoryId(), Collections.singletonList(MediaData.MEDIA_STATE_NORMAL));
+                            u.getUserId(), m.getCategoryId(), Collections.singletonList(MediaData.MediaState.Normal));
                     media_count.put(m.getCategoryId(), (long) num);
                 }
 
@@ -291,7 +291,7 @@ public class MediaTask {
                  /*遍历待更新队列，将队列中的媒体数据设置为正常状态*/
                 for (MediaData m : updateMediaList
                         ) {
-                    m.setMediaState(MediaData.MEDIA_STATE_NORMAL);
+                    m.setMediaState(MediaData.MediaState.Normal);
                     a.append(String.valueOf(m.getMediaId())).append("、");
                 }
 

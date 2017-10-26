@@ -1,5 +1,7 @@
 package cn.inphoto.dbentity.page;
 
+import cn.inphoto.dbentity.user.MediaData;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +14,7 @@ public class TablePage extends Page {
 
     private int category_id;
 
-    private List<String> media_state_list;
+    private List<MediaData.MediaState> media_state_list;
 
     public Long getUser_id() {
         return user_id;
@@ -30,16 +32,16 @@ public class TablePage extends Page {
         this.category_id = category_id;
     }
 
-    public List<String> getMedia_state_list() {
+    public List<MediaData.MediaState> getMedia_state_list() {
         return media_state_list;
     }
 
-    public void setMedia_state_list(List<String> media_state_list) {
+    public void setMedia_state_list(List<MediaData.MediaState> media_state_list) {
         this.media_state_list = media_state_list;
     }
 
-    public void setMedia_state_list(String media_state) {
-        List<String> media_state_list = new ArrayList<>();
+    public void setMedia_state_list(MediaData.MediaState media_state) {
+        List<MediaData.MediaState> media_state_list = new ArrayList<>();
         media_state_list.add(media_state);
         this.media_state_list = media_state_list;
     }

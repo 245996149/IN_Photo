@@ -28,7 +28,7 @@ public interface MediaDataDao {
      * @return 统计数据
      */
 //    int countByUser_idAndCategory_idAndMedia_state(Long user_id, Integer category_id, String media_state);
-    int countByUser_idAndCategory_idAndMedia_state(Long user_id, Integer category_id, List<String> media_state_list);
+    int countByUser_idAndCategory_idAndMedia_state(Long user_id, Integer category_id, List<MediaData.MediaState> media_state_list);
 
 
     /**
@@ -41,7 +41,7 @@ public interface MediaDataDao {
      * @param endTime     结束时间
      * @return 统计数据
      */
-    int countByUser_idAndCategory_idAndMedia_stateAndOver_time(Long user_id, Integer category_id, Date beginTime, Date endTime, String media_state);
+    int countByUser_idAndCategory_idAndMedia_stateAndOver_time(Long user_id, Integer category_id, Date beginTime, Date endTime, MediaData.MediaState media_state);
 
     /**
      * 根据user_id、category_id、media_state、创建时间统计总数
@@ -53,7 +53,7 @@ public interface MediaDataDao {
      * @param endTime     结束时间
      * @return 统计数据
      */
-    int countByUser_idAndCategory_idAndMedia_stateAndCreate_Time(Long user_id, Integer category_id, Date beginTime, Date endTime, String media_state);
+    int countByUser_idAndCategory_idAndMedia_stateAndCreate_Time(Long user_id, Integer category_id, Date beginTime, Date endTime, MediaData.MediaState media_state);
 
     /**
      * 根据user_id、category_id、media_state查询时间最前的一个media
@@ -63,7 +63,7 @@ public interface MediaDataDao {
      * @param media_state 媒体状态
      * @return
      */
-    MediaData findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(Long user_id, int category_id, String media_state);
+    MediaData findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(Long user_id, int category_id, MediaData.MediaState media_state);
 
     /**
      * 根据user_id、category_id、media_state查询时间最前的一个media
@@ -74,7 +74,8 @@ public interface MediaDataDao {
      * @param number      查找的数量
      * @return
      */
-    List<MediaData> findByUser_idAndCategory_idAndMedia_stateOrderByCreate_time(Long user_id, int category_id, String media_state, int number);
+    List<MediaData> findByUser_idAndCategory_idAndMedia_stateOrderByCreate_time(
+            Long user_id, int category_id, MediaData.MediaState media_state, int number);
 
     /**
      * 根据媒体状态找到该状态的所有媒体
@@ -82,7 +83,7 @@ public interface MediaDataDao {
      * @param media_state 媒体状态
      * @return 媒体队列
      */
-    List<MediaData> findByState(String media_state);
+    List<MediaData> findByState(MediaData.MediaState media_state);
 
     /**
      * 根据media_id查询媒体对象
@@ -123,7 +124,7 @@ public interface MediaDataDao {
      * @param media_state
      * @return
      */
-    List<MediaData> findByUser_idAndState(Long user_id, String media_state);
+    List<MediaData> findByUser_idAndState(Long user_id, MediaData.MediaState media_state);
 
     /**
      * 根据用户、套餐及状态查询所有对应的媒体数据
@@ -134,5 +135,7 @@ public interface MediaDataDao {
      * @return
      */
     List<MediaData> findByUser_idAndCategory_idAndState(Long user_id, Integer category_id, String media_state);
+
+    List<MediaData> findByUser_idAndCategory_idAndBeginDateAndEndDate(Long user_id, Integer category_id, Date beginDate, Date endDate);
 
 }

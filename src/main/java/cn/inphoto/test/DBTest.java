@@ -41,9 +41,9 @@ public class DBTest {
 
     @Test
     public void c() {
-        List<String> list = new ArrayList<>();
-        list.add(MediaData.MEDIA_STATE_NORMAL);
-        list.add(MediaData.MEDIA_STATE_WILL_DELETE);
+        List<MediaData.MediaState> list = new ArrayList<>();
+        list.add(MediaData.MediaState.Normal);
+        list.add(MediaData.MediaState.WillDelete);
 //        int a = mediaDataDao.countByUser_idAndCategory_idAndMedia_state2(1L, 1, list);
 //        System.out.println(a);
 
@@ -115,7 +115,7 @@ public class DBTest {
     public void hi() {
 
         List<MediaData> mediaDataList = mediaDataDao.findByUser_idAndState(
-                2L, MediaData.MEDIA_STATE_NORMAL);
+                2L, MediaData.MediaState.Normal);
 
         List<UserCategory> userCategoryList = userCategoryDao.findByUser_idAndState(
                 2L, UserCategory.USER_CATEGORY_STATE_NORMAL);
@@ -147,7 +147,7 @@ public class DBTest {
                 ) {
             if (map.get(uc.getCategoryId()).size() > uc.getMediaNumber()) {
                 List<MediaData> m2 = mediaDataDao.findByUser_idAndCategory_idAndMedia_stateOrderByCreate_time(
-                        uc.getUserId(), uc.getCategoryId(), MediaData.MEDIA_STATE_NORMAL,
+                        uc.getUserId(), uc.getCategoryId(), MediaData.MediaState.Normal,
                         map.get(uc.getCategoryId()).size() - uc.getMediaNumber());
                 updateMediaDataList.addAll(m2);
             }
@@ -159,7 +159,7 @@ public class DBTest {
         for (MediaData m : updateMediaDataList
                 ) {
             System.out.println(m.toString());
-            m.setMediaState(MediaData.MEDIA_STATE_RECYCLE);
+            m.setMediaState(MediaData.MediaState.Recycle);
         }
 
         mediaDataDao.updateMediaList(updateMediaDataList);
