@@ -160,6 +160,15 @@
                      style="height: 100%;width: 100%">
             </div>
         </c:when>
+        <c:when test="${category.isVideo==1}">
+            <img src="${pageContext.request.contextPath}/get/getMedia.do?type=2&id=${picWebInfo.picWebinfoId}"
+                 style="height: auto;width: 100%;z-index: 0">
+
+            <div style="position: absolute;top: ${picWebInfo.pictureTop}%;bottom: ${picWebInfo.pictureBottom}%;
+                    left: ${picWebInfo.pictureLeft}%;right: ${picWebInfo.pictureRight}%;z-index: 10">
+                <video src="${pageContext.request.contextPath}/get/getMedia.do?type=1&id=${media_id}&download=true&image_type=.${image_type}" style="height: 100%;width: 100%"></video>
+            </div>
+        </c:when>
         <c:otherwise>
             <%--<img src="${pageContext.request.contextPath}/get/getMedia.do?type=7"--%>
             <%--style="position:absolute;height: 100%;width: 100%;opacity: 0;z-index: 999">--%>
@@ -169,7 +178,8 @@
 
             <div style="position: absolute;top: ${picWebInfo.pictureTop}%;bottom: ${picWebInfo.pictureBottom}%;
                     left: ${picWebInfo.pictureLeft}%;right: ${picWebInfo.pictureRight}%;z-index: 10">
-                <img src="${pageContext.request.contextPath}/get/getMedia.do?type=7" style="height: 100%;width: 100%">
+                <img src="${pageContext.request.contextPath}/get/getMedia.do?type=1&id=${media_id}&download=true&image_type=.${image_type}"
+                     style="height: 100%;width: 100%">
             </div>
         </c:otherwise>
     </c:choose>
@@ -177,7 +187,7 @@
     <div style="display: none">
 
         <input type="text" value="${user_id}" id="user_id">
-        <input type="text" value="${category_id}" id="category_id">
+        <input type="text" value="${category.categoryId}" id="category_id">
         <input type="text" value="${media_id}" id="media_id">
 
         <c:choose>

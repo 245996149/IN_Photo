@@ -143,7 +143,7 @@ public class DBUtil {
 
         Date date = new Date();
 
-        mediaData.setMediaState(MediaData.MEDIA_STATE_RECYCLE);
+        mediaData.setMediaState(MediaData.MediaState.Recycle);
         mediaData.setDeleteTime(new Timestamp((date.getTime())));
 
         Calendar calendar = Calendar.getInstance();

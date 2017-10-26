@@ -1,7 +1,6 @@
 package cn.inphoto.dbentity.user;
 
 import cn.inphoto.dbentity.admin.AdminInfo;
-import cn.inphoto.dbentity.admin.ModuleInfo;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -19,6 +18,7 @@ public class Category {
     private byte gifTransparency;
     private String categoryNote;
     private Set<AdminInfo> adminInfoSet;
+    private byte isVideo;
 
     /*套餐映射*/
     @ManyToMany(mappedBy = "categorySet", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -61,37 +61,6 @@ public class Category {
         this.categoryName = categoryName;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Category category = (Category) o;
-
-        if (categoryId != category.categoryId) return false;
-        if (madeGif != category.madeGif) return false;
-        if (gifTransparency != category.gifTransparency) return false;
-        if (categoryCode != null ? !categoryCode.equals(category.categoryCode) : category.categoryCode != null)
-            return false;
-        if (categoryName != null ? !categoryName.equals(category.categoryName) : category.categoryName != null)
-            return false;
-        if (categoryNote != null ? !categoryNote.equals(category.categoryNote) : category.categoryNote != null)
-            return false;
-        return adminInfoSet != null ? adminInfoSet.equals(category.adminInfoSet) : category.adminInfoSet == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = categoryId;
-        result = 31 * result + (categoryCode != null ? categoryCode.hashCode() : 0);
-        result = 31 * result + (categoryName != null ? categoryName.hashCode() : 0);
-        result = 31 * result + (int) madeGif;
-        result = 31 * result + (int) gifTransparency;
-        result = 31 * result + (categoryNote != null ? categoryNote.hashCode() : 0);
-        result = 31 * result + (adminInfoSet != null ? adminInfoSet.hashCode() : 0);
-        return result;
-    }
-
     @Basic
     @Column(name = "made_gif")
     public byte getMadeGif() {
@@ -131,6 +100,51 @@ public class Category {
                 ", madeGif=" + madeGif +
                 ", gifTransparency=" + gifTransparency +
                 ", categoryNote='" + categoryNote + '\'' +
+                ", adminInfoSet=" + adminInfoSet +
+                ", isVideo=" + isVideo +
                 '}';
+    }
+
+    @Basic
+    @Column(name = "is_video")
+    public byte getIsVideo() {
+        return isVideo;
+    }
+
+    public void setIsVideo(byte isVideo) {
+        this.isVideo = isVideo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Category category = (Category) o;
+
+        if (categoryId != category.categoryId) return false;
+        if (madeGif != category.madeGif) return false;
+        if (gifTransparency != category.gifTransparency) return false;
+        if (isVideo != category.isVideo) return false;
+        if (categoryCode != null ? !categoryCode.equals(category.categoryCode) : category.categoryCode != null)
+            return false;
+        if (categoryName != null ? !categoryName.equals(category.categoryName) : category.categoryName != null)
+            return false;
+        if (categoryNote != null ? !categoryNote.equals(category.categoryNote) : category.categoryNote != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = categoryId;
+        result = 31 * result + (categoryCode != null ? categoryCode.hashCode() : 0);
+        result = 31 * result + (categoryName != null ? categoryName.hashCode() : 0);
+        result = 31 * result + (int) madeGif;
+        result = 31 * result + (int) gifTransparency;
+        result = 31 * result + (categoryNote != null ? categoryNote.hashCode() : 0);
+        result = 31 * result + (int) isVideo;
+        return result;
     }
 }

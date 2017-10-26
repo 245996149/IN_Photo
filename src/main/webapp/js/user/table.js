@@ -1,5 +1,5 @@
 /*查询7天内的点击数*/
-function getClick_7() {
+function getClickData(beginDate, endDate) {
 
     var category_id = $("#category_id").val();
 
@@ -7,12 +7,14 @@ function getClick_7() {
         "getShareData.do",
         {
             "category_id": category_id,
-            "type": 1
+            "type": 1,
+            "begin_date": beginDate,
+            "end_date": endDate
         },
         function (res) {
-            var labelsArr = new Array(7);
-            var click_data = new Array(7);
-            var upload_data = new Array(7);
+            var labelsArr = new Array(res.length);
+            var click_data = new Array(res.length);
+            var upload_data = new Array(res.length);
             for (var i = 0; i < res.length; i++) {
                 labelsArr[i] = res[i].name;
                 click_data[i] = res[i].click_num;
@@ -56,7 +58,7 @@ function getClick_7() {
 }
 
 /*查询7天内的分享数*/
-function getShare_7() {
+function getShareDate(beginDate, endDate) {
 
     var category_id = $("#category_id").val();
 
@@ -64,13 +66,15 @@ function getShare_7() {
         "getShareData.do",
         {
             "category_id": category_id,
-            "type": 2
+            "type": 2,
+            "begin_date": beginDate,
+            "end_date": endDate
         },
         function (res) {
 
-            var labels_arr = new Array(7);
-            var chats_data_arr = new Array(7);
-            var moments_data_arr = new Array(7);
+            var labels_arr = new Array(res.length);
+            var chats_data_arr = new Array(res.length);
+            var moments_data_arr = new Array(res.length);
             for (var i = 0; i < res.length; i++) {
                 labels_arr[i] = res[i].name;
                 chats_data_arr[i] = res[i].chats_num;
@@ -159,7 +163,7 @@ function getRecycleInfo() {
                     datasets: [{
                         label: "回收站数据过期情况",
                         data: data_arr,
-                        backgroundColor: ["rgb(255, 99, 132)", "rgb(75, 192, 192)", "rgb(255, 205, 86)",]
+                        backgroundColor: ["rgb(255, 99, 132)", "rgb(75, 192, 192)", "rgb(255, 205, 86)"]
                     }]
                 }
             });
@@ -341,4 +345,87 @@ function delete_batch() {
         }
     )
 
+}
+
+function dowuloadForDate() {
+
+    var begin_date = $("#download_begin_date");
+
+    var end_date = $("#download_end_date");
+
+    if (begin_date.val() == null && end_date.val() == null) {
+        alert("开始时间/结束时间必填一个");
+        return false;
+    }
+
+    var category_id = $("#category_id").val();
+    var user_id = $("#user_id").val();
+
+    if (category_id == null || user_id == null) {
+        alert("获取用户/套餐参数失败");
+        return false;
+    }
+
+    if (!confirm("批量下载需要打包，打包时间较长，请勿刷新页面！\n如果未弹出下载，则可能为该时间段内没有可供下载的数据")) {
+        return false;
+    }
+
+
+    var url = " /IN_Photo/get/getMediasForDate.do?user_id=" + user_id +
+        "&category_id=" + category_id;
+
+    if (begin_date.val() != null) {
+        url = url + "&begin_date=" + begin_date.val()
+    }
+    if (end_date.val() != null) {
+        url = url + "&end_date=" + getNewDay(end_date.val(), 1);
+    }
+
+    window.open(url);
+}
+
+function settingDownloadInput() {
+
+    var begin_date = $("#download_begin_date");
+
+    var end_date = $("#download_end_date");
+
+    settingEndDateInput(begin_date, end_date);
+
+}
+
+function settingFindDateInput() {
+
+    var begin_date = $("#find__begin_date");
+
+    var end_date = $("#find__end_date");
+
+    settingEndDateInput(begin_date, end_date);
+
+}
+
+function settingEndDateInput(begin_date_input, end_date_input) {
+    end_date_input.attr("min", begin_date_input.val());
+}
+
+
+function getNewDay(dateTemp, days) {
+    var dateTemp = dateTemp.split("-");
+    var nDate = new Date(dateTemp[1] + '-' + dateTemp[2] + '-' + dateTemp[0]); //转换为MM-DD-YYYY格式
+    var millSeconds = Math.abs(nDate) + (days * 24 * 60 * 60 * 1000);
+    var rDate = new Date(millSeconds);
+    var year = rDate.getFullYear();
+    var month = rDate.getMonth() + 1;
+    if (month < 10) month = "0" + month;
+    var date = rDate.getDate();
+    if (date < 10) date = "0" + date;
+    return (year + "-" + month + "-" + date);
+}
+
+function findDate() {
+    var begin_date = $("#find__begin_date");
+    var end_date = $("#find__end_date");
+
+    getClickData(begin_date.val(), end_date.val());
+    getShareDate(begin_date.val(), end_date.val());
 }

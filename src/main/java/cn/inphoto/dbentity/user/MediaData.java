@@ -12,14 +12,16 @@ import java.sql.Timestamp;
 @Table(name = "media_data", schema = "IN_Photo", catalog = "")
 public class MediaData {
 
-    /*媒体数据正常*/
-    public static final String MEDIA_STATE_NORMAL = "0";
-    /*媒体数据已经移入回收站中*/
-    public static final String MEDIA_STATE_RECYCLE = "1";
-    /*媒体数据已删除*/
-    public static final String MEDIA_STATE_DELETE = "2";
-    /*套餐过期，媒体数据待移动到回收站中*/
-    public static final String MEDIA_STATE_WILL_DELETE = "3";
+    public enum MediaState {
+        /*媒体数据正常*/
+        Normal,
+        /*媒体数据已经移入回收站中*/
+        Recycle,
+        /*媒体数据已删除*/
+        Delete,
+        /*套餐过期，媒体数据待移动到回收站中*/
+        WillDelete
+    }
 
     private long mediaId;
     private String mediaName;
@@ -27,7 +29,7 @@ public class MediaData {
     private long userId;
     private int categoryId;
     private Timestamp createTime;
-    private String mediaState;
+    private MediaState mediaState;
     private Timestamp deleteTime;
     private Timestamp overTime;
 
@@ -99,11 +101,12 @@ public class MediaData {
 
     @Basic
     @Column(name = "media_state")
-    public String getMediaState() {
+    @Enumerated(EnumType.ORDINAL)
+    public MediaState getMediaState() {
         return mediaState;
     }
 
-    public void setMediaState(String mediaState) {
+    public void setMediaState(MediaState mediaState) {
         this.mediaState = mediaState;
     }
 

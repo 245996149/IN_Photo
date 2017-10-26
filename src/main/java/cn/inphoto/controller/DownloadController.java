@@ -11,6 +11,7 @@ import com.google.zxing.common.BitMatrix;
 import net.coobird.thumbnailator.Thumbnails;
 import net.sf.json.JSONArray;
 import org.apache.log4j.Logger;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,10 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static cn.inphoto.util.ZIPUtil.createZIP;
 import static cn.inphoto.util.picUtil.QRUtil.writeToStream;
@@ -235,6 +233,66 @@ public class DownloadController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @RequestMapping("/getMediasForDate.do")
+    @ResponseBody
+    public void getMediasForDate(Long user_id, Integer category_id, HttpServletResponse response,
+                                 @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date,
+                                 @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date) {
+
+        List<MediaData> mediaDataList =
+                mediaDataDao.findByUser_idAndCategory_idAndBeginDateAndEndDate(
+                        user_id, category_id, begin_date, end_date);
+
+        if (mediaDataList.size() == 0) {
+            return;
+        }
+
+        List<MediaData> downloadData = new ArrayList<>();
+
+        for (MediaData m : mediaDataList
+                ) {
+            if (m.getMediaState() == MediaData.MediaState.Normal || m.getMediaState() == MediaData.MediaState.WillDelete) {
+                downloadData.add(m);
+            }
+        }
+
+        if (downloadData.size() == 0
+                ) {
+            return;
+        }
+
+        System.out.println(downloadData.size());
+
+// 创建文件数组
+        File[] files = new File[downloadData.size()];
+
+        // 将媒体对象中的文件路径赋给文件数组
+        for (int i = 0; i < downloadData.size(); i++) {
+            System.out.println(i);
+            files[i] = new File(downloadData.get(i).getFilePath());
+        }
+
+        // 将html头文件写为下载
+        response.setContentType("application/zip");
+        //设置内容作为附件下载  fileName有后缀,比如1.jpg
+        response.setHeader("Content-Disposition", "attachment; filename=" + begin_date.toString() + ".zip");
+
+        try (OutputStream outputStream = response.getOutputStream()) {
+
+            // 创建zip文件字节数组
+            byte[] b = createZIP(files);
+
+            // 将zip文件字节数组写出到response
+            outputStream.write(b);
+            // 关闭输出流
+            outputStream.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**

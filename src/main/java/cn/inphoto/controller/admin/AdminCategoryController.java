@@ -3,6 +3,7 @@ package cn.inphoto.controller.admin;
 import cn.inphoto.dao.CategoryDao;
 import cn.inphoto.dao.UtilDao;
 import cn.inphoto.dbentity.user.Category;
+import org.apache.xpath.operations.Bool;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,7 +54,7 @@ public class AdminCategoryController {
      */
     @RequestMapping("/addCategory.do")
     @ResponseBody
-    public Map addCategory(String name, String code, String note, Boolean makeGIF, Boolean gif_tran) {
+    public Map addCategory(String name, String code, String note, Boolean makeGIF, Boolean gif_tran, Boolean isVideo) {
         Map<String, Object> result = new HashMap<>();
 
         // 判断套餐简码是否已经存在，存在返回错误
@@ -73,10 +74,13 @@ public class AdminCategoryController {
         category.setCategoryNote(note);
         category.setMadeGif((byte) 0);
         category.setGifTransparency((byte) 0);
-        if (makeGIF) {
-            category.setMadeGif((byte) 1);
-            if (gif_tran) {
-                category.setGifTransparency((byte) 1);
+        category.setIsVideo((byte) 1);
+        if (!isVideo) {
+            if (makeGIF) {
+                category.setMadeGif((byte) 1);
+                if (gif_tran) {
+                    category.setGifTransparency((byte) 1);
+                }
             }
         }
 

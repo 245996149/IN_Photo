@@ -143,18 +143,34 @@
 
 <div style="position: absolute;width: 100%;height: auto;top: 0;">
 
-    <img src="${pageContext.request.contextPath}/images/mobile/view_default.png"
-         style="height: auto;width: 100%;z-index: 0">
+    <c:choose>
+        <c:when test="${category.isVideo==1}">
+            <img src="${pageContext.request.contextPath}/images/mobile/view_default.png"
+                 style="height: auto;width: 100%;z-index: 0">
 
-    <div style="position: absolute;top: 21.8%;bottom: 61.6%;left: 14.1%;right: 14.1%;z-index: 10;">
-        <img src="${pageContext.request.contextPath}/get/getMedia.do?type=1&id=${media_id}&download=true&image_type=.${image_type}"
-             style="height: 100%;width: 100%">
-    </div>
+            <div style="position: absolute;top: 21.8%;bottom: 61.6%;left: 14.1%;right: 14.1%;z-index: 10;">
+                <video src="${pageContext.request.contextPath}/get/getMedia.do?type=1&id=${media_id}&download=true&image_type=.${image_type}"
+                       style="height: 100%;width: 100%" controls preload="auto" webkit-playsinline="true"
+                       x5-video-player-type="h5"
+                       x5-video-orientation="h5"/>
+                </video>
+            </div>
+        </c:when>
+        <c:otherwise>
+            <img src="${pageContext.request.contextPath}/images/mobile/view_default.png"
+                 style="height: auto;width: 100%;z-index: 0">
+
+            <div style="position: absolute;top: 21.8%;bottom: 61.6%;left: 14.1%;right: 14.1%;z-index: 10;">
+                <img src="${pageContext.request.contextPath}/get/getMedia.do?type=1&id=${media_id}&download=true&image_type=.${image_type}"
+                     style="height: 100%;width: 100%">
+            </div>
+        </c:otherwise>
+    </c:choose>
 
     <div style="display: none">
 
         <input type="text" value="${user_id}" id="user_id">
-        <input type="text" value="${category_id}" id="category_id">
+        <input type="text" value="${category.categoryId}" id="category_id">
         <input type="text" value="${media_id}" id="media_id">
 
         <c:choose>

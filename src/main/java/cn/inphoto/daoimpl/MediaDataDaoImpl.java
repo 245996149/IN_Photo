@@ -53,7 +53,7 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     }
 
     @Override
-    public int countByUser_idAndCategory_idAndMedia_state(Long user_id, Integer category_id, List<String> media_state_list) {
+    public int countByUser_idAndCategory_idAndMedia_state(Long user_id, Integer category_id, List<MediaData.MediaState> media_state_list) {
         try (Session session = sessionFactory.openSession()) {
 
             Query query;
@@ -76,7 +76,7 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     }
 
     @Override
-    public int countByUser_idAndCategory_idAndMedia_stateAndOver_time(Long user_id, Integer category_id, Date beginTime, Date endTime, String media_state) {
+    public int countByUser_idAndCategory_idAndMedia_stateAndOver_time(Long user_id, Integer category_id, Date beginTime, Date endTime, MediaData.MediaState media_state) {
         try (Session session = sessionFactory.openSession()) {
 
             Query query = null;
@@ -104,7 +104,7 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     }
 
     @Override
-    public int countByUser_idAndCategory_idAndMedia_stateAndCreate_Time(Long user_id, Integer category_id, Date beginTime, Date endTime, String media_state) {
+    public int countByUser_idAndCategory_idAndMedia_stateAndCreate_Time(Long user_id, Integer category_id, Date beginTime, Date endTime, MediaData.MediaState media_state) {
         try (Session session = sessionFactory.openSession()) {
 
             Query query = session.createQuery(
@@ -123,7 +123,7 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     }
 
     @Override
-    public MediaData findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(Long user_id, int category_id, String media_state) {
+    public MediaData findByUser_idAndCategory_idAndMedia_stateOrderByCreate_timeLimitOne(Long user_id, int category_id, MediaData.MediaState media_state) {
         try (Session session = sessionFactory.openSession()) {
 
             Query query = session.createQuery(
@@ -139,7 +139,8 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     }
 
     @Override
-    public List<MediaData> findByUser_idAndCategory_idAndMedia_stateOrderByCreate_time(Long user_id, int category_id, String media_state, int number) {
+    public List<MediaData> findByUser_idAndCategory_idAndMedia_stateOrderByCreate_time(
+            Long user_id, int category_id, MediaData.MediaState media_state, int number) {
         try (Session session = sessionFactory.openSession()) {
 
             Query query = session.createQuery(
@@ -155,7 +156,7 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     }
 
     @Override
-    public List<MediaData> findByState(String media_state) {
+    public List<MediaData> findByState(MediaData.MediaState media_state) {
         try (Session session = sessionFactory.openSession()) {
 
             Query query = session.createQuery(
@@ -241,7 +242,7 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     }
 
     @Override
-    public List<MediaData> findByUser_idAndState(Long user_id, String media_state) {
+    public List<MediaData> findByUser_idAndState(Long user_id, MediaData.MediaState media_state) {
         try (Session session = sessionFactory.openSession()) {
 
             Query query = session.createQuery("from MediaData where userId = :user_id and mediaState = :media_state");
@@ -264,6 +265,35 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
             query.setParameter("user_id", user_id);
             query.setParameter("category_id", category_id);
             query.setParameter("media_state", media_state);
+
+            return query.list();
+        }
+    }
+
+    @Override
+    public List<MediaData> findByUser_idAndCategory_idAndBeginDateAndEndDate(
+            Long user_id, Integer category_id, Date beginDate, Date endDate) {
+        try (Session session = sessionFactory.openSession()) {
+            Query query;
+            if (beginDate != null && endDate != null) {
+                query = session.createQuery(
+                        "from MediaData where userId = :user_id and categoryId = :category_id " +
+                                "and createTime between :beginDate and :endDate");
+                query.setParameter("beginDate", beginDate);
+                query.setParameter("endDate", endDate);
+            } else if (beginDate != null) {
+                query = session.createQuery(
+                        "from MediaData where userId = :user_id and categoryId = :category_id " +
+                                "and createTime > :beginDate");
+                query.setParameter("beginDate", beginDate);
+            } else {
+                query = session.createQuery(
+                        "from MediaData where userId = :user_id and categoryId = :category_id " +
+                                "and createTime < :endDate");
+                query.setParameter("endDate", endDate);
+            }
+            query.setParameter("user_id", user_id);
+            query.setParameter("category_id", category_id);
 
             return query.list();
         }
