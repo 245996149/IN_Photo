@@ -14,14 +14,11 @@
         src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 
 <script type="text/javascript">
-
     //网页加载后执行函数
     window.onload = function () {
-
         var user_id = $("#user_id").val();
         var category_id = $("#category_id").val();
         var media_id = $("#media_id").val();
-
         $.post(
             "collectingData.do",
             {
@@ -33,26 +30,21 @@
             function (res) {
             }
         );
-
         //判断是否为微信内核
         if (isWeixin()) {
             //是微信打开
-
             var url = location.href;
-
             var share_moments_title = $("#share_moments_title").val();
             var share_moments_icon = $("#share_moments_icon").val();
             var share_chats_title = $("#share_chats_title").val();
             var share_chats_text = $("#share_chats_text").val();
             var share_chats_icon = $("#share_chats_icon").val();
-
             $.post(
                 "getWeChatInfo.do",
                 {
                     "url": url
                 },
                 function (res) {
-
                     wx.config({
                         debug: false,
                         appId: res.appid,
@@ -71,9 +63,7 @@
                             'scanQRCode', 'chooseWXPay', 'openProductSpecificView',
                             'addCard', 'chooseCard', 'openCard']
                     });
-
                     wx.ready(function () {
-
                         wx.onMenuShareTimeline({
                             title: share_moments_title, // 分享标题timg.jpeg
                             link: url, // 分享链接
@@ -95,7 +85,6 @@
                                 // 用户取消分享后执行的回调函数
                             }
                         });
-
                         wx.onMenuShareAppMessage({
                             title: share_chats_title, // 分享标题
                             desc: share_chats_text, // 分享描述
@@ -122,9 +111,7 @@
                         });
                     });
                 })
-
         }
-
     }
 
     //这个函数用来判断当前浏览器是否微信内置浏览器，是微信返回true，不是微信返回false
@@ -136,7 +123,6 @@
             return false;
         }
     }
-
 </script>
 
 <body style="margin: 0;">

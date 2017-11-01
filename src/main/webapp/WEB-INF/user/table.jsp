@@ -339,8 +339,9 @@
                                     <label for="download_end_date">结束时间</label>
                                     <input type="date" class="form-control" id="download_end_date">
                                 </div>
-                                <button type="button" class="btn btn-info" onclick="dowuloadForDate();">下载该时间段内数据
+                                <button type="button" class="btn btn-info" onclick="createZipForDate();">下载该时间段内数据
                                 </button>
+                                <div id="zip_create_states_message"></div>
                             </form>
                             <div id="error_div">检测到您的浏览器不支持H5特性，所以禁用了批量下载功能，请使用<strong>Chrome内核</strong>的浏览器
                                 <br/><strong>Chrome内核的浏览器:</strong>Google Chrome、360极速浏览器、QQ浏览器、UC浏览器等

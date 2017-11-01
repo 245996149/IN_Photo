@@ -3,6 +3,8 @@ package cn.inphoto.controller;
 import cn.inphoto.dao.MediaDataDao;
 import cn.inphoto.dao.WebinfoDao;
 import cn.inphoto.dbentity.user.*;
+import cn.inphoto.util.ZIPUtil;
+import cn.inphoto.weChatUtil.HttpRequest;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -11,12 +13,14 @@ import com.google.zxing.common.BitMatrix;
 import net.coobird.thumbnailator.Thumbnails;
 import net.sf.json.JSONArray;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -27,6 +31,7 @@ import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.util.*;
 
+import static cn.inphoto.util.ResultMapUtil.createResult;
 import static cn.inphoto.util.ZIPUtil.createZIP;
 import static cn.inphoto.util.picUtil.QRUtil.writeToStream;
 
@@ -39,6 +44,9 @@ import static cn.inphoto.util.picUtil.QRUtil.writeToStream;
 public class DownloadController {
 
     private Logger logger = Logger.getLogger(DownloadController.class);
+
+    @Value("#{properties['data_path']}")
+    public String data_path;
 
     @Resource
     private WebinfoDao webinfoDao;
@@ -151,6 +159,8 @@ public class DownloadController {
                 // 将图片文件写入输入流
                 fis = new FileInputStream(file_path);
 
+                response.setContentLength(fis.available());
+
                 // 创建一个输入流大小的byte数组
                 byte[] content = new byte[fis.available()];
 
@@ -220,10 +230,13 @@ public class DownloadController {
         //设置内容作为附件下载  fileName有后缀,比如1.jpg
         response.setHeader("Content-Disposition", "attachment; filename=" + user.getUserName() + ".zip");
 
+
         try (OutputStream outputStream = response.getOutputStream()) {
 
             // 创建zip文件字节数组
             byte[] b = createZIP(files);
+
+            response.setContentLength(b.length);
 
             // 将zip文件字节数组写出到response
             outputStream.write(b);
@@ -235,18 +248,18 @@ public class DownloadController {
         }
     }
 
-    @RequestMapping("/getMediasForDate.do")
+    @RequestMapping("/createMediasForDateZip.do")
     @ResponseBody
-    public void getMediasForDate(Long user_id, Integer category_id, HttpServletResponse response,
-                                 @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date,
-                                 @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date) {
+    public Map createMediasForDateZip(Long user_id, Integer category_id, HttpServletRequest request,
+                                      @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date,
+                                      @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date) {
 
         List<MediaData> mediaDataList =
                 mediaDataDao.findByUser_idAndCategory_idAndBeginDateAndEndDate(
                         user_id, category_id, begin_date, end_date);
 
         if (mediaDataList.size() == 0) {
-            return;
+            return createResult(false, "该日期内没有媒体数据");
         }
 
         List<MediaData> downloadData = new ArrayList<>();
@@ -260,37 +273,104 @@ public class DownloadController {
 
         if (downloadData.size() == 0
                 ) {
-            return;
+            return createResult(false, "该日期内没有有效的媒体数据");
         }
 
-        System.out.println(downloadData.size());
 
-// 创建文件数组
+        // 创建文件数组
         File[] files = new File[downloadData.size()];
 
         // 将媒体对象中的文件路径赋给文件数组
         for (int i = 0; i < downloadData.size(); i++) {
-            System.out.println(i);
             files[i] = new File(downloadData.get(i).getFilePath());
         }
 
-        // 将html头文件写为下载
+        //设置InPhoto媒体数据用户存储的目录，判断路径是否存在，不存在则创建
+        String tmpPath = data_path + File.separator + "tmp";
+
+        // 创建6位验证码字符串对象
+        StringBuilder code = new StringBuilder();
+        Random random = new Random();
+
+        // 生成6位随机码
+        for (int i = 0; i < 6; i++) {
+            code.append(random.nextInt(9));
+        }
+
+        ServletContext context = request.getSession().getServletContext();
+
+        ZIPUtil zipUtil = new ZIPUtil(files, tmpPath, code.toString(), context);
+
+        zipUtil.start();
+
+        return createResult(true, code.toString());
+
+    }
+
+    @RequestMapping("/checkCreateZipStates.do")
+    @ResponseBody
+    public Map checkCreateZipStates(String code, HttpServletRequest request) {
+        System.out.println(11111111);
+        ServletContext context = request.getSession().getServletContext();
+        Boolean b = (Boolean) context.getAttribute("zip" + code);
+        if (b == null) {
+            return createResult(false, "为找到对应的压缩文件");
+        } else if (!b) {
+            return createResult(false, "正在压缩中！请勿刷新页面");
+        }
+        return createResult(true, request.getContextPath() + "/get/getZipFile.do?code=" + code);
+    }
+
+    @RequestMapping("/getZipFile.do")
+    @ResponseBody
+    public void getZipFile(String code, HttpServletResponse response) {
+
+        FileInputStream fis = null;
+
+        OutputStream outputStream = null;
+
+        String file_path = data_path + File.separator + "tmp" + File.separator + code + ".zip";
+
         response.setContentType("application/zip");
         //设置内容作为附件下载  fileName有后缀,比如1.jpg
-        response.setHeader("Content-Disposition", "attachment; filename=" + begin_date.toString() + ".zip");
+        response.setHeader("Content-Disposition", "attachment; filename=" + file_path);
 
-        try (OutputStream outputStream = response.getOutputStream()) {
+        try {
 
-            // 创建zip文件字节数组
-            byte[] b = createZIP(files);
+            // 将图片文件写入输入流
+            fis = new FileInputStream(file_path);
 
-            // 将zip文件字节数组写出到response
-            outputStream.write(b);
-            // 关闭输出流
-            outputStream.close();
+            response.setContentLength(fis.available());
+
+            // 创建一个输入流大小的byte数组
+            byte[] content = new byte[fis.available()];
+
+            // 将输入流写入到数组中
+            fis.read(content);
+
+            // 创建输出流
+            outputStream = response.getOutputStream();
+
+            // 将数组写出到输出流中
+            outputStream.write(content);
 
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
     }

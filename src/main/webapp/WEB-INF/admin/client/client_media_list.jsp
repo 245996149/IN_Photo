@@ -1,3 +1,4 @@
+<%@ page import="cn.inphoto.dbentity.user.MediaData" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -84,8 +85,10 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <c:set var="WillDelete" value="<%=MediaData.MediaState.WillDelete.name() %>"/>
+                    <c:set var="Normal" value="<%=MediaData.MediaState.Normal.name() %>"/>
                     <c:forEach items="${mediaDataList}" var="m">
-                        <tr <c:if test="${m.mediaState==3}">class="danger" </c:if>>
+                        <tr <c:if test="${m.mediaState eq WillDelete}">class="danger" </c:if>>
                             <td><input type="checkbox" name="media_data_checkbox"
                                        onclick="checkAllCheck();" value="${m.mediaId}"><span>${m.mediaName}</span></td>
                             <td width="5%">
@@ -114,10 +117,10 @@
                             </td>
                             <td>
                                 <c:choose>
-                                    <c:when test="${m.mediaState==0}">
+                                    <c:when test="${m.mediaState eq Normal}">
                                         正常
                                     </c:when>
-                                    <c:when test="${m.mediaState==3}">待删除<br/>
+                                    <c:when test="${m.mediaState eq WillDelete}">待删除<br/>
                                         <fmt:formatDate value="${m.deleteTime}" pattern="yyyy年MM月dd日"/>移动到回收站中
                                     </c:when>
                                 </c:choose>

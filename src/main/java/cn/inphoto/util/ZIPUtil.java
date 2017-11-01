@@ -1,16 +1,60 @@
 package cn.inphoto.util;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import javax.servlet.ServletContext;
+import java.io.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import static cn.inphoto.util.DirUtil.createDirectory;
 
 /**
  * Created by root on 17-4-1.
  */
-public class ZIPUtil {
+public class ZIPUtil extends Thread {
+
+    private File[] files;
+    private String zipPath;
+    private String code;
+    private ServletContext context;
+
+    public ZIPUtil(File[] files, String zipPath, String code, ServletContext context) {
+        this.files = files;
+        this.zipPath = zipPath;
+        this.code = code;
+        this.context = context;
+    }
+
+    public File[] getFiles() {
+        return files;
+    }
+
+    public void setFiles(File[] files) {
+        this.files = files;
+    }
+
+    public String getZipPath() {
+        return zipPath;
+    }
+
+    public void setZipPath(String zipPath) {
+        this.zipPath = zipPath;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public ServletContext getContext() {
+        return context;
+    }
+
+    public void setContext(ServletContext context) {
+        this.context = context;
+    }
 
     public static byte[] createZIP(File[] files) throws IOException {
 
@@ -25,6 +69,10 @@ public class ZIPUtil {
 
             // 遍历文件
             for (File f : files) {
+
+                if (!f.exists() || f.isDirectory()) {
+                    continue;
+                }
 
                 // 文件输入流
                 FileInputStream inputStream = new FileInputStream(f);
@@ -42,6 +90,8 @@ public class ZIPUtil {
                     zos.write(b2);
                 }
 
+                zos.closeEntry();
+
                 // 关闭文件输入流
                 inputStream.close();
 
@@ -56,5 +106,40 @@ public class ZIPUtil {
             e.printStackTrace();
         }
         return b;
+    }
+
+    @Override
+    public void run() {
+        BufferedOutputStream bos = null;
+        FileOutputStream fos = null;
+        try {
+            System.out.println("开始创建");
+            context.setAttribute("zip" + code, false);
+            createDirectory(zipPath);
+            byte[] b = createZIP(files);
+            File file = new File(zipPath + File.separator + code + ".zip");
+            fos = new FileOutputStream(file);
+            bos = new BufferedOutputStream(fos);
+            bos.write(b);
+            context.setAttribute("zip" + code, true);
+            System.out.println("创建完成");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (bos != null) {
+                try {
+                    bos.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
     }
 }
