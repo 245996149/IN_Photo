@@ -1,3 +1,5 @@
+var t1;
+
 /*查询7天内的点击数*/
 function getClickData(beginDate, endDate) {
 
@@ -347,43 +349,6 @@ function delete_batch() {
 
 }
 
-function dowuloadForDate() {
-
-    var begin_date = $("#download_begin_date");
-
-    var end_date = $("#download_end_date");
-
-    if (begin_date.val() == null && end_date.val() == null) {
-        alert("开始时间/结束时间必填一个");
-        return false;
-    }
-
-    var category_id = $("#category_id").val();
-    var user_id = $("#user_id").val();
-
-    if (category_id == null || user_id == null) {
-        alert("获取用户/套餐参数失败");
-        return false;
-    }
-
-    if (!confirm("批量下载需要打包，打包时间较长，请勿刷新页面！\n如果未弹出下载，则可能为该时间段内没有可供下载的数据")) {
-        return false;
-    }
-
-
-    var url = " /IN_Photo/get/getMediasForDate.do?user_id=" + user_id +
-        "&category_id=" + category_id;
-
-    if (begin_date.val() != null) {
-        url = url + "&begin_date=" + begin_date.val()
-    }
-    if (end_date.val() != null) {
-        url = url + "&end_date=" + getNewDay(end_date.val(), 1);
-    }
-
-    window.open(url);
-}
-
 function settingDownloadInput() {
 
     var begin_date = $("#download_begin_date");
@@ -428,4 +393,67 @@ function findDate() {
 
     getClickData(begin_date.val(), end_date.val());
     getShareDate(begin_date.val(), end_date.val());
+}
+
+function createZipForDate() {
+
+    var begin_date = $("#download_begin_date");
+
+    var end_date = $("#download_end_date");
+
+    if (begin_date.val() == null && end_date.val() == null) {
+        alert("开始时间/结束时间必填一个");
+        return false;
+    }
+
+    var category_id = $("#category_id").val();
+    var user_id = $("#user_id").val();
+
+    if (category_id == null || user_id == null) {
+        alert("获取用户/套餐参数失败");
+        return false;
+    }
+
+    if (!confirm("批量下载需要打包，打包时间较长，请勿刷新页面！")) {
+        return false;
+    }
+
+    $.post(
+        "/IN_Photo/get/createMediasForDateZip.do",
+        {
+            "user_id": user_id,
+            "category_id": category_id,
+            "begin_date": begin_date.val(),
+            "end_date": getNewDay(end_date.val(), 1)
+        },
+        function (res) {
+            if (!res.success) {
+                $("#zip_create_states_message").html(res.message);
+            } else {
+                $("#zip_create_states_message").html("准备压缩中。。。");
+                t1 = setInterval(function () {
+                    checkZipCreateStates(res.message)
+                }, 3000);
+            }
+        }
+    );
+}
+
+function checkZipCreateStates(code) {
+    $.post(
+        "/IN_Photo/get/checkCreateZipStates.do",
+        {
+            "code": code,
+            "date": new Date()
+        },
+        function (res) {
+            if (!res.success) {
+                $("#zip_create_states_message").html(res.message);
+            } else {
+                clearInterval(t1);
+                $("#zip_create_states_message").html("打包完成！" +
+                    "<a type=\"button\" class=\"btn btn-success\" href='" + res.message + "'>下载</a>");
+            }
+        }
+    );
 }
