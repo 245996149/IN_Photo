@@ -9,11 +9,14 @@ import cn.inphoto.dbentity.user.UserCategory;
 import cn.inphoto.log.UserLogLevel;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -23,6 +26,9 @@ import static cn.inphoto.util.DateUtil.*;
 public class MediaTask {
 
     private Logger logger = Logger.getLogger(MediaTask.class);
+
+    @Value("#{properties['data_path']}")
+    public String data_path;
 
     @Resource
     private MediaDataDao mediaDataDao;
@@ -206,7 +212,7 @@ public class MediaTask {
             if (m.getOverTime().getTime() < getTodayDate().getTime()) {
                 m.setMediaState(MediaData.MediaState.Delete);
                 updateMediaList.add(m);
-                a.append(String.valueOf(m.getMediaId())).append("、");
+                a.append(m.getMediaId()).append("、");
             }
         }
 
@@ -312,8 +318,8 @@ public class MediaTask {
     /**
      * 分离媒体数据队列
      *
-     * @param mediaDataList
-     * @return
+     * @param mediaDataList 需要分离的媒体数据队列
+     * @return 分离之后的map
      */
     public static Map<Integer, List<MediaData>> separateMediaByCategoryId(List<MediaData> mediaDataList) {
 
@@ -341,6 +347,85 @@ public class MediaTask {
 
         return result;
 
+    }
+
+    /**
+     * 清理tmp文件夹下的文件
+     */
+    @Scheduled(cron = "0 10 3 * * ? ")
+    public void cleanTmpDir() throws IOException {
+        logger.log(UserLogLevel.TASK, "开始清理tmp文件夹");
+
+        String tmpPath = data_path + File.separator + "tmp";
+
+        File tmpDir = new File(tmpPath);
+
+        if (!tmpDir.exists()) {
+            return;
+        }
+
+        File[] tmpFiles = tmpDir.listFiles();
+
+        if (tmpFiles == null || tmpFiles.length == 0) {
+            logger.log(UserLogLevel.TASK, "tmp文件夹内没有文件，清理结束");
+            return;
+        }
+
+        int cleanNum = 0;
+
+        for (File f : tmpFiles
+                ) {
+            if (f.exists() && f.isFile()) {
+                if (f.delete()) {
+                    cleanNum++;
+                } else {
+                    logger.log(UserLogLevel.TASK, "清理" + f.getCanonicalPath() + "文件失败");
+                }
+            }
+        }
+
+        logger.log(UserLogLevel.TASK, "共清理了tmp文件夹内" + cleanNum + "个文件");
+
+    }
+
+    /**
+     * 清理删除超过一个月的媒体数据
+     * 每天凌晨3点执行一次
+     */
+    @Scheduled(cron = "0 0 5 * * ? ")
+    public void deleteOverOneMonthAfterMedia() {
+        logger.log(UserLogLevel.TASK, "开始清理删除超过一个月的媒体数据");
+
+        // 查找所有待删除状态下的媒体数据
+        List<MediaData> mediaDataList = mediaDataDao.findByState(MediaData.MediaState.Delete);
+
+        if (mediaDataList.isEmpty()) {
+            return;
+        }
+
+        StringBuilder a = new StringBuilder();
+
+        for (MediaData m : mediaDataList
+                ) {
+
+            Date day = getAfterThirtyDate();
+
+            if (m.getDeleteTime().getTime() < day.getTime()) {
+                File file = new File(m.getFilePath());
+                if (file.exists() && file.isFile()) {
+                    if (file.delete()) {
+                        a.append(m.getMediaId()).append("、");
+                    } else {
+                        logger.log(UserLogLevel.TASK,
+                                "清理media_id为：" + a + " 的媒体数据失败");
+                    }
+                }
+            }
+
+        }
+
+        logger.log(UserLogLevel.TASK,
+                "共清理了media_id为：" + a + " 的媒体数据");
     }
 
 }

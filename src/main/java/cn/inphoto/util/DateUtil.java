@@ -49,4 +49,19 @@ public class DateUtil {
         return calendar.getTime();
     }
 
+    /**
+     * 获取31天前的零时零分零秒的Date
+     *
+     * @return 31天前的零时零分零秒的Date
+     */
+    public static Date getAfterThirtyDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DATE, -31);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        return calendar.getTime();
+    }
+
 }
