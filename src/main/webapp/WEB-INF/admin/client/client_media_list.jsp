@@ -99,7 +99,7 @@
                                     <c:otherwise>
                                         <a href="javascript:void(0);" onclick="open_modal(${m.mediaName});"
                                            class="thumbnail" style="margin-bottom:auto;">
-                                            <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1&thumbnail=true"
+                                            <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1&thumbnail=true&thumbnail_pix=100"
                                                  alt="...">
                                         </a>
                                     </c:otherwise>
@@ -308,7 +308,7 @@
                                         <img src="${pageContext.request.contextPath}/images/loading.gif" name="lazy"
                                              style="margin: 0 auto;"
                                              alt="${m.mediaId}"
-                                             lz-src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1">
+                                             lz-src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1&thumbnail=true&thumbnail_pix=400">
                                     </c:otherwise>
                                 </c:choose>
                                 <div class="carousel-caption">${m.mediaName}</div>

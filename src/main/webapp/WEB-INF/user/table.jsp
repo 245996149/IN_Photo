@@ -165,7 +165,7 @@
                                        onclick="checkAllCheck();" value="${m.mediaId}"><span>${m.mediaName}</span></td>
                             <td width="5%"><a href="javascript:void(0);" onclick="open_modal(${m.mediaName});"
                                               class="thumbnail" style="margin-bottom:auto;">
-                                <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1&thumbnail=true"
+                                <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1&thumbnail=true&thumbnail_pix=100"
                                      alt="...">
                             </a></td>
                             <td><fmt:formatDate value="${m.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
@@ -385,7 +385,7 @@
                                 <img src="${pageContext.request.contextPath}/images/loading.gif" name="lazy"
                                      style="margin: 0 auto;"
                                      alt="${m.mediaId}"
-                                     lz-src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1">
+                                     lz-src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1&thumbnail=true&thumbnail_pix=400">
                                 <div class="carousel-caption">${m.mediaName}</div>
                             </div>
                         </c:forEach>

@@ -99,7 +99,7 @@
                                             <input type="file" id="show_pic_bg" name="show_pic_bg"
                                                    onchange="fileChange(this);">
                                             <p class="help-block">
-                                                仅支持大小为200kb以内的jpg、png格式的图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
+                                                仅支持大小为400kb以内的jpg、png格式的图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
                                         </div>
                                         <br>
                                         <label for="show_pic_top">媒体上边距离版面顶部的百分比</label>
@@ -163,7 +163,7 @@
                                             <h3><span class="label label-default"
                                                       style="background-color: red">背景版图</span></h3><br>
                                             <p>
-                                                图中红色框位置为背景图片，图片自适应浏览器宽度，并按图片比例设置高度，因各个品牌手机屏幕比例不一关系，推荐使用长图，文件大小小于200kb</p>
+                                                图中红色框位置为背景图片，图片自适应浏览器宽度，并按图片比例设置高度，因各个品牌手机屏幕比例不一关系，推荐使用长图，文件大小小于400kb</p>
                                             <h3> <span class="label label-default"
                                                        style="background-color: #0024ff">页面标题</span></h3><br>
                                             <p>
@@ -209,7 +209,7 @@
                                             <label for="code_bg">页面背景图片</label>
                                             <input type="file" id="code_bg" name="code_bg" onchange="fileChange(this);">
                                             <p class="help-block">
-                                                仅支持大小为200kb以内的jpg、png格式的图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
+                                                仅支持大小为400kb以内的jpg、png格式的图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
                                         </div>
                                         <br>
                                         <div class="row">
@@ -283,7 +283,7 @@
                                             <input type="file" id="button_pic" name="button_pic"
                                                    onchange="fileChange(this);">
                                             <p class="help-block">
-                                                仅支持大小为200kb以内的jpg、png格式的图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
+                                                仅支持大小为400kb以内的jpg、png格式的图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
                                         </div>
                                         <br>
                                         <label for="code_button_top">按钮上边距离版面顶部的百分比</label>
@@ -348,7 +348,7 @@
                                             <h3><span class="label label-default"
                                                       style="background-color: #00ffff">背景版图</span></h3><br>
                                             <p>
-                                                该颜色框位置为背景图片，图片自适应浏览器宽度，并按图片比例设置高度，因各个品牌手机屏幕比例不一关系，推荐使用长图，文件大小小于200kb</p>
+                                                该颜色框位置为背景图片，图片自适应浏览器宽度，并按图片比例设置高度，因各个品牌手机屏幕比例不一关系，推荐使用长图，文件大小小于400kb</p>
                                             <h3> <span class="label label-default"
                                                        style="background-color: #eeeeee">页面标题</span></h3><br>
                                             <p>
@@ -411,7 +411,7 @@
                                                     <input type="file" id="share_moments_icon" name="moments_icon"
                                                            onchange="fileChange(this);">
                                                     <p class="help-block">
-                                                        仅支持大小为200kb以内的jpg、png格式，分辨率300*300以内的正方形图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
+                                                        仅支持大小为400kb以内的jpg、png格式，分辨率300*300以内的正方形图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -441,7 +441,7 @@
                                                     <input type="file" id="share_chats_icon" name="chats_icon"
                                                            onchange="fileChange(this);">
                                                     <p class="help-block">
-                                                        仅支持大小为200kb以内的jpg、png格式，分辨率300*300以内的正方形图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
+                                                        仅支持大小为400kb以内的jpg、png格式，分辨率300*300以内的正方形图片，在保证图片质量的情况下，尽量压缩图片，以加快读取速度</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -479,7 +479,7 @@
                                                 <div class="col-md-6">
                                                     <h3><span class="label label-success">分享到朋友圈</span></h3><br>
                                                     <p>
-                                                        朋友圈分享由两部分构成：分享标题、分享图标。由于手机平台等原因，标题过长会造成标题过长部分折叠，所以标题应当精简，标题支持1-30长度字符串；分享图标需使用200kb以内的jpg、png格式的图片，建议使用正方形图片，长方形有可能会造成图片变形。</p>
+                                                        朋友圈分享由两部分构成：分享标题、分享图标。由于手机平台等原因，标题过长会造成标题过长部分折叠，所以标题应当精简，标题支持1-30长度字符串；分享图标需使用400kb以内的jpg、png格式的图片，建议使用正方形图片，长方形有可能会造成图片变形。</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -497,7 +497,7 @@
                                                 <div class="col-md-6">
                                                     <h3><span class="label label-danger">分享给好友</span></h3><br>
                                                     <p>
-                                                        好友分享由三部分构成：分享标题、分享内容、分享图标。由于手机平台等原因，标题过长会造成标题过长部分折叠，所以标题应当精简，标题支持1-30长度字符串；内容题过长会造成过长部分折叠，内容支持1-50长度字符串；分享图标需使用200kb以内的jpg、png格式的图片，建议使用正方形图片，长方形有可能会造成图片变形。</p>
+                                                        好友分享由三部分构成：分享标题、分享内容、分享图标。由于手机平台等原因，标题过长会造成标题过长部分折叠，所以标题应当精简，标题支持1-30长度字符串；内容题过长会造成过长部分折叠，内容支持1-50长度字符串；分享图标需使用400kb以内的jpg、png格式的图片，建议使用正方形图片，长方形有可能会造成图片变形。</p>
                                                 </div>
                                             </div>
                                         </div>

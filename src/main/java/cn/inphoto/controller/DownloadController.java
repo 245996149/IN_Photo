@@ -73,7 +73,7 @@ public class DownloadController {
      */
     @RequestMapping("/getMedia.do")
     public void getMedia(HttpServletResponse response, HttpServletRequest request,
-                         Long id, int type, boolean thumbnail, boolean download) throws IOException {
+                         Long id, int type, boolean thumbnail, boolean download, Integer thumbnail_pix) throws IOException {
 
         String file_path = null;
 
@@ -136,17 +136,17 @@ public class DownloadController {
                     break;
             }
 
-            if (file_path == null || "".equals(file_path)) {
+            if (file_path == null || "".equals(file_path) || !(new File(file_path)).exists()) {
                 file_path = request.getSession().getServletContext().getRealPath("/images/error.png");
+                thumbnail = false;
+                download = false;
             }
-
-//            logger.info("接收到读取图片文件请求，请求id为：" + id + "，type为：" + type + "，thumbnail为：" + thumbnail + "的图片文件路径为：" + file_path);
 
             // 判断是否压缩
             if (thumbnail) {
 
                 // 压缩成100px
-                Thumbnails.of(new File(file_path)).size(100, 100).toOutputStream(response.getOutputStream());
+                Thumbnails.of(new File(file_path)).size(thumbnail_pix, thumbnail_pix).toOutputStream(response.getOutputStream());
 
             } else {
 
