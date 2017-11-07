@@ -1,3 +1,4 @@
+<%@ page import="cn.inphoto.dbentity.user.UserCategory" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
@@ -27,6 +28,10 @@
     <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 </head>
 <body style="padding-top: 70px;">
+
+<c:set var="OVER" value="<%=UserCategory.UserState.OVER.name() %>"/>
+<c:set var="NORMAL" value="<%=UserCategory.UserState.NORMAL.name() %>"/>
+<c:set var="NOT_START" value="<%=UserCategory.UserState.NOT_START.name() %>"/>
 
 <%-- 导航栏 --%>
 <jsp:include page="/WEB-INF/admin/menu.jsp"/>
@@ -70,8 +75,8 @@
                     <tbody>
                     <c:forEach items="${userCategoryList}" var="uc">
                         <tr <c:choose>
-                            <c:when test="${uc.userCategoryState==1}">class="danger"</c:when>
-                            <c:when test="${uc.userCategoryState==2}">class="warning"</c:when>
+                            <c:when test="${uc.userCategoryState eq OVER}">class="danger"</c:when>
+                            <c:when test="${uc.userCategoryState eq NOT_START}">class="warning"</c:when>
                         </c:choose> >
                             <td>${uc.userCategoryId}</td>
                             <td>
@@ -86,7 +91,7 @@
                             <td><fmt:formatDate value="${uc.endTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                             <td>${uc.mediaNumber}</td>
                             <c:choose>
-                                <c:when test="${uc.userCategoryState==0}">
+                                <c:when test="${uc.userCategoryState eq NORMAL}">
                                     <td>
                                         <c:forEach items="${tempMap}" var="t">
                                             <c:if test="${uc.userCategoryId==t.key}">
@@ -120,7 +125,7 @@
                                         </button>
                                     </td>
                                 </c:when>
-                                <c:when test="${uc.userCategoryState==2}">
+                                <c:when test="${uc.userCategoryState eq NOT_START}">
                                     <td> 未生效</td>
                                     <td>
                                         <a class="btn btn-success btn-xs"

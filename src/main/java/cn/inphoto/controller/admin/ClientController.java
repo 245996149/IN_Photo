@@ -195,7 +195,7 @@ public class ClientController {
         }
 
         if (User.USER_STATE_STOP.equals(user_state)) {
-            List<UserCategory> userCategoryList = userCategoryDao.findByUser_idAndState(user_id, UserCategory.USER_CATEGORY_STATE_NORMAL);
+            List<UserCategory> userCategoryList = userCategoryDao.findByUser_idAndState(user_id, UserCategory.UserState.NORMAL);
             List<Long> userCategoryIds = new ArrayList<>();
             for (UserCategory uc : userCategoryList
                     ) {
@@ -234,7 +234,7 @@ public class ClientController {
                 return "no_power";
             }
             categoryList = new ArrayList<>(adminInfo.getCategorySet());
-        }else {
+        } else {
             categoryList = categoryDao.findAll();
         }
 
@@ -258,7 +258,7 @@ public class ClientController {
     @RequestMapping("/addCategory.do")
     @ResponseBody
     public Map addCategory(Long user_id, Integer category_id,
-                           @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date, byte watermark,
+                           @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date,
                            @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date, Integer number) {
 
         List<UserCategory> userCategoryList = userCategoryDao.findByUser_idAndCategory_id(user_id, category_id);
@@ -269,7 +269,7 @@ public class ClientController {
 
             UserCategory uc = userCategoryList.get(i);
 
-            if (UserCategory.USER_CATEGORY_STATE_OVER.equals(uc.getUserCategoryState())) {
+            if (UserCategory.UserState.OVER.equals(uc.getUserCategoryState())) {
                 userCategoryList.remove(i);
                 i--;
                 num--;
@@ -314,14 +314,9 @@ public class ClientController {
         userCategory.setEndTime(new Timestamp(end_date.getTime()));
         userCategory.setMediaNumber(number);
         if (getTodayDate().getTime() / 1000 == begin_date.getTime() / 1000) {
-            userCategory.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_NORMAL);
+            userCategory.setUserCategoryState(UserCategory.UserState.NORMAL);
         } else {
-            userCategory.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_NOT_START);
-        }
-        if (watermark == UserCategory.USER_CATEGORY_IS_NOT_WATERMARK) {
-            userCategory.setWatermark(UserCategory.USER_CATEGORY_IS_NOT_WATERMARK);
-        } else {
-            userCategory.setWatermark(UserCategory.USER_CATEGORY_IS_WATERMARK);
+            userCategory.setUserCategoryState(UserCategory.UserState.NOT_START);
         }
 
         // 写入数据
@@ -366,7 +361,7 @@ public class ClientController {
         for (UserCategory uc : userCategoryList
                 ) {
 
-            if (UserCategory.USER_CATEGORY_STATE_NORMAL.equals(uc.getUserCategoryState())) {
+            if (UserCategory.UserState.NORMAL.equals(uc.getUserCategoryState())) {
 
                 // 查询套餐对应的正常状态的媒体总数
                 int a = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
@@ -416,7 +411,7 @@ public class ClientController {
         }
 
         // 更新用户套餐
-        userCategory.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_OVER);
+        userCategory.setUserCategoryState(UserCategory.UserState.OVER);
         userCategory.setEndTime(new Timestamp(System.currentTimeMillis()));
 
         // 更新数据库中的用户套餐
@@ -458,7 +453,7 @@ public class ClientController {
             }
         }
 
-        if (UserCategory.USER_CATEGORY_STATE_OVER.equals(userCategory.getUserCategoryState())) {
+        if (UserCategory.UserState.OVER.equals(userCategory.getUserCategoryState())) {
             return "no_power";
         }
 
@@ -484,7 +479,7 @@ public class ClientController {
     @RequestMapping("/updateCategory.do")
     @ResponseBody
     public Map updateCategory(Long user_category_id, HttpSession session,
-                              @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date, byte watermark,
+                              @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date,
                               @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date, Integer number) {
 
         AdminInfo adminInfo = (AdminInfo) session.getAttribute("adminUser");
@@ -502,7 +497,7 @@ public class ClientController {
             }
         }
 
-        if (UserCategory.USER_CATEGORY_STATE_OVER.equals(userCategory.getUserCategoryState())) {
+        if (UserCategory.UserState.OVER.equals(userCategory.getUserCategoryState())) {
             return createResult(false, "用户套餐已经过期，无法对其进行数据修改");
         }
 
@@ -516,7 +511,7 @@ public class ClientController {
             UserCategory uc = userCategoryList.get(i);
 
             // 清楚过期以及自身的用户套餐
-            if (UserCategory.USER_CATEGORY_STATE_OVER.equals(uc.getUserCategoryState())
+            if (UserCategory.UserState.OVER.equals(uc.getUserCategoryState())
                     || uc.getUserCategoryId() == userCategory.getUserCategoryId()) {
                 userCategoryList.remove(i);
                 i--;
@@ -558,10 +553,7 @@ public class ClientController {
         userCategory.setEndTime(new Timestamp(inputEndTime));
         userCategory.setMediaNumber(number);
         if (getTodayDate().getTime() / 1000 == begin_date.getTime() / 1000) {
-            userCategory.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_NORMAL);
-        }
-        if (watermark != userCategory.getWatermark()) {
-            userCategory.setWatermark(watermark);
+            userCategory.setUserCategoryState(UserCategory.UserState.NORMAL);
         }
 
         // 写入数据

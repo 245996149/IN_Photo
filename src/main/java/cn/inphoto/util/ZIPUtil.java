@@ -1,11 +1,15 @@
 package cn.inphoto.util;
 
+import com.aliyun.oss.OSSClient;
+import org.springframework.beans.factory.annotation.Value;
+
 import javax.servlet.ServletContext;
 import java.io.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static cn.inphoto.util.DirUtil.createDirectory;
+import static cn.inphoto.util.DirUtil.deleteDir;
 
 /**
  * Created by root on 17-4-1.
@@ -16,12 +20,18 @@ public class ZIPUtil extends Thread {
     private String zipPath;
     private String code;
     private ServletContext context;
+    private OSSClient client;
+    private String bucketName;
 
-    public ZIPUtil(File[] files, String zipPath, String code, ServletContext context) {
+
+    public ZIPUtil(File[] files, String zipPath, String code, ServletContext context, OSSClient client, String bucketName) {
         this.files = files;
         this.zipPath = zipPath;
         this.code = code;
         this.context = context;
+        this.client = client;
+        this.bucketName = bucketName;
+
     }
 
     public File[] getFiles() {
@@ -54,6 +64,22 @@ public class ZIPUtil extends Thread {
 
     public void setContext(ServletContext context) {
         this.context = context;
+    }
+
+    public OSSClient getClient() {
+        return client;
+    }
+
+    public void setClient(OSSClient client) {
+        this.client = client;
+    }
+
+    public String getBucketName() {
+        return bucketName;
+    }
+
+    public void setBucketName(String bucketName) {
+        this.bucketName = bucketName;
     }
 
     public static byte[] createZIP(File[] files) throws IOException {
@@ -110,36 +136,21 @@ public class ZIPUtil extends Thread {
 
     @Override
     public void run() {
-        BufferedOutputStream bos = null;
-        FileOutputStream fos = null;
         try {
             System.out.println("开始创建");
-            context.setAttribute("zip" + code, false);
+            context.setAttribute(code, false);
             createDirectory(zipPath);
             byte[] b = createZIP(files);
-            File file = new File(zipPath + File.separator + code + ".zip");
-            fos = new FileOutputStream(file);
-            bos = new BufferedOutputStream(fos);
-            bos.write(b);
-            context.setAttribute("zip" + code, true);
+            client.putObject(bucketName, code, new ByteArrayInputStream(b));
+            context.setAttribute(code, true);
             System.out.println("创建完成");
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (bos != null) {
-                try {
-                    bos.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+            if (client != null) {
+                client.shutdown();
             }
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
+            deleteDir(new File(zipPath));
         }
     }
 }

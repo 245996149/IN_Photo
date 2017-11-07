@@ -119,7 +119,7 @@
 
     <c:choose>
         <c:when test="${test==false}">
-            <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${codeWebinfo.codeWebinfoId}&type=3"
+            <img src="http://file.in-photo.cn/${codeWebinfo.backgroundMedia.mediaKey}"
                  style="width: 100%;height: auto;z-index: 0;">
 
             <div class="inputDiv" style="border-color: ${codeWebinfo.inputBorderColor};left: ${codeWebinfo.inputLeft}%;
@@ -132,12 +132,12 @@
             <div class="buttonDiv" onclick="check_code();"
                  style="left: ${codeWebinfo.buttonLeft}%; top: ${codeWebinfo.buttonTop}%;
                          right: ${codeWebinfo.buttonRight}%; bottom: ${codeWebinfo.buttonBottom}%;">
-                <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${codeWebinfo.codeWebinfoId}&type=4"
+                <img src="http://file.in-photo.cn/${codeWebinfo.buttonPicMedia.mediaKey}"
                      style="width: 100%;height: 100%"/>
             </div>
         </c:when>
         <c:otherwise>
-            <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${codeWebinfo.codeWebinfoId}&type=3"
+            <img src="http://file.in-photo.cn/${codeWebinfo.backgroundMedia.mediaKey}"
                  style="width: 100%;height: auto;z-index: 0;">
 
             <div class="inputDiv" style="border-color: ${codeWebinfo.inputBorderColor};left: ${codeWebinfo.inputLeft}%;
@@ -149,7 +149,7 @@
 
             <div class="buttonDiv" style="left: ${codeWebinfo.buttonLeft}%; top: ${codeWebinfo.buttonTop}%;
                     right: ${codeWebinfo.buttonRight}%; bottom: ${codeWebinfo.buttonBottom}%;">
-                <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${codeWebinfo.codeWebinfoId}&type=4"
+                <img src="http://file.in-photo.cn/${codeWebinfo.buttonPicMedia.mediaKey}"
                      style="width: 100%;height: 100%"/>
             </div>
         </c:otherwise>

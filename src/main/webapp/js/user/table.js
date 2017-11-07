@@ -263,9 +263,9 @@ function modal_download() {
 }
 
 /*页面中的下载按钮的下载逻辑*/
-function download(id) {
+function download(mediaKey) {
 
-    window.location.href = "/IN_Photo/get/getMedia.do?id=" + id + "&type=1&download=true";
+    window.location.href = "http://file.in-photo.cn/" + mediaKey;
 
 }
 
@@ -285,8 +285,18 @@ function downloadImgZip() {
             _list_num++;
         }
     }
-    location.href = "/IN_Photo/get/getMedias.do?media_id_list=" + JSON.stringify(_list);
-
+    // location.href = "/IN_Photo/get/getMedias.do?media_id_list=" + JSON.stringify(_list);
+    $.post(
+        "/IN_Photo/get/getMedias.do",
+        {
+            "media_id_list": JSON.stringify(_list)
+        },
+        function (res) {
+            if (res.success) {
+                location.href = res.message;
+            }
+        }
+    )
 }
 
 /*modal中的删除媒体*/

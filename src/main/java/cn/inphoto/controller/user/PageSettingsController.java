@@ -1,11 +1,9 @@
 package cn.inphoto.controller.user;
 
+import cn.inphoto.dao.MediaDataDao;
 import cn.inphoto.dao.UtilDao;
 import cn.inphoto.dao.WebinfoDao;
-import cn.inphoto.dbentity.user.CodeWebInfo;
-import cn.inphoto.dbentity.user.PicWebInfo;
-import cn.inphoto.dbentity.user.ShareInfo;
-import cn.inphoto.dbentity.user.User;
+import cn.inphoto.dbentity.user.*;
 import cn.inphoto.log.UserLogLevel;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
@@ -39,6 +37,9 @@ public class PageSettingsController {
     private UtilDao utilDao;
 
     @Resource
+    private MediaDataDao mediaDataDao;
+
+    @Resource
     private WebinfoDao webinfoDao;
 
     @RequestMapping("/toPageSettings.do")
@@ -46,9 +47,9 @@ public class PageSettingsController {
 
         User user = (User) session.getAttribute("loginUser");
 
-        PicWebInfo picWebInfo = webinfoDao.findPicByUser_idAndCategory_id(user.getUserId(), category_id, PicWebInfo.PIC_WEB_INFO_STATE_NORMAL);
+        PicWebInfo picWebInfo = webinfoDao.findPicByUser_idAndCategory_id(user.getUserId(), category_id, PicWebInfo.PicState.NORMAL);
 
-        CodeWebInfo codeWebInfo = webinfoDao.findCodeByUser_idAndCategory_id(user.getUserId(), category_id, CodeWebInfo.CODE_WEB_INFO_STATE_NORMAL);
+        CodeWebInfo codeWebInfo = webinfoDao.findCodeByUser_idAndCategory_id(user.getUserId(), category_id, CodeWebInfo.CodeState.NORMAL);
 
         ShareInfo shareInfo = webinfoDao.findShareByUser_idAndCategory(user.getUserId(), category_id);
 
@@ -67,8 +68,8 @@ public class PageSettingsController {
      *
      * @param request
      * @param session
-     * @param show_pic_bg      背景图片
-     * @param picWebInfo view信息对象
+     * @param show_pic_bg 背景图片
+     * @param picWebInfo  view信息对象
      * @return 是否成功
      */
     @RequestMapping("/perView.do")
@@ -82,23 +83,24 @@ public class PageSettingsController {
 
         // 查找数据库中是否有曾经预览的数据
         PicWebInfo picWebInfoDB = webinfoDao.findPicByUser_idAndCategory_id(
-                user.getUserId(), picWebInfo.getCategoryId(), PicWebInfo.PIC_WEB_INFO_STATE_PREVIEW);
+                user.getUserId(), picWebInfo.getCategoryId(), PicWebInfo.PicState.PREVIEW);
 
         MDC.put("user_info", "user_id=" + user.getUserId() + ";category_id=" + picWebInfo.getCategoryId());
 
         try {
 
-            // 获取上传图片的路径信息
-            String filePath = createSettingsPic(show_pic_bg, user);
+            MediaData backgroundMedia = createSettingsPic(show_pic_bg, user, picWebInfo.getCategoryId());
 
+            /*有效*/
             // 判断数据库中曾经预览的信息是否有效
             if (picWebInfoDB == null) {
+                // 获取上传图片的路径信息
 
-                /*无效*/
+                utilDao.save(backgroundMedia);
                 // 设置上传图片的路径信息
-                picWebInfo.setBackground(filePath);
+                picWebInfo.setBackgroundMedia(backgroundMedia);
                 picWebInfo.setUserId(user.getUserId());
-                picWebInfo.setPicWebinfoState(PicWebInfo.PIC_WEB_INFO_STATE_PREVIEW);
+                picWebInfo.setPicWebinfoState(PicWebInfo.PicState.PREVIEW);
 
                 // 保存数据到数据库中
                 if (!utilDao.save(picWebInfo)) {
@@ -114,9 +116,15 @@ public class PageSettingsController {
 
             } else {
 
+                MediaData mediaData = picWebInfoDB.getBackgroundMedia();
+                mediaData.setMediaKey(backgroundMedia.getMediaKey());
+                mediaData.setMediaState(MediaData.MediaState.Normal);
+                mediaData.setMediaType(MediaData.MediaType.SettingsData);
+                utilDao.save(mediaData);
+
                 /*有效*/
                 // 更新查询到的预览的信息
-                picWebInfoDB.setBackground(filePath);
+                picWebInfo.setBackgroundMedia(mediaData);
                 picWebInfoDB.setPictureBottom(picWebInfo.getPictureBottom());
                 picWebInfoDB.setPictureLeft(picWebInfo.getPictureLeft());
                 picWebInfoDB.setPictureRight(picWebInfo.getPictureRight());
@@ -175,14 +183,14 @@ public class PageSettingsController {
 
             // 查找用户生效状态的view信息
             PicWebInfo norPic = webinfoDao.findPicByUser_idAndCategory_id(
-                    user.getUserId(), category_id, PicWebInfo.PIC_WEB_INFO_STATE_NORMAL);
+                    user.getUserId(), category_id, PicWebInfo.PicState.NORMAL);
 
             // 查找用户预览状态的view信息
             PicWebInfo prePic = webinfoDao.findPicByUser_idAndCategory_id(
-                    user.getUserId(), category_id, PicWebInfo.PIC_WEB_INFO_STATE_PREVIEW);
+                    user.getUserId(), category_id, PicWebInfo.PicState.PREVIEW);
 
             // 设置状态为生效
-            prePic.setPicWebinfoState(PicWebInfo.PIC_WEB_INFO_STATE_NORMAL);
+            prePic.setPicWebinfoState(PicWebInfo.PicState.NORMAL);
 
             // 判断生效状态的信息是否有限
             if (norPic == null) {
@@ -240,8 +248,8 @@ public class PageSettingsController {
      *
      * @param request
      * @param session
-     * @param button_pic        按钮
-     * @param code_bg           背景
+     * @param button_pic  按钮
+     * @param code_bg     背景
      * @param codeWebInfo code信息对象
      * @return 是否提交成功
      */
@@ -256,20 +264,23 @@ public class PageSettingsController {
 
         // 查找数据库中是否有曾经预览的数据
         CodeWebInfo codeWebinfoDB = webinfoDao.findCodeByUser_idAndCategory_id(
-                user.getUserId(), codeWebInfo.getCategoryId(), CodeWebInfo.CODE_WEB_INFO_STATE_PREVIEW);
+                user.getUserId(), codeWebInfo.getCategoryId(), CodeWebInfo.CodeState.PREVIEW);
 
         MDC.put("user_info", "user_id=" + user.getUserId() + ";category_id=" + codeWebInfo.getCategoryId());
 
         try {
 
             // 获取上传图片的路径信息
-            String bgFilePath = createSettingsPic(code_bg, user);
-            String buttonFilePath = createSettingsPic(button_pic, user);
+            MediaData bgMedia = createSettingsPic(code_bg, user, codeWebInfo.getCategoryId());
+            MediaData buttonMedia = createSettingsPic(button_pic, user, codeWebInfo.getCategoryId());
+
+            utilDao.save(bgMedia);
+            utilDao.save(buttonMedia);
 
             codeWebInfo.setUserId(user.getUserId());
-            codeWebInfo.setCodeWebinfoState(CodeWebInfo.CODE_WEB_INFO_STATE_PREVIEW);
-            codeWebInfo.setBackground(bgFilePath);
-            codeWebInfo.setButtonPic(buttonFilePath);
+            codeWebInfo.setCodeWebinfoState(CodeWebInfo.CodeState.PREVIEW);
+            codeWebInfo.setBackgroundMedia(bgMedia);
+            codeWebInfo.setButtonPicMedia(buttonMedia);
 
             if (codeWebinfoDB == null) {
 
@@ -339,14 +350,14 @@ public class PageSettingsController {
 
             // 查找用户生效状态的view信息
             CodeWebInfo norCode = webinfoDao.findCodeByUser_idAndCategory_id(
-                    user.getUserId(), category_id, CodeWebInfo.CODE_WEB_INFO_STATE_NORMAL);
+                    user.getUserId(), category_id, CodeWebInfo.CodeState.NORMAL);
 
             // 查找用户预览状态的view信息
             CodeWebInfo preCode = webinfoDao.findCodeByUser_idAndCategory_id(
-                    user.getUserId(), category_id, CodeWebInfo.CODE_WEB_INFO_STATE_PREVIEW);
+                    user.getUserId(), category_id, CodeWebInfo.CodeState.PREVIEW);
 
             // 设置状态为生效
-            preCode.setCodeWebinfoState(CodeWebInfo.CODE_WEB_INFO_STATE_NORMAL);
+            preCode.setCodeWebinfoState(CodeWebInfo.CodeState.NORMAL);
 
             // 判断生效状态的信息是否有限
             if (norCode == null) {
@@ -416,16 +427,20 @@ public class PageSettingsController {
             ShareInfo shareInfoDB = webinfoDao.findShareByUser_idAndCategory(user.getUserId(), shareInfo.getCategoryId());
 
             // 获取上传图片的路径信息
-            String momentsFilePath = createSettingsPic(moments_icon, user);
-            String chatsFilePath = createSettingsPic(chats_icon, user);
+            MediaData momentsMedia = createSettingsPic(moments_icon, user, shareInfo.getCategoryId());
+            MediaData chatsMedia = createSettingsPic(chats_icon, user, shareInfo.getCategoryId());
 
             // 设置分享信息的一些属性
             shareInfo.setUserId(user.getUserId());
-            shareInfo.setShareMomentsIcon(momentsFilePath);
-            shareInfo.setShareChatsIcon(chatsFilePath);
 
             // 判断从数据库中找到的对象是否有效
             if (shareInfoDB == null) {
+
+                utilDao.save(momentsMedia);
+                utilDao.save(chatsMedia);
+
+                shareInfo.setMomentsIconMedia(momentsMedia);
+                shareInfo.setChatsIconMedia(chatsMedia);
 
                 // 无效，新增一个对象
                 if (!utilDao.save(shareInfo)) {
@@ -438,8 +453,17 @@ public class PageSettingsController {
 
             } else {
 
+                MediaData dbMomentsMedia = shareInfoDB.getMomentsIconMedia();
+                MediaData dbChatsMedia = shareInfoDB.getChatsIconMedia();
+                dbChatsMedia.setMediaKey(momentsMedia.getMediaKey());
+                dbMomentsMedia.setMediaKey(momentsMedia.getMediaKey());
+                utilDao.save(dbMomentsMedia);
+                utilDao.save(dbChatsMedia);
+
                 //有效，设置id为数据库中对象的id
                 shareInfo.setShareInfoId(shareInfoDB.getShareInfoId());
+                shareInfo.setMomentsIconMedia(dbMomentsMedia);
+                shareInfo.setChatsIconMedia(dbChatsMedia);
 
                 // 更新数据库对象
                 if (!utilDao.update(shareInfo)) {

@@ -18,7 +18,7 @@ public interface UserCategoryDao {
      * @param user_category_state 用户套餐系统对象状态
      * @return 用户套餐系统对象
      */
-    UserCategory findByUser_idAndCategory_idAndState(Long user_id, Integer category_id, String user_category_state);
+    UserCategory findByUser_idAndCategory_idAndState(Long user_id, Integer category_id, UserCategory.UserState user_category_state);
 
     /**
      * 根据userCategory_id查询用户套餐系统对象
@@ -52,7 +52,7 @@ public interface UserCategoryDao {
      * @param user_category_state 用户套餐系统对象状态
      * @return 用户套餐系统对象
      */
-    List<UserCategory> findByUser_idAndState(Long user_id, String user_category_state);
+    List<UserCategory> findByUser_idAndState(Long user_id, UserCategory.UserState user_category_state);
 
     /**
      * 根据user_id查询该用户所有套餐系统对象
@@ -69,7 +69,7 @@ public interface UserCategoryDao {
      * @param user_category_state 用户状态
      * @return 用户套餐系统对象
      */
-    List<UserCategory> findByOverTimeByNormal(Date over_time, String user_category_state);
+    List<UserCategory> findByOverTimeByNormal(Date over_time, UserCategory.UserState user_category_state);
 
     /**
      * 找到未生效状态下开始时间在现在之前的套餐系统
@@ -78,7 +78,7 @@ public interface UserCategoryDao {
      * @param user_category_state 用户状态
      * @return 用户套餐系统对象
      */
-    List<UserCategory> findByNotStartBy(Date begin_time, String user_category_state);
+    List<UserCategory> findByNotStartBy(Date begin_time, UserCategory.UserState user_category_state);
 
     /**
      * 查询所有在某状态下的用户套餐系统
@@ -86,7 +86,7 @@ public interface UserCategoryDao {
      * @param user_category_state 某状态
      * @return 用户套餐系统对象
      */
-    List<UserCategory> findByState(String user_category_state);
+    List<UserCategory> findByState(UserCategory.UserState user_category_state);
 
     /**
      * 更新数据库

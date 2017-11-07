@@ -18,7 +18,7 @@ import java.util.List;
 public class WebinfoDaoImpl extends SuperDao implements WebinfoDao {
 
     @Override
-    public CodeWebInfo findCodeByUser_idAndCategory_id(Long user_id, Integer category_id, String code_web_info_state) {
+    public CodeWebInfo findCodeByUser_idAndCategory_id(Long user_id, Integer category_id, CodeWebInfo.CodeState code_web_info_state) {
 
         try (Session session = sessionFactory.openSession()) {
 
@@ -34,7 +34,7 @@ public class WebinfoDaoImpl extends SuperDao implements WebinfoDao {
     }
 
     @Override
-    public PicWebInfo findPicByUser_idAndCategory_id(Long user_id, Integer category_id, String pic_web_info_state) {
+    public PicWebInfo findPicByUser_idAndCategory_id(Long user_id, Integer category_id, PicWebInfo.PicState pic_web_info_state) {
 
         try (Session session = sessionFactory.openSession()) {
 

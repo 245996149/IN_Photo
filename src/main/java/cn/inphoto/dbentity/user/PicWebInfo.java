@@ -9,21 +9,23 @@ import javax.persistence.*;
 @Table(name = "pic_webinfo", schema = "IN_Photo", catalog = "")
 public class PicWebInfo {
 
-    /*正常生效*/
-    public static final String PIC_WEB_INFO_STATE_NORMAL = "0";
-    /*预览状态*/
-    public static final String PIC_WEB_INFO_STATE_PREVIEW = "1";
+    public enum PicState {
+        /*正常生效*/
+        NORMAL,
+        /*预览状态*/
+        PREVIEW
+    }
 
     private long picWebinfoId;
     private long userId;
     private int categoryId;
     private String pageTitle;
-    private String background;
+    private MediaData backgroundMedia;
     private Double pictureTop;
     private Double pictureLeft;
     private Double pictureRight;
     private Double pictureBottom;
-    private String picWebinfoState;
+    private PicState picWebinfoState;
 
     public void setUserId(long userId) {
         this.userId = userId;
@@ -70,14 +72,14 @@ public class PicWebInfo {
         this.pageTitle = pageTitle;
     }
 
-    @Basic
-    @Column(name = "background")
-    public String getBackground() {
-        return background;
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "background_media_id")//这里设置JoinColum设置了外键的名字，并且orderItem是关系维护端
+    public MediaData getBackgroundMedia() {
+        return backgroundMedia;
     }
 
-    public void setBackground(String background) {
-        this.background = background;
+    public void setBackgroundMedia(MediaData backgroundMedia) {
+        this.backgroundMedia = backgroundMedia;
     }
 
     @Basic
@@ -122,11 +124,12 @@ public class PicWebInfo {
 
     @Basic
     @Column(name = "pic_webinfo_state")
-    public String getPicWebinfoState() {
+    @Enumerated(EnumType.ORDINAL)
+    public PicState getPicWebinfoState() {
         return picWebinfoState;
     }
 
-    public void setPicWebinfoState(String picWebinfoState) {
+    public void setPicWebinfoState(PicState picWebinfoState) {
         this.picWebinfoState = picWebinfoState;
     }
 
@@ -141,7 +144,6 @@ public class PicWebInfo {
         if (userId != that.userId) return false;
         if (categoryId != that.categoryId) return false;
         if (pageTitle != null ? !pageTitle.equals(that.pageTitle) : that.pageTitle != null) return false;
-        if (background != null ? !background.equals(that.background) : that.background != null) return false;
         if (pictureTop != null ? !pictureTop.equals(that.pictureTop) : that.pictureTop != null) return false;
         if (pictureLeft != null ? !pictureLeft.equals(that.pictureLeft) : that.pictureLeft != null) return false;
         if (pictureRight != null ? !pictureRight.equals(that.pictureRight) : that.pictureRight != null) return false;
@@ -159,7 +161,6 @@ public class PicWebInfo {
         result = 31 * result + (int) (userId ^ (userId >>> 32));
         result = 31 * result + categoryId;
         result = 31 * result + (pageTitle != null ? pageTitle.hashCode() : 0);
-        result = 31 * result + (background != null ? background.hashCode() : 0);
         result = 31 * result + (pictureTop != null ? pictureTop.hashCode() : 0);
         result = 31 * result + (pictureLeft != null ? pictureLeft.hashCode() : 0);
         result = 31 * result + (pictureRight != null ? pictureRight.hashCode() : 0);
@@ -175,7 +176,6 @@ public class PicWebInfo {
                 ", userId=" + userId +
                 ", categoryId=" + categoryId +
                 ", pageTitle='" + pageTitle + '\'' +
-                ", background='" + background + '\'' +
                 ", pictureTop=" + pictureTop +
                 ", pictureLeft=" + pictureLeft +
                 ", pictureRight=" + pictureRight +
@@ -183,4 +183,5 @@ public class PicWebInfo {
                 ", picWebinfoState='" + picWebinfoState + '\'' +
                 '}';
     }
+
 }

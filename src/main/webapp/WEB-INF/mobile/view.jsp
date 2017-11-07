@@ -151,34 +151,34 @@
             <%--<img src="${pageContext.request.contextPath}/get/getMedia.do?type=1&id=${media_id}"--%>
             <%--style="position:absolute;height: 100%;width: 100%;opacity: 0;z-index: 999">--%>
 
-            <img src="${pageContext.request.contextPath}/get/getMedia.do?type=2&id=${picWebInfo.picWebinfoId}"
+            <img src="http://file.in-photo.cn/${picWebInfo.backgroundMedia.mediaKey}"
                  style="height: auto;width: 100%;z-index: 0">
 
             <div style="position: absolute;top: ${picWebInfo.pictureTop}%;bottom: ${picWebInfo.pictureBottom}%;
                     left: ${picWebInfo.pictureLeft}%;right: ${picWebInfo.pictureRight}%;z-index: 10;">
-                <img src="${pageContext.request.contextPath}/get/getMedia.do?type=1&id=${media_id}&download=true&image_type=.${image_type}"
+                <img src="http://file.in-photo.cn/${media.mediaKey}"
                      style="height: 100%;width: 100%">
             </div>
         </c:when>
         <c:when test="${category.isVideo==1}">
-            <img src="${pageContext.request.contextPath}/get/getMedia.do?type=2&id=${picWebInfo.picWebinfoId}"
+            <img src="http://file.in-photo.cn/${picWebInfo.backgroundMedia.mediaKey}"
                  style="height: auto;width: 100%;z-index: 0">
 
             <div style="position: absolute;top: ${picWebInfo.pictureTop}%;bottom: ${picWebInfo.pictureBottom}%;
                     left: ${picWebInfo.pictureLeft}%;right: ${picWebInfo.pictureRight}%;z-index: 10">
-                <video src="${pageContext.request.contextPath}/get/getMedia.do?type=1&id=${media_id}&download=true&image_type=.${image_type}" style="height: 100%;width: 100%"></video>
+                <video src="http://file.in-photo.cn/${media.mediaKey}" style="height: 100%;width: 100%"></video>
             </div>
         </c:when>
         <c:otherwise>
             <%--<img src="${pageContext.request.contextPath}/get/getMedia.do?type=7"--%>
             <%--style="position:absolute;height: 100%;width: 100%;opacity: 0;z-index: 999">--%>
 
-            <img src="${pageContext.request.contextPath}/get/getMedia.do?type=2&id=${picWebInfo.picWebinfoId}"
+            <img src="http://file.in-photo.cn/${picWebInfo.backgroundMedia.mediaKey}"
                  style="height: auto;width: 100%;z-index: 0">
 
             <div style="position: absolute;top: ${picWebInfo.pictureTop}%;bottom: ${picWebInfo.pictureBottom}%;
                     left: ${picWebInfo.pictureLeft}%;right: ${picWebInfo.pictureRight}%;z-index: 10">
-                <img src="${pageContext.request.contextPath}/get/getMedia.do?type=1&id=${media_id}&download=true&image_type=.${image_type}"
+                <img src="${pageContext.request.contextPath}/images/test.jpg"
                      style="height: 100%;width: 100%">
             </div>
         </c:otherwise>
@@ -194,12 +194,12 @@
             <c:when test="${shareInfo!=null}">
                 <input type="text" value="${shareInfo.shareMomentsTitle}" id="share_moments_title">
                 <input type="text"
-                       value="${url}${pageContext.request.contextPath}/get/getMedia.do?type=5&id=${shareInfo.shareInfoId}"
+                       value="http://file.in-photo.cn/${shareInfo.momentsIconMedia.mediaKey}"
                        id="share_moments_icon">
                 <input type="text" value="${shareInfo.shareChatsTitle}" id="share_chats_title">
                 <input type="text" value="${shareInfo.shareChatsText}" id="share_chats_text">
                 <input type="text"
-                       value="${url}${pageContext.request.contextPath}/get/getMedia.do?type=6&id=${shareInfo.shareInfoId}"
+                       value="http://file.in-photo.cn/${shareInfo.chatsIconMedia.mediaKey}"
                        id="share_chats_icon">
             </c:when>
             <c:otherwise>

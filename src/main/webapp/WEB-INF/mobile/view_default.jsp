@@ -135,7 +135,7 @@
                  style="height: auto;width: 100%;z-index: 0">
 
             <div style="position: absolute;top: 21.8%;bottom: 61.6%;left: 14.1%;right: 14.1%;z-index: 10;">
-                <video src="${pageContext.request.contextPath}/get/getMedia.do?type=1&id=${media_id}&download=true&image_type=.${image_type}"
+                <video src="http://file.in-photo.cn/${media.mediaKey}"
                        style="height: 100%;width: 100%" controls preload="auto" webkit-playsinline="true"
                        x5-video-player-type="h5"
                        x5-video-orientation="h5"/>
@@ -147,7 +147,7 @@
                  style="height: auto;width: 100%;z-index: 0">
 
             <div style="position: absolute;top: 21.8%;bottom: 61.6%;left: 14.1%;right: 14.1%;z-index: 10;">
-                <img src="${pageContext.request.contextPath}/get/getMedia.do?type=1&id=${media_id}&download=true&image_type=.${image_type}"
+                <img src="http://file.in-photo.cn/${media.mediaKey}"
                      style="height: 100%;width: 100%">
             </div>
         </c:otherwise>
@@ -163,12 +163,12 @@
             <c:when test="${shareInfo!=null}">
                 <input type="text" value="${shareInfo.shareMomentsTitle}" id="share_moments_title">
                 <input type="text"
-                       value="${url}${pageContext.request.contextPath}/get/getMedia.do?type=5&id=${shareInfo.shareInfoId}"
+                       value="http://file.in-photo.cn/${shareInfo.momentsIconMedia.mediaKey}"
                        id="share_moments_icon">
                 <input type="text" value="${shareInfo.shareChatsTitle}" id="share_chats_title">
                 <input type="text" value="${shareInfo.shareChatsText}" id="share_chats_text">
                 <input type="text"
-                       value="${url}${pageContext.request.contextPath}/get/getMedia.do?type=6&id=${shareInfo.shareInfoId}"
+                       value="http://file.in-photo.cn/${shareInfo.chatsIconMedia.mediaKey}"
                        id="share_chats_icon">
             </c:when>
             <c:otherwise>

@@ -13,16 +13,14 @@ import java.sql.Timestamp;
 @Table(name = "user_category", schema = "IN_Photo", catalog = "")
 public class UserCategory implements Serializable {
 
-    /*系统正常*/
-    public static final String USER_CATEGORY_STATE_NORMAL = "0";
-    /*系统已过期*/
-    public static final String USER_CATEGORY_STATE_OVER = "1";
-    /*系统未开始*/
-    public static final String USER_CATEGORY_STATE_NOT_START = "2";
-    /*加水印*/
-    public static final byte USER_CATEGORY_IS_WATERMARK = 1;
-    /*不加水印*/
-    public static final byte USER_CATEGORY_IS_NOT_WATERMARK = 0;
+    public enum UserState {
+        /*系统正常*/
+        NORMAL,
+        /*系统已过期*/
+        OVER,
+        /*系统未开始*/
+        NOT_START,
+    }
 
     private long userCategoryId;
     private long userId;
@@ -31,8 +29,7 @@ public class UserCategory implements Serializable {
     private Timestamp endTime;
     private Integer mediaNumber;
     private Integer categoryId;
-    private String userCategoryState;
-    private byte watermark;
+    private UserState userCategoryState;
 
     @Id
     @Column(name = "user_category_id")
@@ -108,23 +105,15 @@ public class UserCategory implements Serializable {
 
     @Basic
     @Column(name = "user_category_state")
-    public String getUserCategoryState() {
+    @Enumerated(EnumType.ORDINAL)
+    public UserState getUserCategoryState() {
         return userCategoryState;
     }
 
-    public void setUserCategoryState(String userCategoryState) {
+    public void setUserCategoryState(UserState userCategoryState) {
         this.userCategoryState = userCategoryState;
     }
 
-    @Basic
-    @Column(name = "watermark")
-    public byte getWatermark() {
-        return watermark;
-    }
-
-    public void setWatermark(byte watermark) {
-        this.watermark = watermark;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -135,7 +124,6 @@ public class UserCategory implements Serializable {
 
         if (userCategoryId != that.userCategoryId) return false;
         if (userId != that.userId) return false;
-        if (watermark != that.watermark) return false;
         if (payTime != null ? !payTime.equals(that.payTime) : that.payTime != null) return false;
         if (beginTime != null ? !beginTime.equals(that.beginTime) : that.beginTime != null) return false;
         if (endTime != null ? !endTime.equals(that.endTime) : that.endTime != null) return false;
@@ -154,7 +142,6 @@ public class UserCategory implements Serializable {
         result = 31 * result + (mediaNumber != null ? mediaNumber.hashCode() : 0);
         result = 31 * result + (categoryId != null ? categoryId.hashCode() : 0);
         result = 31 * result + (userCategoryState != null ? userCategoryState.hashCode() : 0);
-        result = 31 * result + (int) watermark;
         return result;
     }
 
@@ -169,7 +156,6 @@ public class UserCategory implements Serializable {
                 ", mediaNumber=" + mediaNumber +
                 ", categoryId=" + categoryId +
                 ", userCategoryState='" + userCategoryState + '\'' +
-                ", watermark=" + watermark +
                 '}';
     }
 }

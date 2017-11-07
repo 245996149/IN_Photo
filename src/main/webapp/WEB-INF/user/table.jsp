@@ -165,7 +165,7 @@
                                        onclick="checkAllCheck();" value="${m.mediaId}"><span>${m.mediaName}</span></td>
                             <td width="5%"><a href="javascript:void(0);" onclick="open_modal(${m.mediaName});"
                                               class="thumbnail" style="margin-bottom:auto;">
-                                <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1&thumbnail=true&thumbnail_pix=100"
+                                <img src="http://file.in-photo.cn/${m.mediaKey}?x-oss-process=style/100px"
                                      alt="...">
                             </a></td>
                             <td><fmt:formatDate value="${m.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
@@ -192,7 +192,7 @@
                                     <button type="button" class="btn btn-primary" onclick="open_modal(${m.mediaName});">
                                         查看
                                     </button>
-                                    <button type="button" class="btn btn-info" onclick="download(${m.mediaId});">下载
+                                    <button type="button" class="btn btn-info" onclick="download(${m.mediaKey});">下载
                                     </button>
                                 </div>
                             </td>
@@ -384,8 +384,8 @@
                             <div class="item" data-media-name="${m.mediaName}">
                                 <img src="${pageContext.request.contextPath}/images/loading.gif" name="lazy"
                                      style="margin: 0 auto;"
-                                     alt="${m.mediaId}"
-                                     lz-src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1&thumbnail=true&thumbnail_pix=400">
+                                     alt="${m.mediaKey}" data-id="${m.mediaId}"
+                                     lz-src="http://file.in-photo.cn/${m.mediaKey}?x-oss-process=style/400px">
                                 <div class="carousel-caption">${m.mediaName}</div>
                             </div>
                         </c:forEach>
@@ -462,7 +462,7 @@
         //获取带"/"的项目名，如：/uimcardprj
         var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
 
-        var s = localhostPaht + projectName + "/mobile/toPage.do?user_id=${sessionScope.loginUser.userId}&category_id=${tablePage.category_id}&media_id=" + carousel_obj.attr("alt");
+        var s = localhostPaht + projectName + "/mobile/toPage.do?user_id=${sessionScope.loginUser.userId}&category_id=${tablePage.category_id}&media_id=" + carousel_obj.attr("data-id");
 
         var aa = projectName + "/get/getQR.do?url=" + encodeURIComponent(s);
 

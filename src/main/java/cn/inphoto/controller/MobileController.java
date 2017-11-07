@@ -35,6 +35,9 @@ public class MobileController {
     @Value("#{properties['appid']}")
     String appid;
 
+    @Value("#{properties['AliyunOSSPath']}")
+    String OSSPath;
+
     @Resource
     private UserDao userDao;
 
@@ -90,15 +93,15 @@ public class MobileController {
 
         // 根据user_id、category_id查询状态正常的用户套餐系统
         UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_idAndState(
-                user.getUserId(), category_id, UserCategory.USER_CATEGORY_STATE_NORMAL);
+                user.getUserId(), category_id, UserCategory.UserState.NORMAL);
 
         // 判断用户套餐系统是否存在
         if (userCategory == null) return MOBILE_404;
 
-        String codeState = CodeWebInfo.CODE_WEB_INFO_STATE_NORMAL;
+        CodeWebInfo.CodeState codeState = CodeWebInfo.CodeState.NORMAL;
 
         if (test) {
-            codeState = CodeWebInfo.CODE_WEB_INFO_STATE_PREVIEW;
+            codeState = CodeWebInfo.CodeState.PREVIEW;
         }
 
         // 查询用户的提取页面设置
@@ -164,11 +167,7 @@ public class MobileController {
                     "/mobile/toPage.do?user_id=" + user_id + "&category_id=" + category_id +
                     "&media_id=" + mediaCode.getMediaId();
 
-            // 获取图片尾缀
-            String tempFileName[] = mediaData.getFilePath().split("\\.");
-
-            String image_url = url + request.getContextPath() +
-                    "/get/getMedia.do?type=1&id=" + mediaData.getMediaId() + "&image_type=." + tempFileName[1];
+            String image_url = OSSPath + "/" + mediaData.getMediaKey();
 
             result.put("success", true);
             result.put("page_url", page_url);
@@ -218,17 +217,17 @@ public class MobileController {
 
             // 根据user_id、category_id查询状态正常的用户套餐系统
             UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_idAndState(
-                    user.getUserId(), category_id, UserCategory.USER_CATEGORY_STATE_NORMAL);
+                    user.getUserId(), category_id, UserCategory.UserState.NORMAL);
 
             // 判断用户套餐系统是否存在
             if (userCategory == null) return MOBILE_404;
 
-            String picState = PicWebInfo.PIC_WEB_INFO_STATE_NORMAL;
+            PicWebInfo.PicState picState = PicWebInfo.PicState.NORMAL;
 
             // 判断是否在测试模式，在测试模式将media_id设置为0
             if (test) {
                 model.addAttribute("media_id", 0);
-                picState = PicWebInfo.PIC_WEB_INFO_STATE_PREVIEW;
+                picState = PicWebInfo.PicState.PREVIEW;
             } else {
                 // 查询媒体数据，并判断媒体数据是否在正常状态内
                 MediaData mediaData = mediaDataDao.findByMedia_id(media_id);
@@ -237,11 +236,7 @@ public class MobileController {
                                 MediaData.MediaState.WillDelete != mediaData.getMediaState()))
                     return MOBILE_404;
 
-                // 获取图片尾缀
-                String tempFileName[] = mediaData.getFilePath().split("\\.");
-
-                model.addAttribute("image_type", tempFileName[1]);
-                model.addAttribute("media_id", mediaData.getMediaId());
+                model.addAttribute("media", mediaData);
             }
 
             // 查询用户展示页面设置

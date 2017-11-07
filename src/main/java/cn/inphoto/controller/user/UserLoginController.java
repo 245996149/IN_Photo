@@ -170,7 +170,7 @@ public class UserLoginController {
 
         // 查询该用户所有的用户套餐系统
         List<UserCategory> userCategoryList = userCategoryDao.findByUser_idAndState(
-                user.getUserId(), UserCategory.USER_CATEGORY_STATE_NORMAL);
+                user.getUserId(), UserCategory.UserState.NORMAL);
 
         //查询所有的套餐系统
         judgeCategory(request);
@@ -296,7 +296,7 @@ public class UserLoginController {
         }
 
         UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_idAndState(
-                user.getUserId(), category.getCategoryId(), UserCategory.USER_CATEGORY_STATE_NORMAL);
+                user.getUserId(), category.getCategoryId(), UserCategory.UserState.NORMAL);
 
         if (userCategory == null) {
 
@@ -309,11 +309,6 @@ public class UserLoginController {
         result.put("success", true);
         result.put("user_id", user.getUserId());
         result.put("category_id", category.getCategoryId());
-        if (UserCategory.USER_CATEGORY_IS_NOT_WATERMARK == userCategory.getWatermark()) {
-            result.put("watermark", false);
-        } else {
-            result.put("watermark", true);
-        }
         logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() +
                 " 的用户使用" + check_type + "请求了客户端访问接口，请求成功，返回信息为：" + result.toString());
         return result;
