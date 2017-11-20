@@ -5,6 +5,7 @@ import cn.inphoto.dbentity.user.*;
 import cn.inphoto.weChatEntity.JsapiTicket;
 import cn.inphoto.weChatUtil.Sha1;
 import cn.inphoto.weChatUtil.WeChatWebUtil;
+import cn.inphoto.weibo.WeiboService;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,8 +33,11 @@ public class MobileController {
 
     private Logger logger = Logger.getLogger(MobileController.class);
 
-    @Value("#{properties['appid']}")
+    @Value("#{properties['weixin_appid']}")
     String appid;
+
+    @Value("#{properties['weibo_appKey']}")
+    String appKey;
 
     @Value("#{properties['AliyunOSSPath']}")
     String OSSPath;
@@ -286,6 +290,60 @@ public class MobileController {
 
         return WXConfig(request, response, url);
 
+    }
+
+    /**
+     * 生成获取微信jssdk所需参数反馈给客户端
+     *
+     * @param response 发送
+     * @param request  请求
+     * @param url      当前页面url
+     * @return 微信jssdk所需参数
+     */
+    @RequestMapping("/getWeiBoInfo.do")
+    @ResponseBody
+    public Map<String, String> weiBo(HttpServletResponse response, HttpServletRequest request, String url) {
+
+        return WBConfig(request, response, url);
+
+    }
+
+    private HashMap<String, String> WBConfig(HttpServletRequest request, HttpServletResponse response, String url) {
+        HashMap<String, String> res = new HashMap<>();
+
+        String time = null;
+
+        String jsapi_ticket = null;
+
+        String signature = "";
+
+        String nonce_str = "";
+
+        try {
+            cn.inphoto.weibo.entity.JsapiTicket jsapiTicket = WeiboService.judgeWeiboJsapiTicketOvertime(request, response);
+            // 获取随机数
+            nonce_str = UUID.randomUUID().toString();
+            // 获取jsapi_ticket
+            jsapi_ticket = jsapiTicket.getJsTicket();
+            // 获取系统时间
+            time = String.valueOf(System.currentTimeMillis()).substring(0, 10);
+            // 合成字符串用于签名
+            String str = "jsapi_ticket=" + jsapi_ticket + "&noncestr=" + nonce_str + "&timestamp=" + time + "&url=" + url;
+
+            signature = Sha1.getSha1(str);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        res.put("appKey", appKey);
+        res.put("url", url);
+        res.put("jsapi_ticket", jsapi_ticket);
+        res.put("nonceStr", nonce_str);
+        res.put("timestamp", time);
+        res.put("signature", signature);
+
+        return res;
     }
 
     /**

@@ -1,3 +1,4 @@
+<%@ page import="cn.inphoto.dbentity.user.UserCategory" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -28,6 +29,10 @@
 
 </head>
 <body style="padding-top: 70px;">
+
+<c:set var="OVER" value="<%=UserCategory.UserState.OVER.name() %>"/>
+<c:set var="NORMAL" value="<%=UserCategory.UserState.NORMAL.name() %>"/>
+<c:set var="NOT_START" value="<%=UserCategory.UserState.NOT_START.name() %>"/>
 
 <jsp:include page="/WEB-INF/admin/menu.jsp"/>
 
@@ -90,7 +95,7 @@
                     <div class=" input-group input-group-lg">
                         <span class="input-group-addon" id="begin_date_span">生效日期</span>
                         <c:choose>
-                            <c:when test="${userCategory.userCategoryState=='2'}">
+                            <c:when test="${userCategory.userCategoryState eq NOT_START}">
                                 <input type="date" class="form-control" id="begin_date" name="begin_date"
                                        onchange="settingBeginDate();"
                                        value="<fmt:formatDate value='${userCategory.beginTime}' pattern='yyyy-MM-dd'/>">
@@ -113,20 +118,6 @@
                         <input type="number" class="form-control"
                                aria-describedby="beginDate" id="number" name="number"
                                value="${userCategory.mediaNumber}">
-                    </div>
-                    <div class="form-group" id="watermark">
-                        <div class="col-sm-12">
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="watermark"
-                                           <c:if test="${userCategory.watermark==1}">checked</c:if> value="1">加水印
-                                </label>
-                                <label>
-                                    <input type="radio" name="watermark"
-                                           <c:if test="${userCategory.watermark==0}">checked</c:if> value="0">不加水印
-                                </label>
-                            </div>
-                        </div>
                     </div>
                 </form>
                 <br/>
@@ -209,8 +200,7 @@
                 "user_category_id": $("#user_category_id").val(),
                 "begin_date": $("#begin_date").val(),
                 "end_date": $("#end_date").val(),
-                "number": $("#number").val(),
-                "watermark": $("input[name='watermark']:checked").val()
+                "number": $("#number").val()
             },
             function (res) {
                 if (res.success) {

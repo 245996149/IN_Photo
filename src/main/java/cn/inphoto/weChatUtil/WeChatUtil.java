@@ -29,12 +29,12 @@ public class WeChatUtil {
 
     public static String appsecret;
 
-    @Value("#{properties['appid']}")
+    @Value("#{properties['weixin_appid']}")
     public  void setAppid(String a) {
         appid = a;
     }
 
-    @Value("#{properties['appsecret']}")
+    @Value("#{properties['weixin_appsecret']}")
     public  void setAppsecret(String a) {
         appsecret = a;
     }

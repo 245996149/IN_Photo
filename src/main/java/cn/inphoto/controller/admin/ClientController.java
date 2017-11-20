@@ -445,19 +445,23 @@ public class ClientController {
 
         User user = userDao.findByUser_id(userCategory.getUserId());
 
+        List<Category> categoryList;
+
         // 判断是否有管理员权限
         if (!isAdmin) {
             //没有管理员权限，判断是否有管理权限
             if (user.getAdminId() != adminInfo.getAdminId()) {
                 return "no_power";
+            } else {
+                categoryList = new ArrayList<>(adminInfo.getCategorySet());
             }
+        } else {
+            categoryList = categoryDao.findAll();
         }
 
         if (UserCategory.UserState.OVER.equals(userCategory.getUserCategoryState())) {
             return "no_power";
         }
-
-        List<Category> categoryList = new ArrayList<>(adminInfo.getCategorySet());
 
         model.addAttribute("user", user);
         model.addAttribute("categoryList", categoryList);
