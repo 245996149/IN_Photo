@@ -65,7 +65,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-8">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">数据查询</h3>
@@ -100,25 +100,14 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="row">
-            <div class="panel panel-danger">
-                <div class="panel-heading">
-                    <h3 class="panel-title">系统使用情况</h3>
-                </div>
-                <div class="panel-body">
-                    <canvas id="system_info" width="400" height="200"></canvas>
-                </div>
+    <div class="col-md-4">
+
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">系统使用情况</h3>
             </div>
-        </div>
-        <div class="row">
-            <div class="panel panel-danger">
-                <div class="panel-heading">
-                    <h3 class="panel-title">回收站数据过期情况</h3>
-                </div>
-                <div class="panel-body">
-                    <canvas id="recycle_info" width="400" height="200"></canvas>
-                </div>
+            <div class="panel-body">
+                <canvas id="system_info" width="400" height="200"></canvas>
             </div>
         </div>
     </div>
@@ -434,7 +423,7 @@
         getClickData(getNewDay(today, -6), today);
         getShareDate(getNewDay(today, -6), today);
         getSystemInfo();
-        getRecycleInfo();
+//        getRecycleInfo();
         $('#share_button').popover({
             container: 'body',
             html: true,

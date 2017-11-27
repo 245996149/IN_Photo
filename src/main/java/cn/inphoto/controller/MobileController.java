@@ -335,7 +335,8 @@ public class MobileController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        
+        logger.info(appKey);
         res.put("appKey", appKey);
         res.put("url", url);
         res.put("jsapi_ticket", jsapi_ticket);

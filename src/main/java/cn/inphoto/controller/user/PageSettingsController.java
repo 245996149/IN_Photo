@@ -116,15 +116,11 @@ public class PageSettingsController {
 
             } else {
 
-                MediaData mediaData = picWebInfoDB.getBackgroundMedia();
-                mediaData.setMediaKey(backgroundMedia.getMediaKey());
-                mediaData.setMediaState(MediaData.MediaState.Normal);
-                mediaData.setMediaType(MediaData.MediaType.SettingsData);
-                utilDao.save(mediaData);
+                utilDao.save(backgroundMedia);
 
                 /*有效*/
                 // 更新查询到的预览的信息
-                picWebInfo.setBackgroundMedia(mediaData);
+                picWebInfoDB.setBackgroundMedia(backgroundMedia);
                 picWebInfoDB.setPictureBottom(picWebInfo.getPictureBottom());
                 picWebInfoDB.setPictureLeft(picWebInfo.getPictureLeft());
                 picWebInfoDB.setPictureRight(picWebInfo.getPictureRight());

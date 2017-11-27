@@ -82,7 +82,7 @@ public class ZIPUtil extends Thread {
         this.bucketName = bucketName;
     }
 
-    public static byte[] createZIP(File[] files) throws IOException {
+    public byte[] createZIP(File[] files) throws IOException {
 
         // 创建返回的字节数组
         byte[] b = null;
@@ -90,11 +90,15 @@ public class ZIPUtil extends Thread {
         // 创建输出流
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
+        int a = 0;
+
         // 创建zip输出流，并抛出异常
         try (ZipOutputStream zos = new ZipOutputStream(bos)) {
 
             // 遍历文件
             for (File f : files) {
+
+                context.setAttribute(code + "speed", (a++) + "/" + files.length);
 
                 if (!f.exists() || f.isDirectory()) {
                     continue;

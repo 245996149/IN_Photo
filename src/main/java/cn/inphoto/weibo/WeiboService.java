@@ -26,7 +26,7 @@ public class WeiboService {
         appKey = a;
     }
 
-    @Value("#{properties['weixin_appsecret']}")
+    @Value("#{properties['weibo_appSwcret']}")
     public void setAppsecret(String a) {
         appsecret = a;
     }

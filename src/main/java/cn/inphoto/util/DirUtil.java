@@ -3,6 +3,8 @@ package cn.inphoto.util;
 import cn.inphoto.dbentity.user.MediaData;
 import cn.inphoto.dbentity.user.PicWebInfo;
 import cn.inphoto.dbentity.user.User;
+import cn.inphoto.log.UserLogLevel;
+import cn.inphoto.task.MediaTask;
 import com.aliyun.oss.OSSClient;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -127,9 +129,12 @@ public class DirUtil {
         if (dir.isDirectory()) {
             String[] children = dir.list();
             //递归删除目录中的子目录下
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
+            assert children != null;
+            for (String aChildren : children) {
+                boolean success = deleteDir(new File(dir, aChildren));
                 if (!success) {
+                    logger.log(UserLogLevel.TASK,
+                            "遍历删除文件夹" + (new File(dir, aChildren)).getAbsolutePath() + "时发生了错误");
                     return false;
                 }
             }

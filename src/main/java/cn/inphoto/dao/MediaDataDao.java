@@ -27,7 +27,6 @@ public interface MediaDataDao {
      * @param media_state_list 媒体数据状态队列
      * @return 统计数据
      */
-//    int countByUser_idAndCategory_idAndMedia_state(Long user_id, Integer category_id, String media_state);
     int countByUser_idAndCategory_idAndMedia_state(Long user_id, Integer category_id, List<MediaData.MediaState> media_state_list);
 
 
@@ -137,5 +136,7 @@ public interface MediaDataDao {
     List<MediaData> findByUser_idAndCategory_idAndState(Long user_id, Integer category_id, String media_state);
 
     List<MediaData> findByUser_idAndCategory_idAndBeginDateAndEndDate(Long user_id, Integer category_id, Date beginDate, Date endDate);
+
+    MediaData findByMediaKey(String mediaKey);
 
 }

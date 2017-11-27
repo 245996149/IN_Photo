@@ -20,11 +20,9 @@
 
         //网页加载后执行函数
         window.onload = function () {
-
             var user_id = $("#user_id").val();
             var category_id = $("#category_id").val();
             var media_id = $("#media_id").val();
-
             $.post(
                 "collectingData.do",
                 {
@@ -37,25 +35,22 @@
                 }
             );
 
+            var url = location.href;
+            var share_moments_title = $("#share_moments_title").val();
+            var share_moments_icon = $("#share_moments_icon").val();
+            var share_chats_title = $("#share_chats_title").val();
+            var share_chats_text = $("#share_chats_text").val();
+            var share_chats_icon = $("#share_chats_icon").val();
+
             //判断是否为微信内核
             if (isWeixin()) {
-                //是微信打开
-
-                var url = location.href;
-
-                var share_moments_title = $("#share_moments_title").val();
-                var share_moments_icon = $("#share_moments_icon").val();
-                var share_chats_title = $("#share_chats_title").val();
-                var share_chats_text = $("#share_chats_text").val();
-                var share_chats_icon = $("#share_chats_icon").val();
-
                 $.post(
                     "getWeChatInfo.do",
                     {
                         "url": url
                     },
                     function (res) {
-
+                        //是微信打开
                         wx.config({
                             debug: false,
                             appId: res.appid,
@@ -74,9 +69,7 @@
                                 'scanQRCode', 'chooseWXPay', 'openProductSpecificView',
                                 'addCard', 'chooseCard', 'openCard']
                         });
-
                         wx.ready(function () {
-
                             wx.onMenuShareTimeline({
                                 title: share_moments_title, // 分享标题timg.jpeg
                                 link: url, // 分享链接
@@ -98,7 +91,6 @@
                                     // 用户取消分享后执行的回调函数
                                 }
                             });
-
                             wx.onMenuShareAppMessage({
                                 title: share_chats_title, // 分享标题
                                 desc: share_chats_text, // 分享描述
@@ -125,20 +117,77 @@
                             });
                         });
                     })
-
             }
 
-        }
+            if (isWeiBo()) {
+                alert("weibo");
+                $.post(
+                    "getWeiBoInfo.do",
+                    {
+                        "url": url
+                    },
+                    function (res) {
+
+                        window.WeiboJS.init({
+                            'appkey': res.appkey.toString(),
+                            'debug': true,
+                            'timestamp': res.timestamp,
+                            'noncestr': res.nonceStr,
+                            'signature': res.signature,
+                            'scope': [
+                                'getNetworkType',
+                                'networkTypeChanged',
+                                'getBrowserInfo',
+                                'checkAvailability',
+                                'setBrowserTitle',
+                                'openMenu',
+                                'setMenuItems',
+                                'menuItemSelected',
+                                'setSharingContent',
+                                'openImage',
+                                'scanQRCode',
+                                'pickImage',
+                                'getLocation',
+                                'pickContact',
+                                'apiFromTheFuture'
+                            ]
+                        }, function (ret) {
+                            alert('init done\n' + JSON.stringify(ret));
+                            alert("appkey=" + res.appkey.toString() + "，timestamp=" +
+                                res.timestamp + ",nonceStr=" + res.nonceStr + ",signature=" + res.signature);
+                        });
+
+//                        WeiboJS.invoke("setSharingContent", {
+//                            "icon": share_chats_icon,
+//                            "title": share_chats_title,
+//                            "desc": share_chats_text
+//                        }, function (params) {
+//                            alert("setMenuItems 返回数据：" + JSON.stringify(params));
+//                        });
+
+                        WeiboJS.invoke("setMenuItems", {
+                            menus: ["shareToWeibo", "follow"],
+                            content: share_chats_title
+                        }, function (params) {
+                            alert("setMenuItems 返回数据：" + JSON.stringify(params));
+                        });
+                    }
+                );
+            }
+        };
+
+        var WxObj = window.navigator.userAgent.toLowerCase();
 
         //这个函数用来判断当前浏览器是否微信内置浏览器，是微信返回true，不是微信返回false
         function isWeixin() {
-            var WxObj = window.navigator.userAgent.toLowerCase();
-            if (WxObj.match(/microMessenger/i) == 'micromessenger') {
-                return true;
-            } else {
-                return false;
-            }
+            return WxObj.match(/microMessenger/i) == 'micromessenger';
         }
+
+        //这个函数用来判断当前浏览器是否微信内置浏览器，是微信返回true，不是微信返回false
+        function isWeiBo() {
+            return WxObj.match(/WeiBo/i) == "weibo";
+        };
+
 
     </script>
 

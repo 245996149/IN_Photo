@@ -33,15 +33,18 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
             // 判断是否有category_id参数
             if (tablePage.getCategory_id() == 0) {
 
-                query = session.createQuery(" from MediaData where userId = :user_id and mediaState in (:media_state) order by mediaId desc");
+                query = session.createQuery(" from MediaData where userId = :user_id and mediaState in (:media_state) " +
+                        "and mediaType = :mediaType order by mediaId desc");
 
             } else {
 
-                query = session.createQuery(" from MediaData where userId = :user_id and mediaState in (:media_state) and categoryId = :category_id order by mediaId desc");
+                query = session.createQuery(" from MediaData where userId = :user_id and mediaState in (:media_state) " +
+                        "and categoryId = :category_id and mediaType = :mediaType order by mediaId desc");
                 query.setParameter("category_id", tablePage.getCategory_id());
 
             }
 
+            query.setParameter("mediaType", MediaData.MediaType.MediaData);
             query.setParameter("user_id", tablePage.getUser_id());
             query.setParameter("media_state", tablePage.getMedia_state_list());
 
@@ -61,15 +64,18 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
             // 判断是否有category_id参数
             if (category_id == null || category_id == 0) {
                 query = session.createQuery(
-                        "select count(*) from MediaData where userId = :user_id  and mediaState in (:media_state_list)");
+                        "select count(*) from MediaData where userId = :user_id  and " +
+                                "mediaState in (:media_state_list) and mediaType = :mediaType");
             } else {
                 query = session.createQuery(
-                        "select count(*) from MediaData where userId = :user_id and categoryId = :category_id and mediaState in (:media_state_list) ");
+                        "select count(*) from MediaData where userId = :user_id and " +
+                                "categoryId = :category_id and mediaState in (:media_state_list) and mediaType = :mediaType");
                 query.setParameter("category_id", category_id);
             }
 
             query.setParameter("user_id", user_id);
             query.setParameterList("media_state_list", media_state_list);
+            query.setParameter("mediaType", MediaData.MediaType.MediaData);
 
             return ((Long) query.uniqueResult()).intValue();
         }
@@ -110,13 +116,14 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
             Query query = session.createQuery(
                     "select count(*) from MediaData where" +
                             " userId = :user_id  and mediaState = :media_state and categoryId = :category_id and " +
-                            "createTime between :beginTime and :endTime ");
+                            "createTime between :beginTime and :endTime and mediaType = :mediaType");
 
             query.setParameter("category_id", category_id);
             query.setParameter("user_id", user_id);
             query.setParameter("media_state", media_state);
             query.setParameter("beginTime", beginTime);
             query.setParameter("endTime", endTime);
+            query.setParameter("mediaType", MediaData.MediaType.MediaData);
 
             return ((Long) query.uniqueResult()).intValue();
         }
@@ -296,6 +303,19 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
             query.setParameter("category_id", category_id);
 
             return query.list();
+        }
+    }
+
+    @Override
+    public MediaData findByMediaKey(String mediaKey) {
+        try (Session session = sessionFactory.openSession()) {
+            Query query = session.createQuery(
+                    "from MediaData where mediaKey = :mediaKey  ");
+
+            query.setParameter("mediaKey", mediaKey);
+            query.setMaxResults(1);
+
+            return (MediaData) query.uniqueResult();
         }
     }
 

@@ -24,14 +24,15 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.util.*;
 
 import static cn.inphoto.util.DirUtil.createDirectory;
-import static cn.inphoto.util.DirUtil.deleteDir;
 import static cn.inphoto.util.ResultMapUtil.createResult;
-import static cn.inphoto.util.ZIPUtil.createZIP;
 import static cn.inphoto.util.picUtil.QRUtil.writeToStream;
 
 /**
@@ -74,7 +75,7 @@ public class DownloadController {
      */
     @RequestMapping("/getMedias.do")
     @ResponseBody
-    public Map getMedias(HttpSession session,
+    public Map getMedias(HttpSession session,HttpServletRequest request,
                          String media_id_list) throws IOException {
 
         // 获取session中的user
@@ -110,18 +111,16 @@ public class DownloadController {
             files[i] = new File(tmp_file + File.separator + tmp[tmp.length - 1]);
         }
 
-        // 创建zip文件字节数组
-        byte[] b = createZIP(files);
+        String code = "tmp/" + System.currentTimeMillis() + ".zip";
 
-        String mediaKey = "tmp/" + System.currentTimeMillis() + ".zip";
+        ServletContext context = request.getSession().getServletContext();
 
-        client.putObject(bucketName, mediaKey, new ByteArrayInputStream(b));
+        ZIPUtil zipUtil = new ZIPUtil(
+                files, tmp_file, code, context, client, bucketName);
 
-        client.shutdown();
+        zipUtil.start();
 
-        deleteDir(new File(tmp_file));
-
-        return createResult(true, "http://file.in-photo.cn/" + mediaKey);
+        return createResult(true, code);
 
     }
 
@@ -155,6 +154,7 @@ public class DownloadController {
 
         OSSClient client = new OSSClient(endpoint, accessKeyId, accessKeySecret);
 
+        createDirectory(tmpPath);
         String tmp_file = tmpPath + File.separator + user_id;
         createDirectory(tmp_file);
 
@@ -186,13 +186,14 @@ public class DownloadController {
     @RequestMapping("/checkCreateZipStates.do")
     @ResponseBody
     public Map checkCreateZipStates(String code, HttpServletRequest request) {
-        System.out.println(11111111);
+
         ServletContext context = request.getSession().getServletContext();
-        Boolean b = (Boolean) context.getAttribute("zip" + code);
+        Boolean b = (Boolean) context.getAttribute(code);
         if (b == null) {
-            return createResult(false, "为找到对应的压缩文件");
+            return createResult(false, "未找到对应的压缩文件");
         } else if (!b) {
-            return createResult(false, "正在压缩中！请勿刷新页面");
+            String a = (String) context.getAttribute(code + "speed");
+            return createResult(false, "正在压缩中！进度：" + a + "请勿刷新页面");
         }
         return createResult(true, "http://file.in-photo.cn/" + code);
     }
