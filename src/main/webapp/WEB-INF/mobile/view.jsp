@@ -15,6 +15,8 @@
     <script language="javascript" type="text/javascript"
             src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
+    <script type="text/javascript"
+            src="${pageContext.request.contextPath}/js/mobile/mobile-detect.min.js"></script>
 
     <script type="text/javascript">
 
@@ -23,17 +25,16 @@
             var user_id = $("#user_id").val();
             var category_id = $("#category_id").val();
             var media_id = $("#media_id").val();
-            $.post(
-                "collectingData.do",
-                {
-                    "user_id": user_id,
-                    "category_id": category_id,
-                    "media_id": media_id,
-                    "share_type": "0"
-                },
-                function (res) {
-                }
-            );
+            var test = $("#test").val();
+
+            var device_type = window.navigator.userAgent;
+            var md = new MobileDetect(device_type);//初始化mobile-detect
+            var os = md.os();//获取系统
+            var osType = "other";
+            var osVersion = "other";
+            var brand = "other";
+            var browserType = "other";
+            var model = "other";
 
             var url = location.href;
             var share_moments_title = $("#share_moments_title").val();
@@ -44,6 +45,7 @@
 
             //判断是否为微信内核
             if (isWeixin()) {
+
                 $.post(
                     "getWeChatInfo.do",
                     {
@@ -100,16 +102,18 @@
                                 dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
                                 success: function () {
                                     // 用户确认分享后执行的回调函数
-                                    $.post(
-                                        "collectingData.do",
-                                        {
-                                            "user_id": user_id,
-                                            "category_id": category_id,
-                                            "media_id": media_id,
-                                            "share_type": "1"
-                                        },
-                                        function (res) {
-                                        })
+                                    if (!test) {
+                                        $.post(
+                                            "collectingData.do",
+                                            {
+                                                "user_id": user_id,
+                                                "category_id": category_id,
+                                                "media_id": media_id,
+                                                "share_type": "1"
+                                            },
+                                            function (res) {
+                                            })
+                                    }
                                 },
                                 cancel: function () {
                                     // 用户取消分享后执行的回调函数
@@ -120,7 +124,7 @@
             }
 
             if (isWeiBo()) {
-                alert("weibo");
+
                 $.post(
                     "getWeiBoInfo.do",
                     {
@@ -174,20 +178,66 @@
                     }
                 );
             }
+
+            if (os === "iOS") {//ios系统的处理
+                osType = "ios";
+                osVersion = md.os() + md.version("iPhone");
+                brand = md.mobile();
+                model = md.mobile();
+            } else if (os === "AndroidOS") {//Android系统的处理
+                osType = "android";
+                osVersion = md.os() + md.version("Android");
+                var sss = device_type.split(";");
+                var flag = false;
+                for (var i = 0; i < sss.length; i++) {
+                    if (sss[i].indexOf("Build/") !== -1) {
+                        brand = md.phone();
+                        model = sss[i].substring(0, sss[i].indexOf("Build/"));
+                        flag = true;
+                    }
+                }
+                if (!flag) {
+                    brand = "other";
+                }
+            }
+
+            if (isWeixin()) {
+                browserType = "wechat";
+            } else if (isWeiBo()) {
+                browserType = "weibo";
+            }
+
+            if (!test) {
+                $.post(
+                    "collectInformation.do",
+                    {
+                        "userId": user_id,
+                        "categoryId": category_id,
+                        "mediaId": media_id,
+                        "osType": osType,
+                        "osVersion": osVersion,
+                        "brand": brand,
+                        "browserType": browserType,
+                        "model": model,
+                        "screenResolution": window.screen.width + "*" + window.screen.height
+                    },
+                    function (res) {
+                    }
+                );
+            }
         };
 
         var WxObj = window.navigator.userAgent.toLowerCase();
 
         //这个函数用来判断当前浏览器是否微信内置浏览器，是微信返回true，不是微信返回false
         function isWeixin() {
-            return WxObj.match(/microMessenger/i) == 'micromessenger';
+            return WxObj.match(/microMessenger/i) === 'micromessenger';
         }
 
         //这个函数用来判断当前浏览器是否微信内置浏览器，是微信返回true，不是微信返回false
         function isWeiBo() {
-            return WxObj.match(/WeiBo/i) == "weibo";
-        };
-
+            return WxObj.match(/WeiBo/i) === "weibo";
+        }
 
     </script>
 
@@ -238,7 +288,8 @@
 
         <input type="text" value="${user_id}" id="user_id">
         <input type="text" value="${category.categoryId}" id="category_id">
-        <input type="text" value="${media_id}" id="media_id">
+        <input type="text" value="${media.mediaId}" id="media_id">
+        <input type="text" value="${test}" id="test">
 
         <c:choose>
             <c:when test="${shareInfo!=null}">

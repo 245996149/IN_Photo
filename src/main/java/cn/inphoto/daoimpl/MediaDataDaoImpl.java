@@ -113,12 +113,20 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     public int countByUser_idAndCategory_idAndMedia_stateAndCreate_Time(Long user_id, Integer category_id, Date beginTime, Date endTime, MediaData.MediaState media_state) {
         try (Session session = sessionFactory.openSession()) {
 
-            Query query = session.createQuery(
-                    "select count(*) from MediaData where" +
-                            " userId = :user_id  and mediaState = :media_state and categoryId = :category_id and " +
-                            "createTime between :beginTime and :endTime and mediaType = :mediaType");
+            Query query;
+            if (category_id == null || category_id == 0) {
+                query = session.createQuery(
+                        "select count(*) from MediaData where" +
+                                " userId = :user_id  and mediaState = :media_state and " +
+                                "createTime between :beginTime and :endTime and mediaType = :mediaType");
+            } else {
+                query = session.createQuery(
+                        "select count(*) from MediaData where" +
+                                " userId = :user_id  and mediaState = :media_state and categoryId = :category_id and " +
+                                "createTime between :beginTime and :endTime and mediaType = :mediaType");
+                query.setParameter("category_id", category_id);
+            }
 
-            query.setParameter("category_id", category_id);
             query.setParameter("user_id", user_id);
             query.setParameter("media_state", media_state);
             query.setParameter("beginTime", beginTime);

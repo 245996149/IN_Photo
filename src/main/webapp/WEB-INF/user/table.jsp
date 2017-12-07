@@ -181,7 +181,8 @@
                                     <button type="button" class="btn btn-primary" onclick="open_modal(${m.mediaName});">
                                         查看
                                     </button>
-                                    <button type="button" class="btn btn-info" onclick="download(${m.mediaKey});">下载
+                                    <button type="button" class="btn btn-info" onclick="download(${m.mediaKey});">
+                                        下载
                                     </button>
                                 </div>
                             </td>

@@ -37,9 +37,6 @@ public class PageSettingsController {
     private UtilDao utilDao;
 
     @Resource
-    private MediaDataDao mediaDataDao;
-
-    @Resource
     private WebinfoDao webinfoDao;
 
     @RequestMapping("/toPageSettings.do")

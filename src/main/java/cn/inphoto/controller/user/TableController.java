@@ -47,6 +47,9 @@ public class TableController {
     private ShareDataDao shareDataDao;
 
     @Resource
+    private ShareClickDataDao shareClickDataDao;
+
+    @Resource
     private UtilDao utilDao;
 
     /**
@@ -118,6 +121,10 @@ public class TableController {
 
         for (MediaData m : mediaDataList
                 ) {
+            if (m.getDeleteTime() == null || m.getOverTime() == null) {
+                changeMediaDataToRecycle(m);
+                utilDao.update(m);
+            }
             calendarTemp.setTime(m.getOverTime());
             long diffDays = (calendarTemp.getTimeInMillis() - calendarNow.getTimeInMillis()) / (1000 * 60 * 60 * 24);
             tempMap.put(m.getMediaId(), diffDays + 1);
@@ -148,13 +155,13 @@ public class TableController {
                               @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date,
                               @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date) {
 
-        System.out.println(begin_date.toString() + "   " + end_date.toString());
+//        System.out.println(begin_date.toString() + "   " + end_date.toString());
         User user = (User) session.getAttribute("loginUser");
 
         int days = (int) Math.abs((end_date.getTime() - begin_date.getTime())
                 / (24 * 60 * 60 * 1000) + 1);
 
-        System.out.println(days);
+//        System.out.println(days);
 
         // 创建返回的数组
         Map[] maps = new HashMap[days];
@@ -185,8 +192,8 @@ public class TableController {
                 // 循环查询七天内的点击量
                 for (int i = days; i > 0; i--) {
                     // 获取数据
-                    int a = shareDataDao.countByTime(
-                            user.getUserId(), category_id, begin, end, ShareData.SHARE_TYPE_WEB_CLICK);
+                    int a = shareClickDataDao.countByTime(
+                            user.getUserId(), category_id, begin, end);
 
                     int b = mediaDataDao.countByUser_idAndCategory_idAndMedia_stateAndCreate_Time(
                             user.getUserId(), category_id, begin, end, MediaData.MediaState.Normal);

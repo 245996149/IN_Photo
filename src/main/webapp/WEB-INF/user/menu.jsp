@@ -114,6 +114,14 @@
                         </li>
                     </c:otherwise>
                 </c:choose>
+                <c:choose>
+                    <c:when test="${nav_code==5}">
+                        <li class="active"><a href="#">数据统计</a></li>
+                    </c:when>
+                    <c:otherwise>
+                        <li><a href="${pageContext.request.contextPath}/user/statistic/toStatistic.do">数据统计</a></li>
+                    </c:otherwise>
+                </c:choose>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"

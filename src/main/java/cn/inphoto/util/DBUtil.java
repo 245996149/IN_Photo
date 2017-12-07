@@ -25,6 +25,9 @@ public class DBUtil {
     private ShareDataDao shareDataDao;
 
     @Resource
+    private ShareClickDataDao shareClickDataDao;
+
+    @Resource
     private MediaCodeDao mediaCodeDao;
 
     @Resource
@@ -97,7 +100,7 @@ public class DBUtil {
         Date end = calendar.getTime();
 
         // 查询数据
-        int click_num = dbUtil.shareDataDao.countByTimeTotal(user.getUserId(), begin, end, ShareData.SHARE_TYPE_WEB_CLICK);
+        int click_num = dbUtil.shareClickDataDao.countByTimeTotal(user.getUserId(), begin, end);
         int chats_num = dbUtil.shareDataDao.countByTimeTotal(user.getUserId(), begin, end, ShareData.SHARE_TYPE_WECHAT_SHARE_CHATS);
         int moments_num = dbUtil.shareDataDao.countByTimeTotal(user.getUserId(), begin, end, ShareData.SHARE_TYPE_WECHAT_SHARE_MOMENTS);
 
@@ -152,5 +155,7 @@ public class DBUtil {
 
         mediaData.setOverTime(new Timestamp(calendar.getTimeInMillis()));
     }
+
+
 
 }

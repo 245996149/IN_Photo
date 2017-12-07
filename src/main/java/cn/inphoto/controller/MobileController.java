@@ -74,6 +74,11 @@ public class MobileController {
     /*定义默认展示页面*/
     private static final String MOBILE_VIEW_DEFAULT = "mobile/view_default";
 
+    @RequestMapping("/test.do")
+    public String test() {
+        return "mobile/test";
+    }
+
     /**
      * 前面提取页面
      *
@@ -230,7 +235,7 @@ public class MobileController {
 
             // 判断是否在测试模式，在测试模式将media_id设置为0
             if (test) {
-                model.addAttribute("media_id", 0);
+                model.addAttribute("media", null);
                 picState = PicWebInfo.PicState.PREVIEW;
             } else {
                 // 查询媒体数据，并判断媒体数据是否在正常状态内
@@ -440,6 +445,16 @@ public class MobileController {
 
         return result;
 
+    }
+
+    @ResponseBody
+    @RequestMapping("/collectInformation.do")
+    public Map<String, Object> collectInformation(ShareClickData shareClickData) {
+        Map<String, Object> result = new HashMap<>();
+        System.out.println(shareClickData.toString());
+        utilDao.save(shareClickData);
+        result.put("data", shareClickData);
+        return result;
     }
 
 }
