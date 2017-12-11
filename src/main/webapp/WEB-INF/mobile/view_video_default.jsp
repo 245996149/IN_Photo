@@ -7,8 +7,10 @@
           content="width=640, user-scalable=no, target-densitydpi=device-dpi">
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>我们制造全世界最美的笑容</title>
+
     <script type="text/javascript"
             src="${pageContext.request.contextPath}/js/jquery-3.2.1.js"></script>
+
     <script language="javascript" type="text/javascript"
             src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script language="javascript" type="text/javascript"
@@ -21,17 +23,17 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/mobile/view.css"/>
 
 </head>
-
 <body>
 
 <div class="box">
 
-    <img src="${pageContext.request.contextPath}/images/mobile/view_default.png"
-         class="boxBg">
+    <img src="${pageContext.request.contextPath}/images/mobile/view_default.png" class="boxBg">
 
-    <div style="position: absolute;top: 21.8%;bottom: 61.6%;left: 14.1%;right: 14.1%;z-index: 10;">
-        <img src="http://file.in-photo.cn/${media.mediaKey}"
-             class="video">
+    <div style="position: absolute;top: 9.7%;bottom: 52.9%;left: 0;right: 0;z-index: 10">
+        <video class="video" controls preload="auto"
+               poster="http://file.in-photo.cn/${video_pic_key}"
+               src="http://file.in-photo.cn/${media.mediaKey}" playsinline>
+        </video>
     </div>
 
     <script type="text/javascript">
@@ -47,6 +49,7 @@
         <input type="text" value="${user_id}" id="user_id">
         <input type="text" value="${category.categoryId}" id="category_id">
         <input type="text" value="${media.mediaId}" id="media_id">
+        <input type="text" value="${test}" id="test">
 
         <c:choose>
             <c:when test="${shareInfo!=null}">
@@ -73,5 +76,10 @@
     </div>
 
 </div>
+
+<div class="weibo_share_div" id="weibo_share_div"
+     onclick="shareToWeibo('http://file.in-photo.cn/${video_pic_key}')">
+</div>
+
 </body>
 </html>

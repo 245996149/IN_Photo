@@ -1,6 +1,5 @@
 package cn.inphoto.controller.user;
 
-import cn.inphoto.dao.MediaDataDao;
 import cn.inphoto.dao.UtilDao;
 import cn.inphoto.dao.WebinfoDao;
 import cn.inphoto.dbentity.user.*;
@@ -446,17 +445,15 @@ public class PageSettingsController {
 
             } else {
 
-                MediaData dbMomentsMedia = shareInfoDB.getMomentsIconMedia();
-                MediaData dbChatsMedia = shareInfoDB.getChatsIconMedia();
-                dbChatsMedia.setMediaKey(momentsMedia.getMediaKey());
-                dbMomentsMedia.setMediaKey(momentsMedia.getMediaKey());
-                utilDao.save(dbMomentsMedia);
-                utilDao.save(dbChatsMedia);
+
+                utilDao.save(momentsMedia);
+                utilDao.save(chatsMedia);
+
 
                 //有效，设置id为数据库中对象的id
                 shareInfo.setShareInfoId(shareInfoDB.getShareInfoId());
-                shareInfo.setMomentsIconMedia(dbMomentsMedia);
-                shareInfo.setChatsIconMedia(dbChatsMedia);
+                shareInfo.setMomentsIconMedia(momentsMedia);
+                shareInfo.setChatsIconMedia(chatsMedia);
 
                 // 更新数据库对象
                 if (!utilDao.update(shareInfo)) {

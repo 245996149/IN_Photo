@@ -52,6 +52,9 @@ public class TableController {
     @Resource
     private UtilDao utilDao;
 
+    @Resource
+    private CategoryDao categoryDao;
+
     /**
      * 前往数据管理页面
      *
@@ -80,9 +83,25 @@ public class TableController {
 
         List<MediaCode> mediaCodeList = mediaCodeDao.findByUser_idAndCategory_id(user.getUserId(), tablePage.getCategory_id());
 
+        Category category = categoryDao.findByCategory_id(tablePage.getCategory_id());
+
+        if (category.getIsVideo() == 1) {
+            List<Long> mediaIdList = new ArrayList<>();
+            for (MediaData m:mediaDataList
+                 ) {
+                mediaIdList.add(m.getVideoPicMedia());
+            }
+
+            if (!mediaIdList.isEmpty()) {
+                List<MediaData> picMediaList = mediaDataDao.findByMedia_ids(mediaIdList);
+                model.addAttribute("picMediaList", picMediaList);
+            }
+        }
+
         model.addAttribute("mediaDataList", mediaDataList);
         model.addAttribute("mediaCodeList", mediaCodeList);
         model.addAttribute("tablePage", tablePage);
+        model.addAttribute("this_category", category);
 
         session.setAttribute("nav_code", UserController.TABLE_CODE);
 

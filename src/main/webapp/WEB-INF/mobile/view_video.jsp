@@ -6,9 +6,11 @@
     <meta name="viewport"
           content="width=640, user-scalable=no, target-densitydpi=device-dpi">
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <title>我们制造全世界最美的笑容</title>
+    <title>${picWebInfo.pageTitle}</title>
+
     <script type="text/javascript"
             src="${pageContext.request.contextPath}/js/jquery-3.2.1.js"></script>
+
     <script language="javascript" type="text/javascript"
             src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script language="javascript" type="text/javascript"
@@ -21,32 +23,56 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/mobile/view.css"/>
 
 </head>
-
 <body>
 
 <div class="box">
 
-    <img src="${pageContext.request.contextPath}/images/mobile/view_default.png"
-         class="boxBg">
+    <c:choose>
+        <c:when test="${test==false}">
+            <img src="http://file.in-photo.cn/${picWebInfo.backgroundMedia.mediaKey}"
+                 class="boxBg">
 
-    <div style="position: absolute;top: 21.8%;bottom: 61.6%;left: 14.1%;right: 14.1%;z-index: 10;">
-        <img src="http://file.in-photo.cn/${media.mediaKey}"
-             class="video">
-    </div>
+            <div style="position: absolute;top: ${picWebInfo.pictureTop}%;bottom: ${picWebInfo.pictureBottom}%;
+                    left: ${picWebInfo.pictureLeft}%;right: ${picWebInfo.pictureRight}%;z-index: 10">
+                <video class="video" controls preload="" playsinline
+                       poster="http://file.in-photo.cn/${video_pic_key}"
+                       src="http://file.in-photo.cn/${media.mediaKey}"></video>
+            </div>
 
-    <script type="text/javascript">
-        window.onload = function () {
-            createWeibo();
-            share();
-            collectInformation();
-        }
-    </script>
+
+            <script type="text/javascript">
+                window.onload = function () {
+                    createWeibo();
+                    share();
+                    collectInformation();
+                }
+            </script>
+        </c:when>
+        <c:otherwise>
+            <img src="http://file.in-photo.cn/${picWebInfo.backgroundMedia.mediaKey}"
+                 class="boxBg">
+
+            <div style="position: absolute;top: ${picWebInfo.pictureTop}%;bottom: ${picWebInfo.pictureBottom}%;
+                    left: ${picWebInfo.pictureLeft}%;right: ${picWebInfo.pictureRight}%;z-index: 10">
+                <video class="video" controls preload="" playsinline
+                       poster="${pageContext.request.contextPath}/images/mobile/test_video_poster.jpg"
+                       src="${pageContext.request.contextPath}/images/mobile/test_video.mp4"></video>
+            </div>
+            <script type="text/javascript">
+                window.onload = function () {
+                    share();
+                    createWeibo();
+                }
+            </script>
+        </c:otherwise>
+    </c:choose>
 
     <div class="shareInfo">
 
         <input type="text" value="${user_id}" id="user_id">
         <input type="text" value="${category.categoryId}" id="category_id">
         <input type="text" value="${media.mediaId}" id="media_id">
+        <input type="text" value="${test}" id="test">
 
         <c:choose>
             <c:when test="${shareInfo!=null}">
@@ -73,5 +99,6 @@
     </div>
 
 </div>
+
 </body>
 </html>

@@ -259,6 +259,10 @@ function modal_download() {
 
     var carousel_obj = $("#carousel-object .active img");
 
+    if (carousel_obj == null) {
+        carousel_obj = $("#carousel-object .active video");
+    }
+
     download(carousel_obj.attr("alt"));
 
 }

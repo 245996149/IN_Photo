@@ -22,6 +22,17 @@ public class MediaData {
     private Timestamp deleteTime;
     private Timestamp overTime;
     private MediaType mediaType = MediaType.MediaData;
+    private Long videoPicMedia;
+
+    @Basic
+    @Column(name = "video_pic_media_id")
+    public Long getVideoPicMedia() {
+        return videoPicMedia;
+    }
+
+    public void setVideoPicMedia(Long videoPicMedia) {
+        this.videoPicMedia = videoPicMedia;
+    }
 
     @Id
     @Column(name = "media_id")
@@ -166,13 +177,15 @@ public class MediaData {
         return "MediaData{" +
                 "mediaId=" + mediaId +
                 ", mediaName='" + mediaName + '\'' +
-                ", filePath='" + mediaKey + '\'' +
+                ", mediaKey='" + mediaKey + '\'' +
                 ", userId=" + userId +
                 ", categoryId=" + categoryId +
                 ", createTime=" + createTime +
-                ", mediaState='" + mediaState + '\'' +
+                ", mediaState=" + mediaState +
                 ", deleteTime=" + deleteTime +
                 ", overTime=" + overTime +
+                ", mediaType=" + mediaType +
+                ", videoPicMedia=" + videoPicMedia +
                 '}';
     }
 
@@ -192,6 +205,8 @@ public class MediaData {
         /*媒体数据*/
         MediaData,
         /*用户设置数据*/
-        SettingsData
+        SettingsData,
+        /*视频缩略图*/
+        VideoPicData
     }
 }

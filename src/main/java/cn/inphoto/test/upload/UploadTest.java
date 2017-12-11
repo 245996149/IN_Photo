@@ -31,7 +31,7 @@ public class UploadTest {
         sb1.append(sb);
 
         // 设定服务地址
-        String serverUrl = "http://test.in-photo.cn" +
+        String serverUrl = "http://app.in-photo.cn" +
                 "/IN_Photo/receive/receiveMedia.do?names=" + sb1 + "&media_code=" + sb + "&category_id=7&user_id=" + 2 + "&second=" + 150 + "&number=" + 8;
 
         // 设定要上传的普通Form Field及其对应的value
@@ -53,8 +53,8 @@ public class UploadTest {
 //        for (int i = 0; i < 8; i++) {
 //            ufi.add(new UploadFileItem("upload" + (i + 1), "g:\\" + (i + 1) + ".png"));
 //        }
-        ufi.add(new UploadFileItem("upload1", "/home/ming/1.mp4"));
-//        ufi.add(new UploadFileItem("upload2", "/root/2.png"));
+        ufi.add(new UploadFileItem("upload1", "/home/ming/123.mp4"));
+        ufi.add(new UploadFileItem("upload2", "/home/ming/123.jpg"));
 //        ufi.add(new UploadFileItem("upload3", "/root/3.png"));
 //        ufi.add(new UploadFileItem("upload4", "/root/4.png"));
 //        ufi.add(new UploadFileItem("upload5", "/root/5.png"));

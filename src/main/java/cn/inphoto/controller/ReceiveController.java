@@ -172,30 +172,11 @@ public class ReceiveController {
 
             StringBuilder media_key = new StringBuilder(user.getUserId() + "/" + category.getCategoryCode() + "/" + names);
 
+            // 创建MediaData用于将媒体信息写入数据库
+            MediaData mediaData = new MediaData();
+
             // 判断该套餐是否需要合成GIF
-            if (category.getMadeGif() == 0) {
-
-                // 不需要合成gif
-                while (iter.hasNext()) {
-                    // 取得上传文件
-                    MultipartFile file = multiRequest.getFile(iter.next());
-                    if (file != null) {
-                        // 取得当前上传文件的文件名称
-                        String fileName = file.getOriginalFilename();
-
-                        // 获取图片尾缀
-                        media_key.append(".").append((fileName.split("\\."))[1]);
-
-                        System.out.println(fileName);
-                        // 如果名称不为“”,说明该文件存在，否则说明该文件不存在
-                        if (!"".equals(fileName.trim())) {
-                            client.putObject(bucketName, media_key.toString(), file.getInputStream());
-                        }
-                    }
-
-                }
-
-            } else {
+            if (category.getMadeGif() == 1) {
 
                 //需要合成gif
 
@@ -280,12 +261,86 @@ public class ReceiveController {
                     client.putObject(bucketName, media_key.toString(), new File(mediaTmpPath));
                 }
 
+            } else if (category.getIsVideo() == 1) {
+
+                // 接受媒体为视频
+                while (iter.hasNext()) {
+                    // 取得上传文件
+                    MultipartFile file = multiRequest.getFile(iter.next());
+                    if (file != null) {
+                        // 取得当前上传文件的文件名称
+                        String fileName = file.getOriginalFilename();
+
+                        String suffix = (fileName.split("\\."))[1];
+
+                        if (!"mp4".equals(suffix)) {
+
+                            // 如果名称不为“”,说明该文件存在，否则说明该文件不存在
+                            if (!"".equals(fileName.trim())) {
+                                StringBuilder media_key2 = new StringBuilder(user.getUserId() + "/" + category.getCategoryCode() + "/video_pic_" + names);
+                                // 获取图片尾缀
+                                media_key2.append(".").append(suffix);
+                                MediaData picMedia = new MediaData();
+                                picMedia.setUserId(user.getUserId());
+                                picMedia.setCategoryId(category.getCategoryId());
+                                picMedia.setMediaKey(media_key2.toString());
+                                picMedia.setMediaName("video_pic_" + names);
+                                picMedia.setMediaState(MediaData.MediaState.Normal);
+                                picMedia.setMediaType(MediaData.MediaType.VideoPicData);
+                                System.out.println(picMedia.toString());
+                                utilDao.save(picMedia);
+
+                                mediaData.setVideoPicMedia(picMedia.getMediaId());
+
+                                System.out.println(fileName);
+                                client.putObject(bucketName, media_key2.toString(), file.getInputStream());
+                            }
+                        } else {
+
+                            // 如果名称不为“”,说明该文件存在，否则说明该文件不存在
+                            if (!"".equals(fileName.trim())) {
+
+                                media_key = new StringBuilder(user.getUserId() + "/" + category.getCategoryCode() + "/" + names);
+                                // 获取图片尾缀
+                                media_key.append(".").append(suffix);
+
+                                System.out.println(fileName);
+
+                                client.putObject(bucketName, media_key.toString(), file.getInputStream());
+                            }
+                        }
+
+                    }
+
+                }
+
+            } else {
+
+                // 不需要合成gif
+                while (iter.hasNext()) {
+                    // 取得上传文件
+                    MultipartFile file = multiRequest.getFile(iter.next());
+                    if (file != null) {
+                        // 取得当前上传文件的文件名称
+                        String fileName = file.getOriginalFilename();
+
+                        // 获取图片尾缀
+                        media_key.append(".").append((fileName.split("\\."))[1]);
+
+                        System.out.println(fileName);
+                        // 如果名称不为“”,说明该文件存在，否则说明该文件不存在
+                        if (!"".equals(fileName.trim())) {
+                            client.putObject(bucketName, media_key.toString(), file.getInputStream());
+                        }
+                    }
+
+                }
+
+
             }
 
             client.shutdown();
 
-            // 创建MediaData用于将媒体信息写入数据库
-            MediaData mediaData = new MediaData();
             mediaData.setUserId(user.getUserId());
             mediaData.setCategoryId(category.getCategoryId());
             mediaData.setMediaKey(media_key.toString());

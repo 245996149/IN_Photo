@@ -74,6 +74,10 @@ public class MobileController {
     /*定义默认展示页面*/
     private static final String MOBILE_VIEW_DEFAULT = "mobile/view_default";
 
+    private static final String MOBILE_VIEW_VIDEO = "mobile/view_video";
+
+    private static final String MOBILE_VIEW_VIDEO_DEFAULT = "mobile/view_video_default";
+
     @RequestMapping("/test.do")
     public String test() {
         return "mobile/test";
@@ -233,6 +237,8 @@ public class MobileController {
 
             PicWebInfo.PicState picState = PicWebInfo.PicState.NORMAL;
 
+            Long videoPicMediaId = null;
+
             // 判断是否在测试模式，在测试模式将media_id设置为0
             if (test) {
                 model.addAttribute("media", null);
@@ -244,8 +250,8 @@ public class MobileController {
                         (MediaData.MediaState.Normal != mediaData.getMediaState() &&
                                 MediaData.MediaState.WillDelete != mediaData.getMediaState()))
                     return MOBILE_404;
-
                 model.addAttribute("media", mediaData);
+                videoPicMediaId = mediaData.getVideoPicMedia();
             }
 
             // 查询用户展示页面设置
@@ -267,17 +273,34 @@ public class MobileController {
             MDC.put("category_id", category_id);
             logger.info("用户打开了了user_id=" + user_id + "，category_id=" + category_id + ",media_id=" + media_id + "的展示页面");
 
+            if (category.getIsVideo() == 1) {
+                if (videoPicMediaId != null) {
+                    MediaData videoPicMedia = mediaDataDao.findByMedia_id(videoPicMediaId);
+                    if (videoPicMedia != null) model.addAttribute("video_pic_key", videoPicMedia.getMediaKey());
+                }
+            }
+
             // 判断展示页面设置是否有效，无效打开默认页面
-            if (picWebInfo == null) return MOBILE_VIEW_DEFAULT;
+            if (picWebInfo == null) {
+                if (category.getIsVideo() == 1) {
+                    return MOBILE_VIEW_VIDEO_DEFAULT;
+                } else {
+                    return MOBILE_VIEW_DEFAULT;
+                }
+            }
 
             model.addAttribute("picWebInfo", picWebInfo);
+
+            if (category.getIsVideo() == 1) {
+                return MOBILE_VIEW_VIDEO;
+            } else {
+                return MOBILE_VIEW;
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
             return MOBILE_404;
         }
-
-        return MOBILE_VIEW;
 
     }
 
@@ -340,7 +363,7 @@ public class MobileController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         logger.info(appKey);
         res.put("appKey", appKey);
         res.put("url", url);

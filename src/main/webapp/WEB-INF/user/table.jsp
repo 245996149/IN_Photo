@@ -152,11 +152,28 @@
                         <tr <c:if test="${m.mediaState eq WillDelete}">class="danger" </c:if>>
                             <td><input type="checkbox" name="media_data_checkbox"
                                        onclick="checkAllCheck();" value="${m.mediaId}"><span>${m.mediaName}</span></td>
-                            <td width="5%"><a href="javascript:void(0);" onclick="open_modal(${m.mediaName});"
-                                              class="thumbnail" style="margin-bottom:auto;">
-                                <img src="http://file.in-photo.cn/${m.mediaKey}?x-oss-process=style/100px"
-                                     alt="...">
-                            </a></td>
+                            <td width="5%">
+                                <c:choose>
+                                    <c:when test="${this_category.isVideo==1}">
+                                        <c:forEach items="${picMediaList}" var="pics">
+                                            <c:if test="${pics.mediaId==m.videoPicMedia}">
+                                                <a href="javascript:void(0);" onclick="open_modal(${m.mediaName});"
+                                                   class="thumbnail" style="margin-bottom:auto;">
+                                                    <img src="http://file.in-photo.cn/${pics.mediaKey}?x-oss-process=style/100px"
+                                                         alt="...">
+                                                </a>
+                                            </c:if>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a href="javascript:void(0);" onclick="open_modal(${m.mediaName});"
+                                           class="thumbnail" style="margin-bottom:auto;">
+                                            <img src="http://file.in-photo.cn/${m.mediaKey}?x-oss-process=style/100px"
+                                                 alt="...">
+                                        </a>
+                                    </c:otherwise>
+                                </c:choose>
+                                </a></td>
                             <td><fmt:formatDate value="${m.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                             <td>
                                 <c:forEach items="${mediaCodeList}" var="mc">
@@ -358,7 +375,6 @@
                 <div id="myCarousel" class="carousel">
                     <!-- 轮播（Carousel）指标 -->
                     <ol class="carousel-indicators">
-                        <%--<li data-target="#myCarousel" data-slide-to="0" class="active"></li>--%>
                         <c:forEach items="${mediaDataList}" var="m" varStatus="mv">
                             <li data-target="#myCarousel" data-slide-to="${mv.index}"
                                 data-media-name="${m.mediaName}"></li>
@@ -366,29 +382,46 @@
                     </ol>
                     <!-- 轮播（Carousel）项目 -->
                     <div class="carousel-inner" id="carousel-object">
-                        <%--<div class="item active">--%>
-                        <%--<img src="${pageContext.request.contextPath}/images/1.jpg" alt="First slide">--%>
-                        <%--<div class="carousel-caption">1</div>--%>
-                        <%--</div>--%>
-                        <c:forEach items="${mediaDataList}" var="m">
-                            <div class="item" data-media-name="${m.mediaName}">
-                                <img src="${pageContext.request.contextPath}/images/loading.gif" name="lazy"
-                                     style="margin: 0 auto;"
-                                     alt="${m.mediaKey}" data-id="${m.mediaId}"
-                                     lz-src="http://file.in-photo.cn/${m.mediaKey}?x-oss-process=style/400px">
-                                <div class="carousel-caption">${m.mediaName}</div>
-                            </div>
-                        </c:forEach>
+                        <c:choose>
+                            <c:when test="${this_category.isVideo==1}">
+                                <c:forEach items="${mediaDataList}" var="m">
+                                    <c:forEach items="${picMediaList}" var="pics">
+                                        <c:if test="${pics.mediaId==m.videoPicMedia}">
+                                            <div class="item" data-media-name="${m.mediaName}">
+                                                <video class="video" controls
+                                                       poster="http://file.in-photo.cn/${pics.mediaKey}?x-oss-process=style/400px"
+                                                       src="http://file.in-photo.cn/${m.mediaKey}" >
+                                                </video>
+                                                <div class="carousel-caption">${m.mediaName}</div>
+                                            </div>
+                                        </c:if>
+                                    </c:forEach>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach items="${mediaDataList}" var="m">
+                                    <div class="item" data-media-name="${m.mediaName}">
+                                        <img src="${pageContext.request.contextPath}/images/loading.gif" name="lazy"
+                                             style="margin: 0 auto;"
+                                             alt="${m.mediaKey}" data-id="${m.mediaId}"
+                                             lz-src="http://file.in-photo.cn/${m.mediaKey}?x-oss-process=style/400px">
+                                        <div class="carousel-caption">${m.mediaName}</div>
+                                    </div>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
-                    <!-- 轮播（Carousel）导航 -->
-                    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
+                    <c:if test="${this_category.isVideo!=1}">
+                        <!-- 轮播（Carousel）导航 -->
+                        <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </c:if>
                 </div>
             </div>
             <div class="modal-footer">
