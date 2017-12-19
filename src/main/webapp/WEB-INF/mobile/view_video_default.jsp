@@ -79,6 +79,8 @@
 
 <div class="weibo_share_div" id="weibo_share_div"
      onclick="shareToWeibo('http://file.in-photo.cn/${video_pic_key}')">
+    <img src="${pageContext.request.contextPath}/images/mobile/code_con.png"
+         style="width: 100%;height: auto;"/>
 </div>
 
 </body>
