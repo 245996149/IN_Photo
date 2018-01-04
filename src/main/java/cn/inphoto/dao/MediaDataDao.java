@@ -135,7 +135,7 @@ public interface MediaDataDao {
      */
     List<MediaData> findByUser_idAndCategory_idAndState(Long user_id, Integer category_id, String media_state);
 
-    List<MediaData> findByUser_idAndCategory_idAndBeginDateAndEndDate(Long user_id, Integer category_id, Date beginDate, Date endDate);
+    List<MediaData> findByUser_idAndCategory_idAndBeginDateAndEndDate(Long user_id, Integer category_id, Date beginDate, Date endDate,MediaData.MediaType mediaType);
 
     MediaData findByMediaKey(String mediaKey);
 

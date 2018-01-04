@@ -287,28 +287,29 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
 
     @Override
     public List<MediaData> findByUser_idAndCategory_idAndBeginDateAndEndDate(
-            Long user_id, Integer category_id, Date beginDate, Date endDate) {
+            Long user_id, Integer category_id, Date beginDate, Date endDate, MediaData.MediaType mediaType) {
         try (Session session = sessionFactory.openSession()) {
             Query query;
             if (beginDate != null && endDate != null) {
                 query = session.createQuery(
                         "from MediaData where userId = :user_id and categoryId = :category_id " +
-                                "and createTime between :beginDate and :endDate");
+                                "and createTime between :beginDate and :endDate and mediaType = :media_type");
                 query.setParameter("beginDate", beginDate);
                 query.setParameter("endDate", endDate);
             } else if (beginDate != null) {
                 query = session.createQuery(
                         "from MediaData where userId = :user_id and categoryId = :category_id " +
-                                "and createTime > :beginDate");
+                                "and createTime > :beginDate and mediaType = :media_type");
                 query.setParameter("beginDate", beginDate);
             } else {
                 query = session.createQuery(
                         "from MediaData where userId = :user_id and categoryId = :category_id " +
-                                "and createTime < :endDate");
+                                "and createTime < :endDate and mediaType = :media_type");
                 query.setParameter("endDate", endDate);
             }
             query.setParameter("user_id", user_id);
             query.setParameter("category_id", category_id);
+            query.setParameter("media_type", mediaType);
 
             return query.list();
         }

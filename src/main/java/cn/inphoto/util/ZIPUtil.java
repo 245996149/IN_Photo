@@ -1,15 +1,15 @@
 package cn.inphoto.util;
 
+import cn.inphoto.dbentity.util.PythonInfo;
 import com.aliyun.oss.OSSClient;
-import org.springframework.beans.factory.annotation.Value;
+import com.google.gson.Gson;
 
 import javax.servlet.ServletContext;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import static cn.inphoto.util.DirUtil.createDirectory;
-import static cn.inphoto.util.DirUtil.deleteDir;
 
 /**
  * Created by root on 17-4-1.
@@ -114,10 +114,11 @@ public class ZIPUtil extends Thread {
                 zos.putNextEntry(entry);
 
                 int b2;
+                byte[] b3 = new byte[4096];
 
                 // 将文件输入流读取到zip输出流中
-                while ((b2 = inputStream.read()) != -1) {
-                    zos.write(b2);
+                while ((b2 = inputStream.read(b3)) != -1) {
+                    zos.write(b3, 0, b2);
                 }
 
                 zos.closeEntry();
@@ -141,20 +142,42 @@ public class ZIPUtil extends Thread {
     @Override
     public void run() {
         try {
-            System.out.println("开始创建");
             context.setAttribute(code, false);
-            createDirectory(zipPath);
-            byte[] b = createZIP(files);
-            client.putObject(bucketName, code, new ByteArrayInputStream(b));
+            pythonZip(files);
+            client.putObject(bucketName, code, new File(zipPath));
             context.setAttribute(code, true);
-            System.out.println("创建完成");
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (client != null) {
                 client.shutdown();
             }
-            deleteDir(new File(zipPath));
         }
+    }
+
+    public synchronized void pythonZip(File[] files) throws IOException, InterruptedException {
+        Gson gson = new Gson();
+        List<String> fileList = new ArrayList<>();
+        for (File f : files
+                ) {
+            if (!f.exists() || f.isDirectory()) {
+                continue;
+            }
+            fileList.add(f.getAbsolutePath());
+        }
+        PythonInfo py = new PythonInfo(zipPath, fileList);
+        String str = gson.toJson(py);
+        String pyPath = this.getClass().getResource("/").getPath() + "Zip.py";
+        String[] args1 = new String[]{"python", pyPath, str};
+        Process pr = Runtime.getRuntime().exec(args1);
+        BufferedReader input = new BufferedReader(new InputStreamReader(
+                pr.getInputStream()));
+        String line;
+        while ((line = input.readLine()) != null) {
+            System.out.println(line);
+            context.setAttribute(code + "speed", line);
+        }
+        input.close();
+        pr.waitFor();
     }
 }

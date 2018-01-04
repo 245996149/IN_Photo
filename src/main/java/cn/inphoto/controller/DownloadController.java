@@ -75,7 +75,7 @@ public class DownloadController {
      */
     @RequestMapping("/getMedias.do")
     @ResponseBody
-    public Map getMedias(HttpSession session,HttpServletRequest request,
+    public Map getMedias(HttpSession session, HttpServletRequest request,
                          String media_id_list) throws IOException {
 
         // 获取session中的user
@@ -113,10 +113,12 @@ public class DownloadController {
 
         String code = "tmp/" + System.currentTimeMillis() + ".zip";
 
+        String zipPath = tmpPath + File.separator + code.replace("tmp/", "");
+
         ServletContext context = request.getSession().getServletContext();
 
         ZIPUtil zipUtil = new ZIPUtil(
-                files, tmp_file, code, context, client, bucketName);
+                files, zipPath, code, context, client, bucketName);
 
         zipUtil.start();
 
@@ -132,7 +134,7 @@ public class DownloadController {
 
         List<MediaData> mediaDataList =
                 mediaDataDao.findByUser_idAndCategory_idAndBeginDateAndEndDate(
-                        user_id, category_id, begin_date, end_date);
+                        user_id, category_id, begin_date, end_date, MediaData.MediaType.MediaData);
 
         if (mediaDataList.size() == 0) {
             return createResult(false, "该日期内没有媒体数据");
@@ -172,10 +174,12 @@ public class DownloadController {
 
         String code = "tmp/" + System.currentTimeMillis() + ".zip";
 
+        String zipPath = tmpPath + File.separator + code.replace("tmp/", "");
+
         ServletContext context = request.getSession().getServletContext();
 
         ZIPUtil zipUtil = new ZIPUtil(
-                files, tmp_file, code, context, client, bucketName);
+                files, zipPath, code, context, client, bucketName);
 
         zipUtil.start();
 
