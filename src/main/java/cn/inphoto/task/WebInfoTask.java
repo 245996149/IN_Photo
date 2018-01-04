@@ -56,23 +56,23 @@ public class WebInfoTask {
     private static String bucketName;
 
     @Value("#{properties['AliyunOSSEndpoint']}")
-    public static void setEndpoint(String endpoint) {
-        WebInfoTask.endpoint = endpoint;
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
     }
 
     @Value("#{properties['AliyunAccessKeyId']}")
-    public static void setAccessKeyId(String accessKeyId) {
-        WebInfoTask.accessKeyId = accessKeyId;
+    public void setAccessKeyId(String accessKeyId) {
+        this.accessKeyId = accessKeyId;
     }
 
     @Value("#{properties['AliyunAccessKeySecret']}")
-    public static void setAccessKeySecret(String accessKeySecret) {
-        WebInfoTask.accessKeySecret = accessKeySecret;
+    public void setAccessKeySecret(String accessKeySecret) {
+        this.accessKeySecret = accessKeySecret;
     }
 
     @Value("#{properties['AliyunOSSBucketName']}")
-    public static void setBucketName(String bucketName) {
-        WebInfoTask.bucketName = bucketName;
+    public void setBucketName(String bucketName) {
+        this.bucketName = bucketName;
     }
 
     /**
