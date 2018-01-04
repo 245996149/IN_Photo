@@ -55,7 +55,7 @@ public class ClientUtil {
         // 更新用户套餐
         for (UserCategory uc : userCategoryList
                 ) {
-            uc.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_OVER);
+            uc.setUserCategoryState(UserCategory.UserState.OVER);
             uc.setEndTime(new Timestamp(System.currentTimeMillis()));
         }
 

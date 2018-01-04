@@ -47,7 +47,13 @@ public class TableController {
     private ShareDataDao shareDataDao;
 
     @Resource
+    private ShareClickDataDao shareClickDataDao;
+
+    @Resource
     private UtilDao utilDao;
+
+    @Resource
+    private CategoryDao categoryDao;
 
     /**
      * 前往数据管理页面
@@ -77,9 +83,25 @@ public class TableController {
 
         List<MediaCode> mediaCodeList = mediaCodeDao.findByUser_idAndCategory_id(user.getUserId(), tablePage.getCategory_id());
 
+        Category category = categoryDao.findByCategory_id(tablePage.getCategory_id());
+
+        if (category.getIsVideo() == 1) {
+            List<Long> mediaIdList = new ArrayList<>();
+            for (MediaData m:mediaDataList
+                 ) {
+                mediaIdList.add(m.getVideoPicMedia());
+            }
+
+            if (!mediaIdList.isEmpty()) {
+                List<MediaData> picMediaList = mediaDataDao.findByMedia_ids(mediaIdList);
+                model.addAttribute("picMediaList", picMediaList);
+            }
+        }
+
         model.addAttribute("mediaDataList", mediaDataList);
         model.addAttribute("mediaCodeList", mediaCodeList);
         model.addAttribute("tablePage", tablePage);
+        model.addAttribute("this_category", category);
 
         session.setAttribute("nav_code", UserController.TABLE_CODE);
 
@@ -118,6 +140,10 @@ public class TableController {
 
         for (MediaData m : mediaDataList
                 ) {
+            if (m.getDeleteTime() == null || m.getOverTime() == null) {
+                changeMediaDataToRecycle(m);
+                utilDao.update(m);
+            }
             calendarTemp.setTime(m.getOverTime());
             long diffDays = (calendarTemp.getTimeInMillis() - calendarNow.getTimeInMillis()) / (1000 * 60 * 60 * 24);
             tempMap.put(m.getMediaId(), diffDays + 1);
@@ -148,13 +174,13 @@ public class TableController {
                               @DateTimeFormat(pattern = "yyyy-MM-dd") Date begin_date,
                               @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date) {
 
-        System.out.println(begin_date.toString() + "   " + end_date.toString());
+//        System.out.println(begin_date.toString() + "   " + end_date.toString());
         User user = (User) session.getAttribute("loginUser");
 
         int days = (int) Math.abs((end_date.getTime() - begin_date.getTime())
                 / (24 * 60 * 60 * 1000) + 1);
 
-        System.out.println(days);
+//        System.out.println(days);
 
         // 创建返回的数组
         Map[] maps = new HashMap[days];
@@ -185,8 +211,8 @@ public class TableController {
                 // 循环查询七天内的点击量
                 for (int i = days; i > 0; i--) {
                     // 获取数据
-                    int a = shareDataDao.countByTime(
-                            user.getUserId(), category_id, begin, end, ShareData.SHARE_TYPE_WEB_CLICK);
+                    int a = shareClickDataDao.countByTime(
+                            user.getUserId(), category_id, begin, end);
 
                     int b = mediaDataDao.countByUser_idAndCategory_idAndMedia_stateAndCreate_Time(
                             user.getUserId(), category_id, begin, end, MediaData.MediaState.Normal);
@@ -260,7 +286,7 @@ public class TableController {
         Map<String, Object> result = new HashMap<>();
 
         // 查找用户的套餐系统信息
-        UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_idAndState(user.getUserId(), category_id, UserCategory.USER_CATEGORY_STATE_NORMAL);
+        UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_idAndState(user.getUserId(), category_id, UserCategory.UserState.NORMAL);
         // 计算用户该套餐系统内状态为张昌的媒体数据的数量
         int media_num = mediaDataDao.countByUser_idAndCategory_idAndMedia_state(
                 user.getUserId(), category_id, Collections.singletonList(MediaData.MediaState.Normal));
@@ -596,7 +622,7 @@ public class TableController {
 
         // 查询该媒体数据对应的系统
         UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_idAndState(
-                user.getUserId(), mediaData.getCategoryId(), UserCategory.USER_CATEGORY_STATE_NORMAL);
+                user.getUserId(), mediaData.getCategoryId(), UserCategory.UserState.NORMAL);
 
         MDC.put("user_info", "user_id=" + user.getUserId() + ";category_id=" + mediaData.getCategoryId());
 

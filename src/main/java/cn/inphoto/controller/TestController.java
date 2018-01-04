@@ -1,5 +1,6 @@
 package cn.inphoto.controller;
 
+import cn.inphoto.dao.ShareClickDataDao;
 import cn.inphoto.dao.ShareDataDao;
 import cn.inphoto.dbentity.user.ShareData;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,9 @@ public class TestController {
 
     @Resource
     ShareDataDao shareDataDao;
+
+    @Resource
+    ShareClickDataDao shareClickDataDao;
 
     @RequestMapping("/toCharsTest.do")
     public String toCharsTest() {
@@ -63,8 +67,8 @@ public class TestController {
         // 循环查询七天内的数据
         for (int i = 7; i > 0; i--) {
             // 获取数据
-            int a = shareDataDao.countByTime(
-                    1L, 3, begin, end, ShareData.SHARE_TYPE_WEB_CLICK);
+            int a = shareClickDataDao.countByTime(
+                    1L, 3, begin, end);
 
             // 创建返回的Map对象
             Map<String, Object> result = new HashMap<>();

@@ -65,7 +65,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-8">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">数据查询</h3>
@@ -100,25 +100,14 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="row">
-            <div class="panel panel-danger">
-                <div class="panel-heading">
-                    <h3 class="panel-title">系统使用情况</h3>
-                </div>
-                <div class="panel-body">
-                    <canvas id="system_info" width="400" height="200"></canvas>
-                </div>
+    <div class="col-md-4">
+
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">系统使用情况</h3>
             </div>
-        </div>
-        <div class="row">
-            <div class="panel panel-danger">
-                <div class="panel-heading">
-                    <h3 class="panel-title">回收站数据过期情况</h3>
-                </div>
-                <div class="panel-body">
-                    <canvas id="recycle_info" width="400" height="200"></canvas>
-                </div>
+            <div class="panel-body">
+                <canvas id="system_info" width="400" height="200"></canvas>
             </div>
         </div>
     </div>
@@ -163,11 +152,28 @@
                         <tr <c:if test="${m.mediaState eq WillDelete}">class="danger" </c:if>>
                             <td><input type="checkbox" name="media_data_checkbox"
                                        onclick="checkAllCheck();" value="${m.mediaId}"><span>${m.mediaName}</span></td>
-                            <td width="5%"><a href="javascript:void(0);" onclick="open_modal(${m.mediaName});"
-                                              class="thumbnail" style="margin-bottom:auto;">
-                                <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1&thumbnail=true"
-                                     alt="...">
-                            </a></td>
+                            <td width="5%">
+                                <c:choose>
+                                    <c:when test="${this_category.isVideo==1}">
+                                        <c:forEach items="${picMediaList}" var="pics">
+                                            <c:if test="${pics.mediaId==m.videoPicMedia}">
+                                                <a href="javascript:void(0);" onclick="open_modal(${m.mediaName});"
+                                                   class="thumbnail" style="margin-bottom:auto;">
+                                                    <img src="http://file.in-photo.cn/${pics.mediaKey}?x-oss-process=style/100px"
+                                                         alt="...">
+                                                </a>
+                                            </c:if>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a href="javascript:void(0);" onclick="open_modal(${m.mediaName});"
+                                           class="thumbnail" style="margin-bottom:auto;">
+                                            <img src="http://file.in-photo.cn/${m.mediaKey}?x-oss-process=style/100px"
+                                                 alt="...">
+                                        </a>
+                                    </c:otherwise>
+                                </c:choose>
+                                </a></td>
                             <td><fmt:formatDate value="${m.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                             <td>
                                 <c:forEach items="${mediaCodeList}" var="mc">
@@ -192,7 +198,8 @@
                                     <button type="button" class="btn btn-primary" onclick="open_modal(${m.mediaName});">
                                         查看
                                     </button>
-                                    <button type="button" class="btn btn-info" onclick="download(${m.mediaId});">下载
+                                    <button type="button" class="btn btn-info" onclick="download(${m.mediaKey});">
+                                        下载
                                     </button>
                                 </div>
                             </td>
@@ -368,7 +375,6 @@
                 <div id="myCarousel" class="carousel">
                     <!-- 轮播（Carousel）指标 -->
                     <ol class="carousel-indicators">
-                        <%--<li data-target="#myCarousel" data-slide-to="0" class="active"></li>--%>
                         <c:forEach items="${mediaDataList}" var="m" varStatus="mv">
                             <li data-target="#myCarousel" data-slide-to="${mv.index}"
                                 data-media-name="${m.mediaName}"></li>
@@ -376,29 +382,46 @@
                     </ol>
                     <!-- 轮播（Carousel）项目 -->
                     <div class="carousel-inner" id="carousel-object">
-                        <%--<div class="item active">--%>
-                        <%--<img src="${pageContext.request.contextPath}/images/1.jpg" alt="First slide">--%>
-                        <%--<div class="carousel-caption">1</div>--%>
-                        <%--</div>--%>
-                        <c:forEach items="${mediaDataList}" var="m">
-                            <div class="item" data-media-name="${m.mediaName}">
-                                <img src="${pageContext.request.contextPath}/images/loading.gif" name="lazy"
-                                     style="margin: 0 auto;"
-                                     alt="${m.mediaId}"
-                                     lz-src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1">
-                                <div class="carousel-caption">${m.mediaName}</div>
-                            </div>
-                        </c:forEach>
+                        <c:choose>
+                            <c:when test="${this_category.isVideo==1}">
+                                <c:forEach items="${mediaDataList}" var="m">
+                                    <c:forEach items="${picMediaList}" var="pics">
+                                        <c:if test="${pics.mediaId==m.videoPicMedia}">
+                                            <div class="item" data-media-name="${m.mediaName}">
+                                                <video class="video" controls
+                                                       poster="http://file.in-photo.cn/${pics.mediaKey}?x-oss-process=style/400px"
+                                                       src="http://file.in-photo.cn/${m.mediaKey}" >
+                                                </video>
+                                                <div class="carousel-caption">${m.mediaName}</div>
+                                            </div>
+                                        </c:if>
+                                    </c:forEach>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach items="${mediaDataList}" var="m">
+                                    <div class="item" data-media-name="${m.mediaName}">
+                                        <img src="${pageContext.request.contextPath}/images/loading.gif" name="lazy"
+                                             style="margin: 0 auto;"
+                                             alt="${m.mediaKey}" data-id="${m.mediaId}"
+                                             lz-src="http://file.in-photo.cn/${m.mediaKey}?x-oss-process=style/400px">
+                                        <div class="carousel-caption">${m.mediaName}</div>
+                                    </div>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
-                    <!-- 轮播（Carousel）导航 -->
-                    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
+                    <c:if test="${this_category.isVideo!=1}">
+                        <!-- 轮播（Carousel）导航 -->
+                        <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </c:if>
                 </div>
             </div>
             <div class="modal-footer">
@@ -434,7 +457,7 @@
         getClickData(getNewDay(today, -6), today);
         getShareDate(getNewDay(today, -6), today);
         getSystemInfo();
-        getRecycleInfo();
+//        getRecycleInfo();
         $('#share_button').popover({
             container: 'body',
             html: true,
@@ -462,7 +485,7 @@
         //获取带"/"的项目名，如：/uimcardprj
         var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
 
-        var s = localhostPaht + projectName + "/mobile/toPage.do?user_id=${sessionScope.loginUser.userId}&category_id=${tablePage.category_id}&media_id=" + carousel_obj.attr("alt");
+        var s = localhostPaht + projectName + "/mobile/toPage.do?user_id=${sessionScope.loginUser.userId}&category_id=${tablePage.category_id}&media_id=" + carousel_obj.attr("data-id");
 
         var aa = projectName + "/get/getQR.do?url=" + encodeURIComponent(s);
 

@@ -1,0 +1,35 @@
+body {
+    margin: 0;
+}
+
+.box {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    top: 0;
+}
+
+.boxBg {
+    height: auto;
+    width: 100%;
+    z-index: 0;
+}
+
+.shareInfo {
+    display: none;
+}
+
+.video {
+    height: 100%;
+    width: 100%;
+}
+
+.weibo_share_div {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: auto;
+    background-color: #0f0f0f;
+    display: none;
+}

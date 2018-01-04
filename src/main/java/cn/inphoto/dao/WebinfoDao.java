@@ -19,7 +19,7 @@ public interface WebinfoDao {
      * @param code_web_info_state 状态
      * @return
      */
-    CodeWebInfo findCodeByUser_idAndCategory_id(Long user_id, Integer category_id, String code_web_info_state);
+    CodeWebInfo findCodeByUser_idAndCategory_id(Long user_id, Integer category_id, CodeWebInfo.CodeState code_web_info_state);
 
     /**
      * 根据user_id、categoey_id、pic_web_info_state查询展示页面设置
@@ -29,7 +29,7 @@ public interface WebinfoDao {
      * @param pic_web_info_state 状态
      * @return
      */
-    PicWebInfo findPicByUser_idAndCategory_id(Long user_id, Integer category_id, String pic_web_info_state);
+    PicWebInfo findPicByUser_idAndCategory_id(Long user_id, Integer category_id, PicWebInfo.PicState pic_web_info_state);
 
     /**
      * 根据pic_web_info_id查询展示页面设置

@@ -12,10 +12,10 @@ public class ShareInfo {
     private long userId;
     private int categoryId;
     private String shareMomentsTitle;
-    private String shareMomentsIcon;
+    private MediaData momentsIconMedia;
     private String shareChatsTitle;
     private String shareChatsText;
-    private String shareChatsIcon;
+    private MediaData chatsIconMedia;
 
     public void setUserId(long userId) {
         this.userId = userId;
@@ -62,15 +62,6 @@ public class ShareInfo {
         this.shareMomentsTitle = shareMomentsTitle;
     }
 
-    @Basic
-    @Column(name = "share_moments_icon")
-    public String getShareMomentsIcon() {
-        return shareMomentsIcon;
-    }
-
-    public void setShareMomentsIcon(String shareMomentsIcon) {
-        this.shareMomentsIcon = shareMomentsIcon;
-    }
 
     @Basic
     @Column(name = "share_chats_title")
@@ -92,14 +83,24 @@ public class ShareInfo {
         this.shareChatsText = shareChatsText;
     }
 
-    @Basic
-    @Column(name = "share_chats_icon")
-    public String getShareChatsIcon() {
-        return shareChatsIcon;
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "moments_media_id")//这里设置JoinColum设置了外键的名字，并且orderItem是关系维护端
+    public MediaData getMomentsIconMedia() {
+        return momentsIconMedia;
     }
 
-    public void setShareChatsIcon(String shareChatsIcon) {
-        this.shareChatsIcon = shareChatsIcon;
+    public void setMomentsIconMedia(MediaData momentsIconMedia) {
+        this.momentsIconMedia = momentsIconMedia;
+    }
+
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "chats_media_id")//这里设置JoinColum设置了外键的名字，并且orderItem是关系维护端
+    public MediaData getChatsIconMedia() {
+        return chatsIconMedia;
+    }
+
+    public void setChatsIconMedia(MediaData chatsIconMedia) {
+        this.chatsIconMedia = chatsIconMedia;
     }
 
     @Override
@@ -114,13 +115,9 @@ public class ShareInfo {
         if (categoryId != that.categoryId) return false;
         if (shareMomentsTitle != null ? !shareMomentsTitle.equals(that.shareMomentsTitle) : that.shareMomentsTitle != null)
             return false;
-        if (shareMomentsIcon != null ? !shareMomentsIcon.equals(that.shareMomentsIcon) : that.shareMomentsIcon != null)
-            return false;
         if (shareChatsTitle != null ? !shareChatsTitle.equals(that.shareChatsTitle) : that.shareChatsTitle != null)
             return false;
         if (shareChatsText != null ? !shareChatsText.equals(that.shareChatsText) : that.shareChatsText != null)
-            return false;
-        if (shareChatsIcon != null ? !shareChatsIcon.equals(that.shareChatsIcon) : that.shareChatsIcon != null)
             return false;
 
         return true;
@@ -132,10 +129,8 @@ public class ShareInfo {
         result = 31 * result + (int) (userId ^ (userId >>> 32));
         result = 31 * result + categoryId;
         result = 31 * result + (shareMomentsTitle != null ? shareMomentsTitle.hashCode() : 0);
-        result = 31 * result + (shareMomentsIcon != null ? shareMomentsIcon.hashCode() : 0);
         result = 31 * result + (shareChatsTitle != null ? shareChatsTitle.hashCode() : 0);
         result = 31 * result + (shareChatsText != null ? shareChatsText.hashCode() : 0);
-        result = 31 * result + (shareChatsIcon != null ? shareChatsIcon.hashCode() : 0);
         return result;
     }
 }

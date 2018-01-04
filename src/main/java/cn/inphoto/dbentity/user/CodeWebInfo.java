@@ -17,11 +17,18 @@ public class CodeWebInfo {
     /*预览状态*/
     public static final String CODE_WEB_INFO_STATE_PREVIEW = "1";
 
+    public enum CodeState {
+        /*正常生效*/
+        NORMAL,
+        /*预览状态*/
+        PREVIEW
+    }
+
     private long codeWebinfoId;
     private long userId;
     private int categoryId;
     private String pageTitle;
-    private String background;
+    private MediaData backgroundMedia;
     private Double inputTop;
     private Double inputLeft;
     private Double inputRight;
@@ -33,8 +40,8 @@ public class CodeWebInfo {
     private Double buttonLeft;
     private Double buttonRight;
     private Double buttonBottom;
-    private String buttonPic;
-    private String codeWebinfoState;
+    private MediaData buttonPicMedia;
+    private CodeState codeWebinfoState;
 
     public void setUserId(long userId) {
         this.userId = userId;
@@ -81,14 +88,14 @@ public class CodeWebInfo {
         this.pageTitle = pageTitle;
     }
 
-    @Basic
-    @Column(name = "background")
-    public String getBackground() {
-        return background;
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "background_media_id")//这里设置JoinColum设置了外键的名字，并且orderItem是关系维护端
+    public MediaData getBackgroundMedia() {
+        return backgroundMedia;
     }
 
-    public void setBackground(String background) {
-        this.background = background;
+    public void setBackgroundMedia(MediaData backgroundMedia) {
+        this.backgroundMedia = backgroundMedia;
     }
 
     @Basic
@@ -201,23 +208,24 @@ public class CodeWebInfo {
         this.buttonBottom = buttonBottom;
     }
 
-    @Basic
-    @Column(name = "button_pic")
-    public String getButtonPic() {
-        return buttonPic;
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "button_media_id")//这里设置JoinColum设置了外键的名字，并且orderItem是关系维护端
+    public MediaData getButtonPicMedia() {
+        return buttonPicMedia;
     }
 
-    public void setButtonPic(String buttonPic) {
-        this.buttonPic = buttonPic;
+    public void setButtonPicMedia(MediaData buttonPicMedia) {
+        this.buttonPicMedia = buttonPicMedia;
     }
 
     @Basic
     @Column(name = "code_webinfo_state")
-    public String getCodeWebinfoState() {
+    @Enumerated(EnumType.ORDINAL)
+    public CodeState getCodeWebinfoState() {
         return codeWebinfoState;
     }
 
-    public void setCodeWebinfoState(String codeWebinfoState) {
+    public void setCodeWebinfoState(CodeState codeWebinfoState) {
         this.codeWebinfoState = codeWebinfoState;
     }
 
@@ -232,7 +240,6 @@ public class CodeWebInfo {
         if (userId != that.userId) return false;
         if (categoryId != that.categoryId) return false;
         if (pageTitle != null ? !pageTitle.equals(that.pageTitle) : that.pageTitle != null) return false;
-        if (background != null ? !background.equals(that.background) : that.background != null) return false;
         if (inputTop != null ? !inputTop.equals(that.inputTop) : that.inputTop != null) return false;
         if (inputLeft != null ? !inputLeft.equals(that.inputLeft) : that.inputLeft != null) return false;
         if (inputRight != null ? !inputRight.equals(that.inputRight) : that.inputRight != null) return false;
@@ -246,7 +253,6 @@ public class CodeWebInfo {
         if (buttonLeft != null ? !buttonLeft.equals(that.buttonLeft) : that.buttonLeft != null) return false;
         if (buttonRight != null ? !buttonRight.equals(that.buttonRight) : that.buttonRight != null) return false;
         if (buttonBottom != null ? !buttonBottom.equals(that.buttonBottom) : that.buttonBottom != null) return false;
-        if (buttonPic != null ? !buttonPic.equals(that.buttonPic) : that.buttonPic != null) return false;
         if (codeWebinfoState != null ? !codeWebinfoState.equals(that.codeWebinfoState) : that.codeWebinfoState != null)
             return false;
 
@@ -259,7 +265,6 @@ public class CodeWebInfo {
         result = 31 * result + (int) (userId ^ (userId >>> 32));
         result = 31 * result + categoryId;
         result = 31 * result + (pageTitle != null ? pageTitle.hashCode() : 0);
-        result = 31 * result + (background != null ? background.hashCode() : 0);
         result = 31 * result + (inputTop != null ? inputTop.hashCode() : 0);
         result = 31 * result + (inputLeft != null ? inputLeft.hashCode() : 0);
         result = 31 * result + (inputRight != null ? inputRight.hashCode() : 0);
@@ -271,7 +276,6 @@ public class CodeWebInfo {
         result = 31 * result + (buttonLeft != null ? buttonLeft.hashCode() : 0);
         result = 31 * result + (buttonRight != null ? buttonRight.hashCode() : 0);
         result = 31 * result + (buttonBottom != null ? buttonBottom.hashCode() : 0);
-        result = 31 * result + (buttonPic != null ? buttonPic.hashCode() : 0);
         result = 31 * result + (codeWebinfoState != null ? codeWebinfoState.hashCode() : 0);
         return result;
     }

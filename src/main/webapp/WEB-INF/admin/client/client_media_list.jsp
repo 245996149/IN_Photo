@@ -94,12 +94,12 @@
                             <td width="5%">
                                 <c:choose>
                                     <c:when test="${category.isVideo==1}">
-
+                                        <span style="font-size: 10px;">视频无法预览</span>
                                     </c:when>
                                     <c:otherwise>
                                         <a href="javascript:void(0);" onclick="open_modal(${m.mediaName});"
                                            class="thumbnail" style="margin-bottom:auto;">
-                                            <img src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1&thumbnail=true"
+                                            <img src="http://file.in-photo.cn/${m.mediaKey}?x-oss-process=style/100px"
                                                  alt="...">
                                         </a>
                                     </c:otherwise>
@@ -302,13 +302,15 @@
                             <div class="item" data-media-name="${m.mediaName}">
                                 <c:choose>
                                     <c:when test="${category.isVideo==1}">
-                                        <video src="${m.filePath}"></video>
+                                        <video src="http://file.in-photo.cn/${m.mediaKey}" controls
+                                               style="margin: 0 auto;width: 400px;
+                                               position:relative;left: 50%;transform: translate(-50%,0);"></video>
                                     </c:when>
                                     <c:otherwise>
                                         <img src="${pageContext.request.contextPath}/images/loading.gif" name="lazy"
                                              style="margin: 0 auto;"
                                              alt="${m.mediaId}"
-                                             lz-src="${pageContext.request.contextPath}/get/getMedia.do?id=${m.mediaId}&type=1">
+                                             lz-src="http://file.in-photo.cn/${m.mediaKey}?x-oss-process=style/400px">
                                     </c:otherwise>
                                 </c:choose>
                                 <div class="carousel-caption">${m.mediaName}</div>

@@ -4,7 +4,6 @@
 package cn.inphoto.weChatUtil;
 
 
-
 import cn.inphoto.weChatEntity.JsapiTicket;
 import cn.inphoto.weChatEntity.WeChatOauth2Token;
 import cn.inphoto.weChatEntity.WeChatToken;
@@ -44,7 +43,7 @@ public class WeChatWebUtil {
         requestUrl = requestUrl.replace("CODE", code);
         // 获取网页授权凭证
         JSONObject jsonObject = HttpRequest.httpsRequest(requestUrl, "GET", null);
-        
+
         if (null != jsonObject) {
 
             logger.info("获取网页授权凭证中---------->" + "拼接AccessToken请求地址：" + requestUrl + "，接收到AccessToken的json：" + jsonObject.toString());
@@ -163,16 +162,16 @@ public class WeChatWebUtil {
         response.setCharacterEncoding("utf-8");
 
         ServletContext application = request.getSession().getServletContext();
-        JsapiTicket ticket = (JsapiTicket) application.getAttribute("ticket");
+        JsapiTicket ticket = (JsapiTicket) application.getAttribute("weixin_ticket");
 
         if (ticket == null) {
             // ticket为空，获取新的ticket
             ticket = getJsapiTicket(WeChatUtil.judgeWeChatTokenOvertime(request, response));
-            application.setAttribute("ticket", ticket);
+            application.setAttribute("weixin_ticket", ticket);
         } else if (ticket.getTime() + (7000 * 1000) < System.currentTimeMillis()) {
             // ticket超时，获取新的ticket
             ticket = getJsapiTicket(WeChatUtil.judgeWeChatTokenOvertime(request, response));
-            application.setAttribute("ticket", ticket);
+            application.setAttribute("weixin_ticket", ticket);
         }
         logger.info("判断JsapiTicket是否可用中---------->" + "比对后获得的JsapiTicket：" + ticket.toString());
         return ticket;

@@ -23,7 +23,7 @@ public class UserCategoryDaoImpl extends SuperDao implements UserCategoryDao {
     Logger logger = Logger.getLogger(UserCategoryDaoImpl.class);
 
     @Override
-    public UserCategory findByUser_idAndCategory_idAndState(Long user_id, Integer category_id, String user_category_state) {
+    public UserCategory findByUser_idAndCategory_idAndState(Long user_id, Integer category_id, UserCategory.UserState user_category_state) {
         try (Session session = sessionFactory.openSession()) {
 
             Query query = session.createQuery(" from UserCategory where userId = :user_id and categoryId = :category_id  " +
@@ -74,7 +74,7 @@ public class UserCategoryDaoImpl extends SuperDao implements UserCategoryDao {
     }
 
     @Override
-    public List<UserCategory> findByUser_idAndState(Long user_id, String user_category_state) {
+    public List<UserCategory> findByUser_idAndState(Long user_id, UserCategory.UserState user_category_state) {
 
         try (Session session = sessionFactory.openSession()) {
 
@@ -103,7 +103,7 @@ public class UserCategoryDaoImpl extends SuperDao implements UserCategoryDao {
     }
 
     @Override
-    public List<UserCategory> findByOverTimeByNormal(Date over_time, String user_category_state) {
+    public List<UserCategory> findByOverTimeByNormal(Date over_time, UserCategory.UserState user_category_state) {
 
         try (Session session = sessionFactory.openSession()) {
 
@@ -118,7 +118,7 @@ public class UserCategoryDaoImpl extends SuperDao implements UserCategoryDao {
     }
 
     @Override
-    public List<UserCategory> findByNotStartBy(Date begin_time, String user_category_state) {
+    public List<UserCategory> findByNotStartBy(Date begin_time, UserCategory.UserState user_category_state) {
 
         try (Session session = sessionFactory.openSession()) {
 
@@ -133,7 +133,7 @@ public class UserCategoryDaoImpl extends SuperDao implements UserCategoryDao {
     }
 
     @Override
-    public List<UserCategory> findByState(String user_category_state) {
+    public List<UserCategory> findByState(UserCategory.UserState user_category_state) {
 
         try (Session session = sessionFactory.openSession()) {
 

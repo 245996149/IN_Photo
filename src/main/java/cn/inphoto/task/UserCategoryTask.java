@@ -41,7 +41,7 @@ public class UserCategoryTask {
     @Scheduled(cron = "0 20 2 * * ? ")
     public void cleanOverUserCategory() {
 
-        List<UserCategory> userCategoryList = userCategoryDao.findByState(UserCategory.USER_CATEGORY_STATE_NORMAL);
+        List<UserCategory> userCategoryList = userCategoryDao.findByState(UserCategory.UserState.NORMAL);
 
         if (userCategoryList.isEmpty()) {
             return;
@@ -54,7 +54,7 @@ public class UserCategoryTask {
         for (UserCategory uc : userCategoryList
                 ) {
             if (uc.getEndTime().getTime() < getTodayDate().getTime()) {
-                uc.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_OVER);
+                uc.setUserCategoryState(UserCategory.UserState.OVER);
                 updateUserCategoryList.add(uc);
                 a.append(String.valueOf(uc.getUserCategoryId())).append("、");
             }
@@ -80,7 +80,7 @@ public class UserCategoryTask {
     @Scheduled(cron = "0 30 2 * * ? ")
     public void openNotStartUserCategory() {
 
-        List<UserCategory> userCategoryList = userCategoryDao.findByState(UserCategory.USER_CATEGORY_STATE_NOT_START);
+        List<UserCategory> userCategoryList = userCategoryDao.findByState(UserCategory.UserState.NOT_START);
 
         if (userCategoryList.isEmpty()) {
             return;
@@ -93,7 +93,7 @@ public class UserCategoryTask {
         for (UserCategory uc : userCategoryList
                 ) {
             if (uc.getBeginTime().getTime() < getTodayDate().getTime()) {
-                uc.setUserCategoryState(UserCategory.USER_CATEGORY_STATE_NORMAL);
+                uc.setUserCategoryState(UserCategory.UserState.NORMAL);
                 updateUserCategoryList.add(uc);
                 a.append(String.valueOf(uc.getUserCategoryId())).append("、");
             }

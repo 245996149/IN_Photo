@@ -10,9 +10,9 @@ var isIE = /msie/i.test(navigator.userAgent) && !window.opera;
 
 function fileChange(target) {
     var fileSize = 0;
-    var filetypes = [".jpg", ".png"];
+    var filetypes = [".jpg", ".png", ".gif"];
     var filepath = target.value;
-    var filemaxsize = 200;//2M
+    var filemaxsize = 400;//2M
     if (filepath) {
         var isnext = false;
         var fileend = filepath.substring(filepath.indexOf("."));
@@ -47,7 +47,7 @@ function fileChange(target) {
 
     var size = fileSize / 1024;
     if (size > filemaxsize) {
-        alert("附件大小不能大于" + 200 + "Kb！");
+        alert("附件大小不能大于" + 400 + "Kb！");
         target.value = "";
         return false;
     }

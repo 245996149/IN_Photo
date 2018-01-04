@@ -33,12 +33,14 @@
 
 <script language="javascript" type="text/javascript">
     var timer;
+
     //启动跳转的定时器
     function startTimes() {
-        timer = window.setInterval(showSecondes,1000);
+        timer = window.setInterval(showSecondes, 1000);
     }
 
     var i = 5;
+
     function showSecondes() {
         if (i > 0) {
             i--;

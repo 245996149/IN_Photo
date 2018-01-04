@@ -12,8 +12,6 @@ import java.sql.Timestamp;
 @Table(name = "share_data", schema = "IN_Photo", catalog = "")
 public class ShareData {
 
-    /*页面点击*/
-    public static final String SHARE_TYPE_WEB_CLICK = "0";
     /*微信分享给好友*/
     public static final String SHARE_TYPE_WECHAT_SHARE_CHATS = "1";
     /*微信分享到朋友圈*/

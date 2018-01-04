@@ -12,29 +12,26 @@ import java.sql.Timestamp;
 @Table(name = "media_data", schema = "IN_Photo", catalog = "")
 public class MediaData {
 
-    public enum MediaState {
-        /*媒体数据正常*/
-        Normal,
-        /*媒体数据已经移入回收站中*/
-        Recycle,
-        /*媒体数据已删除*/
-        Delete,
-        /*套餐过期，媒体数据待移动到回收站中*/
-        WillDelete
-    }
-
     private long mediaId;
     private String mediaName;
-    private String filePath;
+    private String mediaKey;
     private long userId;
     private int categoryId;
     private Timestamp createTime;
     private MediaState mediaState;
     private Timestamp deleteTime;
     private Timestamp overTime;
+    private MediaType mediaType = MediaType.MediaData;
+    private Long videoPicMedia;
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    @Basic
+    @Column(name = "video_pic_media_id")
+    public Long getVideoPicMedia() {
+        return videoPicMedia;
+    }
+
+    public void setVideoPicMedia(Long videoPicMedia) {
+        this.videoPicMedia = videoPicMedia;
     }
 
     @Id
@@ -59,13 +56,13 @@ public class MediaData {
     }
 
     @Basic
-    @Column(name = "file_path")
-    public String getFilePath() {
-        return filePath;
+    @Column(name = "media_key")
+    public String getMediaKey() {
+        return mediaKey;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setMediaKey(String mediaKey) {
+        this.mediaKey = mediaKey;
     }
 
     @Basic
@@ -74,7 +71,7 @@ public class MediaData {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
@@ -130,6 +127,17 @@ public class MediaData {
         this.overTime = overTime;
     }
 
+    @Basic
+    @Column(name = "media_type")
+    @Enumerated(EnumType.ORDINAL)
+    public MediaType getMediaType() {
+        return mediaType;
+    }
+
+    public void setMediaType(MediaType mediaType) {
+        this.mediaType = mediaType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -141,7 +149,7 @@ public class MediaData {
         if (userId != that.userId) return false;
         if (categoryId != that.categoryId) return false;
         if (mediaName != null ? !mediaName.equals(that.mediaName) : that.mediaName != null) return false;
-        if (filePath != null ? !filePath.equals(that.filePath) : that.filePath != null) return false;
+        if (mediaKey != null ? !mediaKey.equals(that.mediaKey) : that.mediaKey != null) return false;
         if (createTime != null ? !createTime.equals(that.createTime) : that.createTime != null) return false;
         if (mediaState != null ? !mediaState.equals(that.mediaState) : that.mediaState != null) return false;
         if (deleteTime != null ? !deleteTime.equals(that.deleteTime) : that.deleteTime != null) return false;
@@ -150,12 +158,11 @@ public class MediaData {
         return true;
     }
 
-
     @Override
     public int hashCode() {
         int result = (int) (mediaId ^ (mediaId >>> 32));
         result = 31 * result + (mediaName != null ? mediaName.hashCode() : 0);
-        result = 31 * result + (filePath != null ? filePath.hashCode() : 0);
+        result = 31 * result + (mediaKey != null ? mediaKey.hashCode() : 0);
         result = 31 * result + (int) (userId ^ (userId >>> 32));
         result = 31 * result + categoryId;
         result = 31 * result + (createTime != null ? createTime.hashCode() : 0);
@@ -170,13 +177,36 @@ public class MediaData {
         return "MediaData{" +
                 "mediaId=" + mediaId +
                 ", mediaName='" + mediaName + '\'' +
-                ", filePath='" + filePath + '\'' +
+                ", mediaKey='" + mediaKey + '\'' +
                 ", userId=" + userId +
                 ", categoryId=" + categoryId +
                 ", createTime=" + createTime +
-                ", mediaState='" + mediaState + '\'' +
+                ", mediaState=" + mediaState +
                 ", deleteTime=" + deleteTime +
                 ", overTime=" + overTime +
+                ", mediaType=" + mediaType +
+                ", videoPicMedia=" + videoPicMedia +
                 '}';
+    }
+
+
+    public enum MediaState {
+        /*媒体数据正常*/
+        Normal,
+        /*媒体数据已经移入回收站中*/
+        Recycle,
+        /*媒体数据已删除*/
+        Delete,
+        /*套餐过期，媒体数据待移动到回收站中*/
+        WillDelete
+    }
+
+    public enum MediaType {
+        /*媒体数据*/
+        MediaData,
+        /*用户设置数据*/
+        SettingsData,
+        /*视频缩略图*/
+        VideoPicData
     }
 }

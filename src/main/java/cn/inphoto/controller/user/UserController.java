@@ -2,7 +2,6 @@ package cn.inphoto.controller.user;
 
 import cn.inphoto.dao.UserDao;
 import cn.inphoto.dao.UtilDao;
-import cn.inphoto.dbentity.admin.AdminInfo;
 import cn.inphoto.dbentity.user.User;
 import cn.inphoto.log.UserLogLevel;
 import org.apache.log4j.Logger;
@@ -39,14 +38,16 @@ public class UserController {
     public static int TABLE_CODE = 3;
     /*页面设置简码*/
     public static int PAGESETTINGS_CODE = 4;
+    /*数据统计简码*/
+    public static int STATISTIC_CODE = 5;
     /*用户选项简码*/
     public static int USER_CODE = 0;
 
     @Resource
-    UserDao userDao;
+    private UserDao userDao;
 
     @Resource
-    UtilDao utilDao;
+    private UtilDao utilDao;
 
     @RequestMapping("/index.do")
     public String index(Model model, HttpSession session) {
@@ -164,7 +165,7 @@ public class UserController {
      */
     @RequestMapping("/checkPhoneCode.do")
     @ResponseBody
-    public Map checkPhoneCode(String phone, String code, HttpSession session) {
+    public Map<String, Object> checkPhoneCode(String phone, String code, HttpSession session) {
 
         Map<String, String> codeMap = (Map<String, String>) session.getAttribute("addUserPhoneCode");
 

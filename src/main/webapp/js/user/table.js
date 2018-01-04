@@ -1,4 +1,5 @@
 var t1;
+var t2;
 
 /*查询7天内的点击数*/
 function getClickData(beginDate, endDate) {
@@ -142,37 +143,37 @@ function getSystemInfo() {
 }
 
 /*查询回收站媒体情况*/
-function getRecycleInfo() {
-
-    var category_id = $("#category_id").val();
-
-    $.post(
-        "getRecycleInfo.do",
-        {
-            "category_id": category_id
-        },
-        function (res) {
-            var data_arr = new Array(3);
-            data_arr[0] = res.recycle_total;
-            data_arr[1] = res.recycle_7;
-            data_arr[2] = res.recycle_15;
-
-            var ctx4 = document.getElementById("recycle_info").getContext('2d');
-            var recycle_info = new Chart(ctx4, {
-                type: 'polarArea',
-                data: {
-                    labels: ["该系统数据总数", "数据7天内过期数", "数据15天内过期数"],
-                    datasets: [{
-                        label: "回收站数据过期情况",
-                        data: data_arr,
-                        backgroundColor: ["rgb(255, 99, 132)", "rgb(75, 192, 192)", "rgb(255, 205, 86)"]
-                    }]
-                }
-            });
-
-        });
-
-}
+// function getRecycleInfo() {
+//
+//     var category_id = $("#category_id").val();
+//
+//     $.post(
+//         "getRecycleInfo.do",
+//         {
+//             "category_id": category_id
+//         },
+//         function (res) {
+//             var data_arr = new Array(3);
+//             data_arr[0] = res.recycle_total;
+//             data_arr[1] = res.recycle_7;
+//             data_arr[2] = res.recycle_15;
+//
+//             var ctx4 = document.getElementById("recycle_info").getContext('2d');
+//             var recycle_info = new Chart(ctx4, {
+//                 type: 'polarArea',
+//                 data: {
+//                     labels: ["该系统数据总数", "数据7天内过期数", "数据15天内过期数"],
+//                     datasets: [{
+//                         label: "回收站数据过期情况",
+//                         data: data_arr,
+//                         backgroundColor: ["rgb(255, 99, 132)", "rgb(75, 192, 192)", "rgb(255, 205, 86)"]
+//                     }]
+//                 }
+//             });
+//
+//         });
+//
+// }
 
 /*打开model*/
 function open_modal(mediaName) {
@@ -258,14 +259,18 @@ function modal_download() {
 
     var carousel_obj = $("#carousel-object .active img");
 
+    if (carousel_obj == null) {
+        carousel_obj = $("#carousel-object .active video");
+    }
+
     download(carousel_obj.attr("alt"));
 
 }
 
 /*页面中的下载按钮的下载逻辑*/
-function download(id) {
+function download(mediaKey) {
 
-    window.location.href = "/IN_Photo/get/getMedia.do?id=" + id + "&type=1&download=true";
+    window.location.href = "http://file.in-photo.cn/" + mediaKey;
 
 }
 
@@ -285,8 +290,20 @@ function downloadImgZip() {
             _list_num++;
         }
     }
-    location.href = "/IN_Photo/get/getMedias.do?media_id_list=" + JSON.stringify(_list);
-
+    // location.href = "/IN_Photo/get/getMedias.do?media_id_list=" + JSON.stringify(_list);
+    $.post(
+        "/IN_Photo/get/getMedias.do",
+        {
+            "media_id_list": JSON.stringify(_list)
+        },
+        function (res) {
+            if (res.success) {
+                t2 = setInterval(function () {
+                    checkZipCreateStatesOpen(res.message)
+                }, 3000);
+            }
+        }
+    )
 }
 
 /*modal中的删除媒体*/
@@ -453,6 +470,22 @@ function checkZipCreateStates(code) {
                 clearInterval(t1);
                 $("#zip_create_states_message").html("打包完成！" +
                     "<a type=\"button\" class=\"btn btn-success\" href='" + res.message + "'>下载</a>");
+            }
+        }
+    );
+}
+
+function checkZipCreateStatesOpen(code) {
+    $.post(
+        "/IN_Photo/get/checkCreateZipStates.do",
+        {
+            "code": code,
+            "date": new Date()
+        },
+        function (res) {
+            if (res.success) {
+                clearInterval(t2);
+                location.href = res.message;
             }
         }
     );

@@ -7,6 +7,10 @@ import cn.inphoto.dbentity.user.MediaData;
 import cn.inphoto.dbentity.user.User;
 import cn.inphoto.dbentity.user.UserCategory;
 import cn.inphoto.log.UserLogLevel;
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.DeleteObjectsRequest;
+import com.aliyun.oss.model.OSSObjectSummary;
+import com.aliyun.oss.model.ObjectListing;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,14 +25,12 @@ import java.sql.Timestamp;
 import java.util.*;
 
 import static cn.inphoto.util.DateUtil.*;
+import static cn.inphoto.util.DirUtil.deleteDir;
 
 @Component
 public class MediaTask {
 
     private Logger logger = Logger.getLogger(MediaTask.class);
-
-    @Value("#{properties['data_path']}")
-    public String data_path;
 
     @Resource
     private MediaDataDao mediaDataDao;
@@ -43,6 +45,37 @@ public class MediaTask {
 
     public static void setMediaTask(MediaTask mediaTask) {
         MediaTask.mediaTask = mediaTask;
+    }
+
+    private static String tmpPath;
+    private static String endpoint;
+    private static String accessKeyId;
+    private static String accessKeySecret;
+    private static String bucketName;
+
+    @Value("#{properties['tmp_path']}")
+    public static void setTmpPath(String tmpPath) {
+        MediaTask.tmpPath = tmpPath;
+    }
+
+    @Value("#{properties['AliyunOSSEndpoint']}")
+    public static void setEndpoint(String endpoint) {
+        MediaTask.endpoint = endpoint;
+    }
+
+    @Value("#{properties['AliyunAccessKeyId']}")
+    public static void setAccessKeyId(String accessKeyId) {
+        MediaTask.accessKeyId = accessKeyId;
+    }
+
+    @Value("#{properties['AliyunAccessKeySecret']}")
+    public static void setAccessKeySecret(String accessKeySecret) {
+        MediaTask.accessKeySecret = accessKeySecret;
+    }
+
+    @Value("#{properties['AliyunOSSBucketName']}")
+    public static void setBucketName(String bucketName) {
+        MediaTask.bucketName = bucketName;
     }
 
     @PostConstruct
@@ -78,7 +111,7 @@ public class MediaTask {
 
             // 查找该客户所有的正常状态下的媒体
             List<UserCategory> userCategoryList = userCategoryDao.findByUser_idAndState(
-                    u.getUserId(), UserCategory.USER_CATEGORY_STATE_NORMAL);
+                    u.getUserId(), UserCategory.UserState.NORMAL);
 
             List<MediaData> updateMediaDataList = new ArrayList<>();
 
@@ -255,7 +288,7 @@ public class MediaTask {
 
             // 查找该客户所有的正常状态下的用户套餐
             List<UserCategory> userCategoryList = userCategoryDao.findByUser_idAndState(
-                    u.getUserId(), UserCategory.USER_CATEGORY_STATE_NORMAL);
+                    u.getUserId(), UserCategory.UserState.NORMAL);
 
             Map<Integer, Long> media_count = new HashMap<>();
 
@@ -356,8 +389,6 @@ public class MediaTask {
     public void cleanTmpDir() throws IOException {
         logger.log(UserLogLevel.TASK, "开始清理tmp文件夹");
 
-        String tmpPath = data_path + File.separator + "tmp";
-
         File tmpDir = new File(tmpPath);
 
         if (!tmpDir.exists()) {
@@ -371,20 +402,7 @@ public class MediaTask {
             return;
         }
 
-        int cleanNum = 0;
-
-        for (File f : tmpFiles
-                ) {
-            if (f.exists() && f.isFile()) {
-                if (f.delete()) {
-                    cleanNum++;
-                } else {
-                    logger.log(UserLogLevel.TASK, "清理" + f.getCanonicalPath() + "文件失败");
-                }
-            }
-        }
-
-        logger.log(UserLogLevel.TASK, "共清理了tmp文件夹内" + cleanNum + "个文件");
+        deleteDir(tmpDir);
 
     }
 
@@ -403,6 +421,8 @@ public class MediaTask {
             return;
         }
 
+        OSSClient client = new OSSClient(endpoint, accessKeyId, accessKeySecret);
+
         StringBuilder a = new StringBuilder();
 
         for (MediaData m : mediaDataList
@@ -411,21 +431,47 @@ public class MediaTask {
             Date day = getAfterThirtyDate();
 
             if (m.getDeleteTime().getTime() < day.getTime()) {
-                File file = new File(m.getFilePath());
-                if (file.exists() && file.isFile()) {
-                    if (file.delete()) {
-                        a.append(m.getMediaId()).append("、");
-                    } else {
-                        logger.log(UserLogLevel.TASK,
-                                "清理media_id为：" + a + " 的媒体数据失败");
-                    }
+
+                if (client.doesObjectExist(bucketName, m.getMediaKey())) {
+                    client.deleteObject(bucketName, m.getMediaKey());
+                    a.append(m.getMediaId()).append("、");
                 }
+
             }
 
         }
 
+        client.shutdown();
+
         logger.log(UserLogLevel.TASK,
                 "共清理了media_id为：" + a + " 的媒体数据");
+    }
+
+    /**
+     * 清理OSStmp文件夹下的文件
+     */
+    @Scheduled(cron = "0 10 6 * * ? ")
+    public void cleanOSSTmpDir() throws IOException {
+        logger.log(UserLogLevel.TASK, "开始清理tmp文件夹");
+
+        OSSClient client = new OSSClient(endpoint, accessKeyId, accessKeySecret);
+
+        ObjectListing objectListing = client.listObjects(bucketName, "tmp/");
+
+        List<OSSObjectSummary> sums = objectListing.getObjectSummaries();
+
+        List<String> keys = new ArrayList<String>();
+
+        for (OSSObjectSummary s : sums) {
+            keys.add(s.getKey());
+        }
+
+        if (!keys.isEmpty()){
+            client.deleteObjects(new DeleteObjectsRequest(bucketName).withKeys(keys));
+        }
+
+        client.shutdown();
+
     }
 
 }

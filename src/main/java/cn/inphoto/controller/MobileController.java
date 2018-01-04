@@ -5,6 +5,7 @@ import cn.inphoto.dbentity.user.*;
 import cn.inphoto.weChatEntity.JsapiTicket;
 import cn.inphoto.weChatUtil.Sha1;
 import cn.inphoto.weChatUtil.WeChatWebUtil;
+import cn.inphoto.weibo.WeiboService;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,8 +33,14 @@ public class MobileController {
 
     private Logger logger = Logger.getLogger(MobileController.class);
 
-    @Value("#{properties['appid']}")
+    @Value("#{properties['weixin_appid']}")
     String appid;
+
+    @Value("#{properties['weibo_appKey']}")
+    String appKey;
+
+    @Value("#{properties['AliyunOSSPath']}")
+    String OSSPath;
 
     @Resource
     private UserDao userDao;
@@ -67,6 +74,15 @@ public class MobileController {
     /*定义默认展示页面*/
     private static final String MOBILE_VIEW_DEFAULT = "mobile/view_default";
 
+    private static final String MOBILE_VIEW_VIDEO = "mobile/view_video";
+
+    private static final String MOBILE_VIEW_VIDEO_DEFAULT = "mobile/view_video_default";
+
+    @RequestMapping("/test.do")
+    public String test() {
+        return "mobile/test";
+    }
+
     /**
      * 前面提取页面
      *
@@ -90,15 +106,15 @@ public class MobileController {
 
         // 根据user_id、category_id查询状态正常的用户套餐系统
         UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_idAndState(
-                user.getUserId(), category_id, UserCategory.USER_CATEGORY_STATE_NORMAL);
+                user.getUserId(), category_id, UserCategory.UserState.NORMAL);
 
         // 判断用户套餐系统是否存在
         if (userCategory == null) return MOBILE_404;
 
-        String codeState = CodeWebInfo.CODE_WEB_INFO_STATE_NORMAL;
+        CodeWebInfo.CodeState codeState = CodeWebInfo.CodeState.NORMAL;
 
         if (test) {
-            codeState = CodeWebInfo.CODE_WEB_INFO_STATE_PREVIEW;
+            codeState = CodeWebInfo.CodeState.PREVIEW;
         }
 
         // 查询用户的提取页面设置
@@ -164,11 +180,7 @@ public class MobileController {
                     "/mobile/toPage.do?user_id=" + user_id + "&category_id=" + category_id +
                     "&media_id=" + mediaCode.getMediaId();
 
-            // 获取图片尾缀
-            String tempFileName[] = mediaData.getFilePath().split("\\.");
-
-            String image_url = url + request.getContextPath() +
-                    "/get/getMedia.do?type=1&id=" + mediaData.getMediaId() + "&image_type=." + tempFileName[1];
+            String image_url = OSSPath + "/" + mediaData.getMediaKey();
 
             result.put("success", true);
             result.put("page_url", page_url);
@@ -218,17 +230,19 @@ public class MobileController {
 
             // 根据user_id、category_id查询状态正常的用户套餐系统
             UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_idAndState(
-                    user.getUserId(), category_id, UserCategory.USER_CATEGORY_STATE_NORMAL);
+                    user.getUserId(), category_id, UserCategory.UserState.NORMAL);
 
             // 判断用户套餐系统是否存在
             if (userCategory == null) return MOBILE_404;
 
-            String picState = PicWebInfo.PIC_WEB_INFO_STATE_NORMAL;
+            PicWebInfo.PicState picState = PicWebInfo.PicState.NORMAL;
+
+            Long videoPicMediaId = null;
 
             // 判断是否在测试模式，在测试模式将media_id设置为0
             if (test) {
-                model.addAttribute("media_id", 0);
-                picState = PicWebInfo.PIC_WEB_INFO_STATE_PREVIEW;
+                model.addAttribute("media", null);
+                picState = PicWebInfo.PicState.PREVIEW;
             } else {
                 // 查询媒体数据，并判断媒体数据是否在正常状态内
                 MediaData mediaData = mediaDataDao.findByMedia_id(media_id);
@@ -236,12 +250,8 @@ public class MobileController {
                         (MediaData.MediaState.Normal != mediaData.getMediaState() &&
                                 MediaData.MediaState.WillDelete != mediaData.getMediaState()))
                     return MOBILE_404;
-
-                // 获取图片尾缀
-                String tempFileName[] = mediaData.getFilePath().split("\\.");
-
-                model.addAttribute("image_type", tempFileName[1]);
-                model.addAttribute("media_id", mediaData.getMediaId());
+                model.addAttribute("media", mediaData);
+                videoPicMediaId = mediaData.getVideoPicMedia();
             }
 
             // 查询用户展示页面设置
@@ -263,17 +273,34 @@ public class MobileController {
             MDC.put("category_id", category_id);
             logger.info("用户打开了了user_id=" + user_id + "，category_id=" + category_id + ",media_id=" + media_id + "的展示页面");
 
+            if (category.getIsVideo() == 1) {
+                if (videoPicMediaId != null) {
+                    MediaData videoPicMedia = mediaDataDao.findByMedia_id(videoPicMediaId);
+                    if (videoPicMedia != null) model.addAttribute("video_pic_key", videoPicMedia.getMediaKey());
+                }
+            }
+
             // 判断展示页面设置是否有效，无效打开默认页面
-            if (picWebInfo == null) return MOBILE_VIEW_DEFAULT;
+            if (picWebInfo == null) {
+                if (category.getIsVideo() == 1) {
+                    return MOBILE_VIEW_VIDEO_DEFAULT;
+                } else {
+                    return MOBILE_VIEW_DEFAULT;
+                }
+            }
 
             model.addAttribute("picWebInfo", picWebInfo);
+
+            if (category.getIsVideo() == 1) {
+                return MOBILE_VIEW_VIDEO;
+            } else {
+                return MOBILE_VIEW;
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
             return MOBILE_404;
         }
-
-        return MOBILE_VIEW;
 
     }
 
@@ -291,6 +318,61 @@ public class MobileController {
 
         return WXConfig(request, response, url);
 
+    }
+
+    /**
+     * 生成获取微信jssdk所需参数反馈给客户端
+     *
+     * @param response 发送
+     * @param request  请求
+     * @param url      当前页面url
+     * @return 微信jssdk所需参数
+     */
+    @RequestMapping("/getWeiBoInfo.do")
+    @ResponseBody
+    public Map<String, String> weiBo(HttpServletResponse response, HttpServletRequest request, String url) {
+
+        return WBConfig(request, response, url);
+
+    }
+
+    private HashMap<String, String> WBConfig(HttpServletRequest request, HttpServletResponse response, String url) {
+        HashMap<String, String> res = new HashMap<>();
+
+        String time = null;
+
+        String jsapi_ticket = null;
+
+        String signature = "";
+
+        String nonce_str = "";
+
+        try {
+            cn.inphoto.weibo.entity.JsapiTicket jsapiTicket = WeiboService.judgeWeiboJsapiTicketOvertime(request, response);
+            // 获取随机数
+            nonce_str = UUID.randomUUID().toString();
+            // 获取jsapi_ticket
+            jsapi_ticket = jsapiTicket.getJsTicket();
+            // 获取系统时间
+            time = String.valueOf(System.currentTimeMillis()).substring(0, 10);
+            // 合成字符串用于签名
+            String str = "jsapi_ticket=" + jsapi_ticket + "&noncestr=" + nonce_str + "&timestamp=" + time + "&url=" + url;
+
+            signature = Sha1.getSha1(str);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        logger.info(appKey);
+        res.put("appKey", appKey);
+        res.put("url", url);
+        res.put("jsapi_ticket", jsapi_ticket);
+        res.put("nonceStr", nonce_str);
+        res.put("timestamp", time);
+        res.put("signature", signature);
+
+        return res;
     }
 
     /**
@@ -386,6 +468,16 @@ public class MobileController {
 
         return result;
 
+    }
+
+    @ResponseBody
+    @RequestMapping("/collectInformation.do")
+    public Map<String, Object> collectInformation(ShareClickData shareClickData) {
+        Map<String, Object> result = new HashMap<>();
+        System.out.println(shareClickData.toString());
+        utilDao.save(shareClickData);
+        result.put("data", shareClickData);
+        return result;
     }
 
 }

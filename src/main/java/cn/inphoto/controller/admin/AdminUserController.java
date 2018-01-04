@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -112,7 +111,7 @@ public class AdminUserController {
     }
 
     /**
-     * 前往添加管理员页面
+     * 前往添加管理员页
      *
      * @param adminInfo  对象
      * @param user_state 状态
@@ -132,9 +131,7 @@ public class AdminUserController {
         String pwd = getRandomPassword(10);
 
         adminInfo.setPassword(getMD5(pwd));
-
         if (utilDao.save(adminInfo)) {
-
             // 发送邮件
             if (sendEmail) {
                 try {
@@ -151,14 +148,10 @@ public class AdminUserController {
                     return "redirect:/admin/login/error.do";
                 }
             }
-
         } else {
-
             // 保存失败，跳转到错误页面
             return "redirect:/admin/login/error.do";
-
         }
-
         return "redirect:toUpdateAdmin.do?admin_id=" + adminInfo.getAdminId();
     }
 

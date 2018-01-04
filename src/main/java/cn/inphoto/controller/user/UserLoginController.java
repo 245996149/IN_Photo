@@ -1,11 +1,13 @@
 package cn.inphoto.controller.user;
 
-import cn.inphoto.dao.*;
+import cn.inphoto.dao.CategoryDao;
+import cn.inphoto.dao.UserCategoryDao;
+import cn.inphoto.dao.UserDao;
+import cn.inphoto.dao.UtilDao;
 import cn.inphoto.dbentity.admin.AdminInfo;
 import cn.inphoto.dbentity.user.Category;
 import cn.inphoto.dbentity.user.User;
 import cn.inphoto.dbentity.user.UserCategory;
-import cn.inphoto.log.UserLogLevel;
 import cn.inphoto.log.UserLogLevel;
 import cn.inphoto.util.ImageUtil;
 import org.apache.log4j.Logger;
@@ -129,7 +131,7 @@ public class UserLoginController {
             return createResult(false, "账号、密码不能为空");
         }
 
-        System.out.println(login_type + ";" + input_text + ";" + password + ";" + remLogin);
+//        System.out.println(login_type + ";" + input_text + ";" + password + ";" + remLogin);
 
         User user = null;
         String check_type = null;
@@ -170,7 +172,7 @@ public class UserLoginController {
 
         // 查询该用户所有的用户套餐系统
         List<UserCategory> userCategoryList = userCategoryDao.findByUser_idAndState(
-                user.getUserId(), UserCategory.USER_CATEGORY_STATE_NORMAL);
+                user.getUserId(), UserCategory.UserState.NORMAL);
 
         //查询所有的套餐系统
         judgeCategory(request);
@@ -296,7 +298,7 @@ public class UserLoginController {
         }
 
         UserCategory userCategory = userCategoryDao.findByUser_idAndCategory_idAndState(
-                user.getUserId(), category.getCategoryId(), UserCategory.USER_CATEGORY_STATE_NORMAL);
+                user.getUserId(), category.getCategoryId(), UserCategory.UserState.NORMAL);
 
         if (userCategory == null) {
 
@@ -309,11 +311,6 @@ public class UserLoginController {
         result.put("success", true);
         result.put("user_id", user.getUserId());
         result.put("category_id", category.getCategoryId());
-        if (UserCategory.USER_CATEGORY_IS_NOT_WATERMARK == userCategory.getWatermark()) {
-            result.put("watermark", false);
-        } else {
-            result.put("watermark", true);
-        }
         logger.log(UserLogLevel.USER, "用户user_id=" + user.getUserId() +
                 " 的用户使用" + check_type + "请求了客户端访问接口，请求成功，返回信息为：" + result.toString());
         return result;
@@ -337,7 +334,7 @@ public class UserLoginController {
      *
      * @param response 发送
      * @param session  服务器缓存
-     * @throws Exception
+     * @throws Exception 抛出异常
      */
     @RequestMapping("/createImage.do")
     public void createImage(
@@ -363,7 +360,7 @@ public class UserLoginController {
      * @param code       验证码
      * @param session    服务器缓存
      * @return 是否成功
-     * @throws Exception
+     * @throws Exception 抛出异常
      */
     @RequestMapping("/sendForgotPasswordCode.do")
     @ResponseBody

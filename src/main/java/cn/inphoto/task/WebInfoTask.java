@@ -1,12 +1,13 @@
 package cn.inphoto.task;
 
+import cn.inphoto.dao.MediaDataDao;
 import cn.inphoto.dao.UserDao;
 import cn.inphoto.dao.WebinfoDao;
-import cn.inphoto.dbentity.user.CodeWebInfo;
-import cn.inphoto.dbentity.user.PicWebInfo;
-import cn.inphoto.dbentity.user.ShareInfo;
-import cn.inphoto.dbentity.user.User;
+import cn.inphoto.dbentity.user.*;
 import cn.inphoto.log.UserLogLevel;
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.OSSObjectSummary;
+import com.aliyun.oss.model.ObjectListing;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,9 +16,10 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.io.File;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -27,6 +29,9 @@ public class WebInfoTask {
 
     @Resource
     private UserDao userDao;
+
+    @Resource
+    private MediaDataDao mediaDataDao;
 
     @Resource
     private WebinfoDao webinfoDao;
@@ -42,22 +47,43 @@ public class WebInfoTask {
         webInfoTask = this;
         webInfoTask.userDao = this.userDao;
         webInfoTask.webinfoDao = this.webinfoDao;
+        webInfoTask.mediaDataDao = this.mediaDataDao;
     }
 
-    private static String dataPath;
+    private static String endpoint;
+    private static String accessKeyId;
+    private static String accessKeySecret;
+    private static String bucketName;
 
-    @Value("#{properties['data_path']}")
-    public void setDataPath(String data_path) {
-        dataPath = data_path;
+    @Value("#{properties['AliyunOSSEndpoint']}")
+    public static void setEndpoint(String endpoint) {
+        WebInfoTask.endpoint = endpoint;
+    }
+
+    @Value("#{properties['AliyunAccessKeyId']}")
+    public static void setAccessKeyId(String accessKeyId) {
+        WebInfoTask.accessKeyId = accessKeyId;
+    }
+
+    @Value("#{properties['AliyunAccessKeySecret']}")
+    public static void setAccessKeySecret(String accessKeySecret) {
+        WebInfoTask.accessKeySecret = accessKeySecret;
+    }
+
+    @Value("#{properties['AliyunOSSBucketName']}")
+    public static void setBucketName(String bucketName) {
+        WebInfoTask.bucketName = bucketName;
     }
 
     /**
-     * @throws IOException
+     * 清理无效的设置文件
      */
     @Scheduled(cron = "0 0 4 * * ? ")
-    public void cleanOverImage() throws IOException {
+    public void cleanOverImage() {
 
         List<User> userList = userDao.findAll();
+
+        OSSClient client = new OSSClient(endpoint, accessKeyId, accessKeySecret);
 
         for (User u : userList
                 ) {
@@ -68,61 +94,68 @@ public class WebInfoTask {
 
             List<ShareInfo> shareInfoList = webinfoDao.findShareAllByUser_id(u.getUserId());
 
-            List<String> filePathList = new ArrayList<>();
+            List<MediaData> mediaDataList = new ArrayList<>();
 
             if (!picWebInfoList.isEmpty()) {
                 for (PicWebInfo p : picWebInfoList
                         ) {
-                    filePathList.add(p.getBackground());
+                    mediaDataList.add(p.getBackgroundMedia());
                 }
             }
 
             if (!codeWebInfoList.isEmpty()) {
                 for (CodeWebInfo c : codeWebInfoList
                         ) {
-                    filePathList.add(c.getBackground());
-                    filePathList.add(c.getButtonPic());
+                    mediaDataList.add(c.getBackgroundMedia());
+                    mediaDataList.add(c.getButtonPicMedia());
                 }
             }
 
             if (!shareInfoList.isEmpty()) {
                 for (ShareInfo s : shareInfoList
                         ) {
-                    filePathList.add(s.getShareChatsIcon());
-                    filePathList.add(s.getShareMomentsIcon());
+                    mediaDataList.add(s.getChatsIconMedia());
+                    mediaDataList.add(s.getMomentsIconMedia());
                 }
             }
 
-            if (!filePathList.isEmpty()) {
-                String settingPath = dataPath + File.separator + u.getUserId() + File.separator + "settings";
-                File settingFile = new File(settingPath);
-                File[] files = settingFile.listFiles();
-                StringBuilder a = new StringBuilder();
+            if (!mediaDataList.isEmpty()) {
+
                 boolean isDelete = false;
-                assert files != null;
-                for (File f : files
-                        ) {
+
+                String keyPrifex = u.getUserId() + "/settings/";
+                ObjectListing objectListing = client.listObjects(bucketName, keyPrifex);
+                List<OSSObjectSummary> sums = objectListing.getObjectSummaries();
+                StringBuilder a = new StringBuilder();
+
+                for (OSSObjectSummary s : sums) {
                     boolean flag = false;
-                    for (String s : filePathList
+                    for (MediaData m : mediaDataList
                             ) {
-                        if (s.equals(f.getCanonicalPath())) {
+                        if (s.getKey().equals(m.getMediaKey())) {
                             flag = true;
-                            a.append(f.getCanonicalPath()).append("、");
                             break;
                         }
                     }
                     if (!flag) {
                         isDelete = true;
-//                        System.out.println("删除" + f.getName());
-                        f.delete();
+                        MediaData md = mediaDataDao.findByMediaKey(s.getKey());
+                        md.setMediaState(MediaData.MediaState.Delete);
+                        md.setDeleteTime(new Timestamp(new Date().getTime()));
+                        md.setOverTime(new Timestamp(new Date().getTime()));
+                        client.deleteObject(bucketName, s.getKey());
+                        a.append(s.getKey()).append("、");
                     }
                 }
 
                 if (isDelete) {
                     MDC.put("user_info", "user_id=" + u.getUserId());
                     logger.log(UserLogLevel.TASK,
-                            "清理user_id=" + u.getUserId() + " 的用户的无用的设置图片。共清理了图片路径为：" + a + " 的图片");
+                            "清理user_id=" + u.getUserId() + " 的用户的无用的设置图片。共清理了OSSKey为：" + a + " 的设置图片");
                 }
+
+                client.shutdown();
+
             }
 
         }
