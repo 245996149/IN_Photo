@@ -167,7 +167,7 @@ public class ZIPUtil extends Thread {
         }
         PythonInfo py = new PythonInfo(zipPath, fileList);
         String str = gson.toJson(py);
-        String pyPath = this.getClass().getResource("/").getPath() + "Zip.py";
+        String pyPath = this.getClass().getResource("/").getPath() + "python/Zip.py";
         String[] args1 = new String[]{"python", pyPath, str};
         Process pr = Runtime.getRuntime().exec(args1);
         BufferedReader input = new BufferedReader(new InputStreamReader(

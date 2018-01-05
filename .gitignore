@@ -1,0 +1,9 @@
+# Ming:
+target/
+lib/
+#.gitignore
+.idea/
+IN_Photo.iml
+src/main/resources/
+UploadMediaToOSS.java
+!src/main/resources/python/

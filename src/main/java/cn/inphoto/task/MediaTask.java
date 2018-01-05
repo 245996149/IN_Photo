@@ -54,28 +54,28 @@ public class MediaTask {
     private static String bucketName;
 
     @Value("#{properties['tmp_path']}")
-    public static void setTmpPath(String tmpPath) {
-        MediaTask.tmpPath = tmpPath;
+    public void setTmpPath(String tmpPath) {
+        this.tmpPath = tmpPath;
     }
 
     @Value("#{properties['AliyunOSSEndpoint']}")
-    public static void setEndpoint(String endpoint) {
-        MediaTask.endpoint = endpoint;
+    public  void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
     }
 
     @Value("#{properties['AliyunAccessKeyId']}")
-    public static void setAccessKeyId(String accessKeyId) {
-        MediaTask.accessKeyId = accessKeyId;
+    public  void setAccessKeyId(String accessKeyId) {
+        this.accessKeyId = accessKeyId;
     }
 
     @Value("#{properties['AliyunAccessKeySecret']}")
-    public static void setAccessKeySecret(String accessKeySecret) {
-        MediaTask.accessKeySecret = accessKeySecret;
+    public  void setAccessKeySecret(String accessKeySecret) {
+        this.accessKeySecret = accessKeySecret;
     }
 
     @Value("#{properties['AliyunOSSBucketName']}")
-    public static void setBucketName(String bucketName) {
-        MediaTask.bucketName = bucketName;
+    public  void setBucketName(String bucketName) {
+        this.bucketName = bucketName;
     }
 
     @PostConstruct
@@ -85,6 +85,11 @@ public class MediaTask {
         mediaTask.userDao = this.userDao;
         mediaTask.userCategoryDao = this.userCategoryDao;
     }
+
+//    @Scheduled(cron = "0/10 * * * * ? ")
+//    public void test() {
+//        System.out.println(tmpPath);
+//    }
 
     /**
      * 清理用户套餐过期、其他原因导致的媒体数据超过套餐的媒体
@@ -156,7 +161,7 @@ public class MediaTask {
             if (!updateMediaDataList.isEmpty()) {
 
                 StringBuilder a = new StringBuilder();
-                 /*遍历待更新队列，将队列中的媒体数据设置为待删除状态，并设置删除时间为7天后*/
+                /*遍历待更新队列，将队列中的媒体数据设置为待删除状态，并设置删除时间为7天后*/
                 for (MediaData m : updateMediaDataList
                         ) {
                     m.setMediaState(MediaData.MediaState.WillDelete);
@@ -242,10 +247,14 @@ public class MediaTask {
         // 遍历队列，找到删除时间早于今天0时的媒体数据，添加过期时间、回收站状态,并将其添加到待更新队列
         for (MediaData m : mediaDataList
                 ) {
-            if (m.getOverTime().getTime() < getTodayDate().getTime()) {
-                m.setMediaState(MediaData.MediaState.Delete);
-                updateMediaList.add(m);
-                a.append(m.getMediaId()).append("、");
+            try {
+                if (m.getOverTime().getTime() < getTodayDate().getTime()) {
+                    m.setMediaState(MediaData.MediaState.Delete);
+                    updateMediaList.add(m);
+                    a.append(m.getMediaId()).append("、");
+                }
+            } catch (Exception e) {
+                logger.log(UserLogLevel.TASK, "media_id=" + m.getMediaId() + "的媒体数据过期时间为空");
             }
         }
 
@@ -327,7 +336,7 @@ public class MediaTask {
 
                 StringBuilder a = new StringBuilder();
 
-                 /*遍历待更新队列，将队列中的媒体数据设置为正常状态*/
+                /*遍历待更新队列，将队列中的媒体数据设置为正常状态*/
                 for (MediaData m : updateMediaList
                         ) {
                     m.setMediaState(MediaData.MediaState.Normal);
@@ -466,7 +475,7 @@ public class MediaTask {
             keys.add(s.getKey());
         }
 
-        if (!keys.isEmpty()){
+        if (!keys.isEmpty()) {
             client.deleteObjects(new DeleteObjectsRequest(bucketName).withKeys(keys));
         }
 

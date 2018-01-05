@@ -38,7 +38,6 @@ public class SMSUtil {
         aliyun_MNSEndpoint = aliyunMNSEndpoint;
     }
 
-
     @Value("#{properties['aliyunAccessId']}")
     public void setAliyunAccessId(String aliyunAccessId) {
         aliyun_AccessId = aliyunAccessId;
