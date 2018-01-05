@@ -82,7 +82,7 @@ public interface MediaDataDao {
      * @param media_state 媒体状态
      * @return 媒体队列
      */
-    List<MediaData> findByState(MediaData.MediaState media_state);
+    List<MediaData> findByState(MediaData.MediaState media_state,MediaData.MediaType media_type);
 
     /**
      * 根据media_id查询媒体对象

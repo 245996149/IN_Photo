@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -132,9 +131,13 @@ public class WebInfoTask {
                     boolean flag = false;
                     for (MediaData m : mediaDataList
                             ) {
-                        if (s.getKey().equals(m.getMediaKey())) {
-                            flag = true;
-                            break;
+                        try {
+                            if (s.getKey().equals(m.getMediaKey())) {
+                                flag = true;
+                                break;
+                            }
+                        } catch (Exception e) {
+                            logger.log(UserLogLevel.TASK, "清理无效的设置文件,media_id=" + m.getMediaId() + "的媒体数据key为空");
                         }
                     }
                     if (!flag) {
