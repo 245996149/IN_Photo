@@ -127,27 +127,30 @@ public class WebInfoTask {
                 List<OSSObjectSummary> sums = objectListing.getObjectSummaries();
                 StringBuilder a = new StringBuilder();
 
-                for (OSSObjectSummary s : sums) {
-                    boolean flag = false;
-                    for (MediaData m : mediaDataList
-                            ) {
-                        try {
-                            if (s.getKey().equals(m.getMediaKey())) {
-                                flag = true;
-                                break;
+                if (sums != null && !sums.isEmpty()) {
+                    for (OSSObjectSummary s : sums) {
+                        boolean flag = false;
+
+                        for (MediaData m : mediaDataList
+                                ) {
+                            try {
+                                if (s.getKey().equals(m.getMediaKey())) {
+                                    flag = true;
+                                    break;
+                                }
+                            } catch (Exception e) {
+                                logger.log(UserLogLevel.TASK, "清理无效的设置文件,media_id=" + m.getMediaId() + "的媒体数据key为空");
                             }
-                        } catch (Exception e) {
-                            logger.log(UserLogLevel.TASK, "清理无效的设置文件,media_id=" + m.getMediaId() + "的媒体数据key为空");
                         }
-                    }
-                    if (!flag) {
-                        isDelete = true;
-                        MediaData md = mediaDataDao.findByMediaKey(s.getKey());
-                        md.setMediaState(MediaData.MediaState.Delete);
-                        md.setDeleteTime(new Timestamp(new Date().getTime()));
-                        md.setOverTime(new Timestamp(new Date().getTime()));
-                        client.deleteObject(bucketName, s.getKey());
-                        a.append(s.getKey()).append("、");
+                        if (!flag) {
+                            isDelete = true;
+                            MediaData md = mediaDataDao.findByMediaKey(s.getKey());
+                            md.setMediaState(MediaData.MediaState.Delete);
+                            md.setDeleteTime(new Timestamp(new Date().getTime()));
+                            md.setOverTime(new Timestamp(new Date().getTime()));
+                            client.deleteObject(bucketName, s.getKey());
+                            a.append(s.getKey()).append("、");
+                        }
                     }
                 }
 

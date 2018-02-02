@@ -253,8 +253,12 @@ public class MediaTask {
                     updateMediaList.add(m);
                     a.append(m.getMediaId()).append("、");
                 }
+            } catch (NullPointerException ne) {
+                m.setOverTime(new Timestamp(getAfterThirtyDate().getTime()));
+                updateMediaList.add(m);
+                logger.log(UserLogLevel.TASK, "media_id=" + m.getMediaId() + "的媒体数据过期时间为空，已将过期时间设置为30天后");
             } catch (Exception e) {
-                logger.log(UserLogLevel.TASK, "media_id=" + m.getMediaId() + "的媒体数据过期时间为空");
+                logger.log(UserLogLevel.TASK, "media_id=" + m.getMediaId() + "的媒体数据发生未知错误，错误信息为：" + e.getMessage());
             }
         }
 
@@ -426,38 +430,39 @@ public class MediaTask {
         // 查找所有待删除状态下的媒体数据
         List<MediaData> mediaDataList = mediaDataDao.findByState(MediaData.MediaState.Delete, MediaData.MediaType.MediaData);
 
-        if (mediaDataList.isEmpty()) {
-            return;
-        }
 
         OSSClient client = new OSSClient(endpoint, accessKeyId, accessKeySecret);
 
         StringBuilder a = new StringBuilder();
 
-        for (MediaData m : mediaDataList
-                ) {
+        if (mediaDataList != null && !mediaDataList.isEmpty()) {
 
-            Date day = getAfterThirtyDate();
+            for (MediaData m : mediaDataList
+                    ) {
 
-            try {
-                if (m.getDeleteTime().getTime() < day.getTime()) {
+                Date day = getAfterThirtyDate();
 
-                    if (client.doesObjectExist(bucketName, m.getMediaKey())) {
-                        client.deleteObject(bucketName, m.getMediaKey());
-                        a.append(m.getMediaId()).append("、");
+                try {
+                    if (m.getDeleteTime().getTime() < day.getTime()) {
+
+                        if (client.doesObjectExist(bucketName, m.getMediaKey())) {
+                            client.deleteObject(bucketName, m.getMediaKey());
+                            a.append(m.getMediaId()).append("、");
+                        }
+
                     }
-
+                } catch (Exception e) {
+                    logger.log(UserLogLevel.TASK, "media_id=" + m.getMediaId() + "的媒体数据删除时间为空");
                 }
-            } catch (Exception e) {
-                logger.log(UserLogLevel.TASK, "media_id=" + m.getMediaId() + "的媒体数据删除时间为空");
+
             }
 
+            logger.log(UserLogLevel.TASK,
+                    "共清理了media_id为：" + a + " 的媒体数据");
         }
 
         client.shutdown();
 
-        logger.log(UserLogLevel.TASK,
-                "共清理了media_id为：" + a + " 的媒体数据");
     }
 
     /**
@@ -465,25 +470,34 @@ public class MediaTask {
      */
     @Scheduled(cron = "0 10 6 * * ? ")
     public void cleanOSSTmpDir() {
-        logger.log(UserLogLevel.TASK, "开始清理tmp文件夹");
 
         OSSClient client = new OSSClient(endpoint, accessKeyId, accessKeySecret);
+        try {
 
-        ObjectListing objectListing = client.listObjects(bucketName, "tmp/");
+            logger.log(UserLogLevel.TASK, "开始清理tmp文件夹");
 
-        List<OSSObjectSummary> sums = objectListing.getObjectSummaries();
 
-        List<String> keys = new ArrayList<String>();
+            ObjectListing objectListing = client.listObjects(bucketName, "tmp/");
 
-        for (OSSObjectSummary s : sums) {
-            keys.add(s.getKey());
+            List<OSSObjectSummary> sums = objectListing.getObjectSummaries();
+
+            List<String> keys = new ArrayList<String>();
+
+            for (OSSObjectSummary s : sums) {
+                keys.add(s.getKey());
+            }
+
+            if (!keys.isEmpty()) {
+                client.deleteObjects(new DeleteObjectsRequest(bucketName).withKeys(keys));
+            }
+        } catch (Exception e) {
+
+            logger.log(UserLogLevel.TASK,
+                    "清理OSStmp文件夹下的文件时发生了错误，错误信息为：" + e.getMessage());
+        } finally {
+            client.shutdown();
         }
 
-        if (!keys.isEmpty()) {
-            client.deleteObjects(new DeleteObjectsRequest(bucketName).withKeys(keys));
-        }
-
-        client.shutdown();
 
     }
 
