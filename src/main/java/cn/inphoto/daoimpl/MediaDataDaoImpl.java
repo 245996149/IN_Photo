@@ -171,13 +171,14 @@ public class MediaDataDaoImpl extends SuperDao implements MediaDataDao {
     }
 
     @Override
-    public List<MediaData> findByState(MediaData.MediaState media_state) {
+    public List<MediaData> findByState(MediaData.MediaState media_state, MediaData.MediaType media_type) {
         try (Session session = sessionFactory.openSession()) {
 
             Query query = session.createQuery(
-                    "from MediaData where mediaState = :media_state");
+                    "from MediaData where mediaState = :media_state and mediaType = :media_type");
 
             query.setParameter("media_state", media_state);
+            query.setParameter("media_type", media_type);
 
             return query.list();
         }
