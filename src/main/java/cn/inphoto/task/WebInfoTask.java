@@ -139,6 +139,7 @@ public class WebInfoTask {
                                     break;
                                 }
                             } catch (Exception e) {
+                                logger.log(UserLogLevel.TASK, "异常对象：" + m.toString());
                                 logger.log(UserLogLevel.TASK, "清理无效的设置文件,media_id=" + m.getMediaId() + "的媒体数据key为空");
                             }
                         }

@@ -399,7 +399,7 @@ public class MediaTask {
      * 清理tmp文件夹下的文件
      */
     @Scheduled(cron = "0 10 3 * * ? ")
-    public void cleanTmpDir() throws IOException {
+    public void cleanTmpDir() {
         logger.log(UserLogLevel.TASK, "开始清理tmp文件夹");
 
         File tmpDir = new File(tmpPath);
@@ -437,6 +437,8 @@ public class MediaTask {
 
         if (mediaDataList != null && !mediaDataList.isEmpty()) {
 
+            List<MediaData> updateMediaList = new ArrayList<>();
+
             for (MediaData m : mediaDataList
                     ) {
 
@@ -451,10 +453,18 @@ public class MediaTask {
                         }
 
                     }
+                } catch (NullPointerException ne) {
+                    m.setOverTime(new Timestamp(getAfterThirtyDate().getTime()));
+                    updateMediaList.add(m);
+                    logger.log(UserLogLevel.TASK, "media_id=" + m.getMediaId() + "的媒体数据删除时间为空，已将删除时间设置为当前时间");
                 } catch (Exception e) {
-                    logger.log(UserLogLevel.TASK, "media_id=" + m.getMediaId() + "的媒体数据删除时间为空");
+                    logger.log(UserLogLevel.TASK, "media_id=" + m.getMediaId() + "的媒体数据发生未知错误，错误信息为：" + e.getMessage());
                 }
 
+            }
+
+            if (!updateMediaList.isEmpty()) {
+                mediaDataDao.updateMediaList(updateMediaList);
             }
 
             logger.log(UserLogLevel.TASK,
