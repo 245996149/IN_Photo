@@ -209,7 +209,7 @@ public class ReceiveController {
                 }
 
                 //判断Map中是否有BufferedImage，且BufferedImage数量等于上传参数的数量，
-                if (temMap.size() == 0 || temMap.size() != number) {
+                if (temMap.size() == 0 || number == null || temMap.size() != number) {
 
                     result.put("success", false);
                     result.put("code", 105);
