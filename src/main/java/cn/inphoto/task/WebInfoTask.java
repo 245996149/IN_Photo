@@ -118,6 +118,8 @@ public class WebInfoTask {
                 }
             }
 
+            logger.log(UserLogLevel.TASK, "共找到" + mediaDataList.size() + "个媒体设置文件");
+
             if (!mediaDataList.isEmpty()) {
 
                 boolean isDelete = false;
@@ -128,11 +130,18 @@ public class WebInfoTask {
                 StringBuilder a = new StringBuilder();
 
                 if (sums != null && !sums.isEmpty()) {
+
+                    logger.log(UserLogLevel.TASK, "共找到" + sums.size() + "个oss文件");
+
                     for (OSSObjectSummary s : sums) {
                         boolean flag = false;
 
                         for (MediaData m : mediaDataList
                                 ) {
+                            if (m == null) {
+                                logger.log(UserLogLevel.TASK, "空对象，跳过该循环");
+                                continue;
+                            }
                             try {
                                 if (s.getKey().equals(m.getMediaKey())) {
                                     flag = true;
