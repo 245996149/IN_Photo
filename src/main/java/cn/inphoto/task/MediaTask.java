@@ -454,6 +454,7 @@ public class MediaTask {
 
                     }
                 } catch (NullPointerException ne) {
+                    m.setDeleteTime(new Timestamp(new Date().getTime()));
                     m.setOverTime(new Timestamp(getAfterThirtyDate().getTime()));
                     updateMediaList.add(m);
                     logger.log(UserLogLevel.TASK, "media_id=" + m.getMediaId() + "的媒体数据删除时间为空，已将删除时间设置为当前时间");
