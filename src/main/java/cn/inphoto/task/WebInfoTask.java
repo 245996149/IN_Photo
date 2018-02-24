@@ -155,11 +155,13 @@ public class WebInfoTask {
                         if (!flag) {
                             isDelete = true;
                             MediaData md = mediaDataDao.findByMediaKey(s.getKey());
-                            md.setMediaState(MediaData.MediaState.Delete);
-                            md.setDeleteTime(new Timestamp(new Date().getTime()));
-                            md.setOverTime(new Timestamp(new Date().getTime()));
-                            client.deleteObject(bucketName, s.getKey());
-                            a.append(s.getKey()).append("、");
+                            if (md != null) {
+                                md.setMediaState(MediaData.MediaState.Delete);
+                                md.setDeleteTime(new Timestamp(new Date().getTime()));
+                                md.setOverTime(new Timestamp(new Date().getTime()));
+                                client.deleteObject(bucketName, s.getKey());
+                                a.append(s.getKey()).append("、");
+                            }
                         }
                     }
                 }
