@@ -15,11 +15,11 @@ import java.util.Properties;
 public class MailUtil {
 
     // 发件人的 邮箱 和 密码（替换为自己的邮箱和密码）
-    private static String myEmailAccount = "chen.ming@in-show.com.cn";
-    private static String myEmailPassword = "chen245996149";
+    private static String myEmailAccount = "";
+    private static String myEmailPassword = "";
 
     // 发件人邮箱的 SMTP 服务器地址, 必须准确, 不同邮件服务器地址不同, 一般格式为: smtp.xxx.com
-    private static String myEmailSMTPHost = "smtp.exmail.qq.com";
+    private static String myEmailSMTPHost = "";
 
     @Value("#{properties['EmailAccount']}")
     public static void setMyEmailAccount(String myEmailAccount) {
